@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">KnowledgeRepo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
+    
+    <string name="action_search">Search</string>
+    
+    <string name="title">Single Choice Exam</string>
+    
+    <string name="question">Question</string>
+    <string name="checkAnswer">See Answer Here</string>
+    <string name="choiceA">ChoiceA</string>
+    <string name="choiceB">ChoiceB</string>
+    <string name="choiceC">ChoiceC</string>
+    <string name="choiceD">ChoiceD</string>
+    
+    <string name="next">Next</string>
+    <string name="previous">Prev</string>
+    
+    
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_display_message">DisplayMessageActivity</string>
+
+</resources>
