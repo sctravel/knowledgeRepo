@@ -91,6 +91,7 @@ public class ExamModeActivity extends Activity{
         });  
         
        try {
+    	  //make it configuable  here
        	 InputStream question = getAssets().open("exams/exam1.txt");
        	 InputStream answer = getAssets().open("exams/exp1.txt");
 
