@@ -31,5 +31,22 @@
       	    android:layout_alignParentLeft="true"
             android:text="Exam Mode" />
      
+     
+     <TextView
+        android:id="@+id/downloadTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please Download tests." 
+        android:textStyle="bold|italic"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge"  />
+        
+     <Button
+            android:id="@+id/downloadTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+      	    android:layout_alignParentLeft="true"
+            android:text="Download" />
+     
         
 </LinearLayout>
