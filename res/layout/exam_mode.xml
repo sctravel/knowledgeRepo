@@ -17,7 +17,24 @@
         android:textStyle="bold|italic"
         android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge"  />
-        
+    
+   
+        <EditText
+            android:id="@+id/jumpToTextExam"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+      	    android:layout_alignParentRight="true"
+      	    android:gravity="right"
+      	    android:inputType="number"
+          />
+        <Button
+            android:id="@+id/jumpToButtonExam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+      	    android:layout_alignParentRight="true" 
+      	    android:gravity="right"
+            android:text="Go To" />
+   		
     <RadioGroup
         android:id="@+id/singleChoiceExam"
         android:layout_width="wrap_content"
@@ -32,49 +49,58 @@
             android:id="@+id/choiceAExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceA" />
+            android:text="@string/choiceA" 
+            android:onClick="onRadioButtonClicked" />
  
         <RadioButton
             android:id="@+id/choiceBExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceB" />
+            android:text="@string/choiceB" 
+            android:onClick="onRadioButtonClicked" />
         <RadioButton
             android:id="@+id/choiceCExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceC"  />
+            android:text="@string/choiceC"  
+            android:onClick="onRadioButtonClicked" />
         <RadioButton
             android:id="@+id/choiceDExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceD" />
+            android:text="@string/choiceD" 
+            android:onClick="onRadioButtonClicked" />
  
     </RadioGroup>
     
-    <RelativeLayout 
+    
+    
+    <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="1"
-        android:background="@android:color/black"
         android:orientation="horizontal" >
-        
+        <CheckBox
+                android:id="@+id/markForReviewExam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:text="Mark for Review" />
         <Button
             android:id="@+id/previousExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"    
-      	    android:layout_alignParentLeft="true"
+            android:layout_gravity="right|bottom"
             android:text="@string/previous" />
         <Button
             android:id="@+id/nextExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"    
-      	    android:layout_alignParentRight="true" 
+            android:layout_gravity="right|bottom"
             android:text="@string/next" />
-    </RelativeLayout>
+        
+    </LinearLayout>
      
-    
+
         
 </LinearLayout>
