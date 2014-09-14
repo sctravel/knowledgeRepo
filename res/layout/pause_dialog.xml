@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+ 
+    <ImageView
+        android:id="@+id/pauseExamImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp" />
+ 
+    <TextView
+        android:id="@+id/pauseExamText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF" 
+        android:text=" Exam Paused "
+        android:layout_below="@+id/pauseExamImage"/>
+ 
+     <Button
+        android:id="@+id/resumeExamButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Press here to continue "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/pauseExamText"
+        />
+ 
+</RelativeLayout>

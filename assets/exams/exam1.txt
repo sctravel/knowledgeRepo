@@ -1,4 +1,4 @@
-1.	Which of the following organizations is characterized by pre-paid premium, preventative care, Primary Care Physicians and can be established as Open or Closed Panel plans?
+1.	Which of the following</br> organizations is<br> <b>characterized</b> by pre-paid premium, preventative care, Primary Care Physicians and can be established as Open or Closed Panel plans?
 
 A.	Blue Cross/Blue Shield
 B.	Health Maintenance Organization (HMO)
@@ -12,7 +12,7 @@ B.	Co-insurance feature
 C.	Blanket coverage
 D.	Coverage for routine check-ups
 
-3.	Which of the following would be considered earned income for the purpose of determining an insured¡¯s monthly income benefit?
+3.	Which of the following would be considered earned income for the purpose of determining an insuredï¿½ï¿½s monthly income benefit?
 
 A.	Rental income
 B.	Mutual fund dividends  
@@ -44,12 +44,12 @@ D.	Reduce policy benefits after each filed claim.
 7.	A common provision appearing in a health insurance policy is the Misstatement of Age provision.  Which statement below is accurate with regard to this provision?
 
 A.	If an applicant unintentionally misstates his age on an application, the insurer will take no action.
-B.	If an applicant¡¯s age has been misstated on an application for health insurance, a premium refund will be made to the insurer
+B.	If an applicantï¿½ï¿½s age has been misstated on an application for health insurance, a premium refund will be made to the insurer
 C.	If an applicant intentionally misstates his age on an application, no action will take place.
 D.	A misstatement of age on a policy application will result in a benefit adjustment.
 
 
-8.	The consideration clause that appears in an A&H contract states that the insured¡¯s consideration is:
+8.	The consideration clause that appears in an A&H contract states that the insuredï¿½ï¿½s consideration is:
 
 A.	Premium
 B.	Premium and application information.
@@ -81,7 +81,7 @@ B.	Experience rating is generally used with larger groups.
 C.	If a plan is contributory, there must be at least 75% employee participation.
 D.	There is a 75-day conversion feature to terminated employees.
 
-12.	The Consolidated Omnibus Budget Reconciliation Act (COBRA) allows an employee to continue their group coverage under specific circumstances.  Which of the following would be considered a ¡°qualifying event¡±, thus allowing an employee or their dependents to continue their group coverage under COBRA?
+12.	The Consolidated Omnibus Budget Reconciliation Act (COBRA) allows an employee to continue their group coverage under specific circumstances.  Which of the following would be considered a ï¿½ï¿½qualifying eventï¿½ï¿½, thus allowing an employee or their dependents to continue their group coverage under COBRA?
 
 A.	Death of an employee
 B.	Divorce or legal separation
@@ -92,7 +92,7 @@ D.	All the above are qualifying events.
        disability benefits?
 
        A. Social Security disability benefits have a 5-month waiting period .
-          B. Social Security benefits are based, in part, on one¡¯s Primary Insurance 
+          B. Social Security benefits are based, in part, on oneï¿½ï¿½s Primary Insurance 
               Amount (PIA)
          C. The definition of Social Security disability is very restrictive.
          D. The definition of Social Security disability is very liberal.
@@ -108,7 +108,7 @@ D.	All the above are qualifying events.
 15.  How are medical and dental benefits received with regard to taxation?
 
 A. They are not taxed, as they are a reimbursement of an expense.
-            B. Depending on one¡¯s tax bracket, they may be taxed as high as 39%.
+            B. Depending on oneï¿½ï¿½s tax bracket, they may be taxed as high as 39%.
             C. Medical benefits are tax free, dental benefits are taxable as income.
             D. They are included as part of your taxable income, reported on your 
                 1040 tax form.
@@ -435,7 +435,7 @@ D.	31
 
 A.	The claim would not be paid .
 B.	The claim would be paid in full.
-C.	The claim amount would be reduced by the insured¡¯s morbidity charge
+C.	The claim amount would be reduced by the insuredï¿½ï¿½s morbidity charge
 D.	The claim would be reduced by the amount of the outstanding premium owed the insurer.
 
 52.	Which premium mode would be the least expensive when used to insure a 78 year 
@@ -450,7 +450,7 @@ D.	quarterly
 
 
 
-53.	Upon graduation from college, a father transfers all of the ownership rights of his sons¡¯ policy to the  son.  Is this legal and if so, what type of assignment has occurred?
+53.	Upon graduation from college, a father transfers all of the ownership rights of his sonsï¿½ï¿½ policy to the  son.  Is this legal and if so, what type of assignment has occurred?
 
 A.	Yes it is illegal
 B.	No it is not illegal and it is called absolute assignment
@@ -463,7 +463,7 @@ D.	It is an illegal act in most states
 A.	Incontestable Clause 
 B.	Entire Contract Provision 
 C.	Free Look Provision 
-D.	Owner¡¯s Rights Provision
+D.	Ownerï¿½ï¿½s Rights Provision
   55.  John buys life insurance for his wife Shirley.  How many signatures will be needed?
 
 A.	1
@@ -485,7 +485,7 @@ D.	After the free-look has expired .
      applying for coverage he provided the required premium, completed the application 
      and received a conditional receipt.  The policy was approved on December 22 and 
      was mailed to the agent on December 29th.  The policy was delivered on January 1st.  
-     When did Carl¡¯s coverage actually become effective?
+     When did Carlï¿½ï¿½s coverage actually become effective?
 A.	January 1
 B.	October 12
 C.	December 29
@@ -517,11 +517,11 @@ D.	N/A
   62.  Which of the following answers is not a common characteristic of partial disability?
   
 A.	It means the inability to perform some, but not all of your daily duties.
-B.	The benefit is limited to ¡°up to 50%¡± of the total disability benefit.
+B.	The benefit is limited to ï¿½ï¿½up to 50%ï¿½ï¿½ of the total disability benefit.
 C.	Will normally pay for no more than 6 months.
 D.	Can be added to a DI policy or sold as a separate, individual contract.
 
-63.	 To be considered a ¡°recurrent¡± disability; it means that the same disability returned 
+63.	 To be considered a ï¿½ï¿½recurrentï¿½ï¿½ disability; it means that the same disability returned 
       within how many months following the end of the original disability?
 
 A.	12
@@ -571,7 +571,7 @@ C.	Specific benefits per category of coverage
 D.	80/20% co-payment
 
 70.	A deductible that is established on an annual basis that will set a maximum 
-      deductible amount for 3 or more member¡¯s best describes:
+      deductible amount for 3 or more memberï¿½ï¿½s best describes:
 
 A.	Per injury deductible
 B.	Individual deductible
@@ -620,10 +620,10 @@ B.	Restoration of used benefit
 C.	Restoration of unused benefit
 D.	Medical offset benefit 
 77.  All statements below are true regarding a Preferred Provider Organization except: 
-A.	PPO¡¯s have more possible service provider options than an HMO.
+A.	PPOï¿½ï¿½s have more possible service provider options than an HMO.
 B.	A PPO creates a Preferred Provider Arrangement whereby discounted pricing is established in exchange for services provided.
 C.	Participants can go to any hospital and receive the discounted services.
-D.	PPO¡¯s attempt to exchange discounted pricing for volume business
+D.	PPOï¿½ï¿½s attempt to exchange discounted pricing for volume business
 78. Which statement below regarding insurance regulation in this state is incorrect?
 A.	Any negotiations to sell an insurance policy is considered transacting insurance.
 B.	If an application for insurance is denied, the consumer can request the reason for denial within a 90 day period .
@@ -642,7 +642,7 @@ B.	Loss or suspension of license.
 C.	Restitution
 D.	Lien on personal assets
 81.	Which statement is false?
-A.	An individual¡¯s insurance rate cannot be altered due to becoming deaf.
+A.	An individualï¿½ï¿½s insurance rate cannot be altered due to becoming deaf.
 B.	Acting as an agent without a license is a Class 1 felony.
 C.	Proof of loss forms must be provided to a policyowner within 15 days of a request.
 D.	An incomplete comparison of two insurance policies in an attempt to replace an existing coverage in known as twisting.
@@ -667,7 +667,7 @@ B.	Any administrative action against a licensee must be reported to the departme
 C.	An agent is required to carry their insurance license any time they are engaging in the business of insurance.
 D.	A change of address must be reported to the department within 30 days following the change .
 
-85.	The Privacy Protection Act requires insurers to provide notice of an insured¡¯s privacy 
+85.	The Privacy Protection Act requires insurers to provide notice of an insuredï¿½ï¿½s privacy 
       rights no later than:
 
 A.	Time of policy application.
@@ -731,7 +731,7 @@ D.	Modified Endowment Contract
 93. What form provides an overview of a recently purchased insurance policy and must
       be provided no later than time of the policy delivery?
 
-A. Buyer¡¯s Guide
+A. Buyerï¿½ï¿½s Guide
 B. Policy Cost Comparison
   C. Policy Summary
   D.  Policy Delivery Notice
@@ -739,7 +739,7 @@ B. Policy Cost Comparison
 
 
 
-94. When must a Buyer¡¯s Guide be provided to an insurance applicant on a policy that
+94. When must a Buyerï¿½ï¿½s Guide be provided to an insurance applicant on a policy that
        contains a 10 day free look?
 
   A. No later than time of policy delivery.

@@ -15,7 +15,9 @@ import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,38 +33,51 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.TextView; 
 import android.widget.Toast;
 
 public class ExamModeActivity extends Activity{
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger("ExamModeActivity");
-	private static final String TITLE_REVIEW_MODE = "Single Choice Exam - Review Mode";
-	private static final String TITLE = "Single Choice Exam";
+	private static final String TITLE_REVIEW_MODE = "Only marked questions are shown";
+	private static final String TITLE = "";
 
 	public final static char CHOICE_A= 'A';
-	private ShareActionProvider mShareActionProvider;
+	@SuppressWarnings("unused")
+	private  ShareActionProvider mShareActionProvider;
 
 	//This is the current question number user is working on.
-	private int questionNumber = -1;
+	private int questionNumber = 0;
+	private int reviewQuestionNumberIndex = 0;
     SingleChoiceExam exam = null;
     
     //store the answer of the question which user already finished 
-    private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
+    @SuppressLint("UseSparseArrays")
+	private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
     
     //A list of questions numbers that are marked for review
     private List<Integer> reviewList = new ArrayList<Integer>();
     private boolean isReviewMode = false;
     private int storedQuestionNumber=0;
     
+    private long startTime;
+    private long pauseStartTime=0;
+    private long totalPauseTime=0;
+    
     public void initilizeExam() {
+    	
  		addListenerOnJumpToButton();
- 		addListenerOnMarkForReviewCheckBox();
+ 		addListenerOnPauseButton();
+ 		addListenerOnGradeButton();
         addListenerOnPrevAndNextButton();
         parseExam();
+        startTime = System.currentTimeMillis();
+        totalPauseTime=0;
+        pauseStartTime=0;
 	    questionNumber=0;
 	    refreshPage();
     }
@@ -74,6 +90,19 @@ public class ExamModeActivity extends Activity{
     	this.isReviewMode=isReviewMode;
     }
     
+    //Store the marked status, called before refresh to a new page
+    private void checkMarkedStatus() {
+    	CheckBox mark = (CheckBox) findViewById(R.id.markForReviewExam);
+    	boolean isChecked=mark.isChecked();
+    	if (isChecked) {
+			markForReview();
+		} else {
+			removeFromMarkedSet();
+		}
+    }
+    
+    //Get the next questionNumber
+    //Depends on the mode (isReviewMode)
     public void nextQuestion() {
     	if(!isReviewMode) {
     		//The last Question
@@ -83,22 +112,31 @@ public class ExamModeActivity extends Activity{
         	}
     		++questionNumber;
     	} else {
-    		if(reviewList.listIterator().hasNext()) {
-    		   questionNumber = reviewList.iterator().next();
-    		}
+    		if(reviewQuestionNumberIndex >= reviewList.size()-1 ){
+     		   return;
+     		}
+ 		    ++reviewQuestionNumberIndex;
+ 		    questionNumber = reviewList.get(reviewQuestionNumberIndex);
+    		
     	}
-    	
     }
+    
+    //Get the previous questionNumber
+    //Depends on the mode (isReviewMode)
     public void prevQuestion() {
+    
     	if(!isReviewMode) {
     		if(questionNumber<=0) {
     			return;
     		}
     		--questionNumber;
     	} else {
-    		if(reviewList.listIterator().hasPrevious()) {
-    			questionNumber = reviewList.listIterator().previous();
-    		}
+    		if(reviewQuestionNumberIndex <=0 ){
+      		   return;
+      		}
+    		--reviewQuestionNumberIndex;
+ 		    questionNumber = reviewList.get(reviewQuestionNumberIndex);
+
     	}
     }
     private void parseExam() {
@@ -121,9 +159,23 @@ public class ExamModeActivity extends Activity{
          
   	   exam.parseExam(questionString,answerString);
     }
+    
+    private long getRemainTimeInMillis() {
+    	System.out.println("Total pause time is: "+totalPauseTime);
+    	return exam.getExamTimeInMinutes()*1000*60 - (System.currentTimeMillis() - startTime - totalPauseTime) ;
+    }
     private void refreshPage() {
+    	
+    	if(isTimeOut()) {
+    		Toast.makeText(getApplicationContext(), "You've timed out. Start grading!", Toast.LENGTH_LONG).show();
+    		grade();
+    		return;
+    	}
+    	
+        final TextView qnumText = (TextView) findViewById(R.id.singleChoiceExamNumber);
+        qnumText.setText((questionNumber+1)+"/"+exam.getCount());
+        
         final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextExam);
-
         goToNumber.setText("");
     	setQuestionText(questionNumber);
     	disableButtons();
@@ -132,6 +184,10 @@ public class ExamModeActivity extends Activity{
         String answerStored = scoreMap.get(questionNumber);
         setRadioButtonChecked(answerStored);
         
+        long remainTimeInMinutes = getRemainTimeInMillis()/1000/60;
+        
+        final TextView timeText = (TextView) findViewById(R.id.remainTime);
+        timeText.setText(""+remainTimeInMinutes+" minutes remaining");
         //Clear check status
         CheckBox mark = (CheckBox) findViewById(R.id.markForReviewExam);
 		mark.setChecked(false);
@@ -143,8 +199,8 @@ public class ExamModeActivity extends Activity{
     }
     
     private void disableButtons() {
-        final Button buttonPrev = (Button) findViewById(R.id.previousExam);
-        final Button buttonNext = (Button) findViewById(R.id.nextExam);
+        final Button buttonPrev = (Button) findViewById(R.id.previousButtonExam);
+        final Button buttonNext = (Button) findViewById(R.id.nextButtonExam);
 
         if(!isReviewMode) {
 	    	int next = questionNumber;
@@ -161,16 +217,16 @@ public class ExamModeActivity extends Activity{
 	    		buttonPrev.setEnabled(false);
 	    	}
         } else {
-        	if(reviewList.listIterator().hasNext()) {
+        	if(reviewQuestionNumberIndex < reviewList.size()-1) {
         		buttonNext.setEnabled(true);
         	} else {
         		buttonNext.setEnabled(false);
         	}
         	
-        	if(reviewList.listIterator().hasPrevious()) {
+        	if(reviewQuestionNumberIndex>0) {
         		buttonPrev.setEnabled(true);
         	} else {
-        		buttonPrev.setEnabled(true);
+        		buttonPrev.setEnabled(false);
         	}
         }
     	
@@ -182,19 +238,18 @@ public class ExamModeActivity extends Activity{
         final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
-        questionText.setText(exam.getQuestionList().get(questionNumber).getQuestion());
-        choiceA.setText(exam.getQuestionList().get(questionNumber).getChoices().get(0));
-        choiceB.setText(exam.getQuestionList().get(questionNumber).getChoices().get(1));
-        choiceC.setText(exam.getQuestionList().get(questionNumber).getChoices().get(2));
-        choiceD.setText(exam.getQuestionList().get(questionNumber).getChoices().get(3));
+        questionText.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getQuestion()));
+        choiceA.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(0)));
+        choiceB.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(1)));
+        choiceC.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(2)));
+        choiceD.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(3)));
     }
     public  void onRadioButtonClicked(View view) {
     	
-        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoiceExam);
     	String value = getCheckedAnswer();
     	//Store user answer
         scoreMap.put(questionNumber, value);
-
+    	checkMarkedStatus();
         nextQuestion();
         refreshPage();
     }
@@ -252,7 +307,7 @@ public class ExamModeActivity extends Activity{
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.exam_mode_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Configure the search info and add any event listeners
         
        // MenuItem shareItem = menu.findItem(R.id.action_share);
@@ -305,6 +360,7 @@ public class ExamModeActivity extends Activity{
      * is known or changes, you must update the share intent by again calling
      * mShareActionProvider.setShareIntent()
      */
+   @SuppressWarnings("unused")
    private Intent getDefaultIntent() {
        Intent intent = new Intent(Intent.ACTION_SEND);
        intent.setType("image/*");
@@ -314,10 +370,33 @@ public class ExamModeActivity extends Activity{
    @Override
    public void onResume() {
        super.onResume();  // Always call the superclass method first
+       resume();
    } 
    @Override
    public void onPause() {
        super.onPause();  // Always call the superclass method first
+       pause();
+   }
+   
+   public void pause() {
+	   System.out.println("Exam paused;");
+	   pauseStartTime=System.currentTimeMillis();
+   }
+   
+   public boolean isTimeOut() {
+	   if( getRemainTimeInMillis() <0  ) {
+		   return true;
+	   } else {
+		   return false;
+	   }
+	   
+   }
+   
+   public void resume() {
+	   System.out.println("Exam resumed;");
+	   if(pauseStartTime>0)
+		   totalPauseTime += System.currentTimeMillis()-pauseStartTime;
+	   //TODO resume the screen
    }
    
    private void openSearch(){
@@ -371,7 +450,7 @@ public class ExamModeActivity extends Activity{
    
    private void removeFromMarkedSet() {
 	   int num= reviewList.indexOf(questionNumber);
-	   if(num >= 0) {
+	   if(num>=0) {
 		   reviewList.remove(num);
 	   }
 	   //Toast.makeText(getApplicationContext(), "Remove the question from reviewList", Toast.LENGTH_LONG).show();
@@ -391,6 +470,7 @@ public class ExamModeActivity extends Activity{
         			   goToNumber.setText("");
         			   return;
         		   }
+        		   checkMarkedStatus();
 	         	   questionNumber = jumpToNumber;
 	         	   refreshPage();
         	   } catch (Exception e) {
@@ -403,42 +483,151 @@ public class ExamModeActivity extends Activity{
            }
        });
    }
+   
+   private void addListenerOnPauseButton() {
+		final Button button = (Button) findViewById(R.id.pauseButtonExam);
+		button.setOnClickListener(new View.OnClickListener() {
+			 
+			  @Override
+			  public void onClick(View arg0) {
+	 
+				// custom dialog
+				final Dialog dialog = new Dialog(ExamModeActivity.this);
+				dialog.setContentView(R.layout.pause_dialog);
+				dialog.setTitle("Exam Paused");
+				dialog.setCancelable(false);
+				// set the custom dialog components - text, image and button
+				//TextView text = (TextView) dialog.findViewById(R.id.text);
+				//text.setText("Android custom dialog example!");
+				ImageView image = (ImageView) dialog.findViewById(R.id.pauseExamImage);
+				image.setImageResource(R.drawable.ic_launcher);
+	 
+				Button dialogButton = (Button) dialog.findViewById(R.id.resumeExamButton);
+				// if button is clicked, close the custom dialog
+				dialogButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						resume();
+					}
+				});
+				pause();
+				dialog.show();
+			  }
+			});
+
+   }
+   
    private void addListenerOnPrevAndNextButton() {
-   	final Button buttonPrev = (Button) findViewById(R.id.previousExam);
+   	final Button buttonPrev = (Button) findViewById(R.id.previousButtonExam);
        buttonPrev.setOnClickListener(new View.OnClickListener() {
+    	   @Override
            public void onClick(View v) {
+           	   checkMarkedStatus();
            	   prevQuestion();
                refreshPage();
            }
        });
-       final Button buttonNext = (Button) findViewById(R.id.nextExam);
+       final Button buttonNext = (Button) findViewById(R.id.nextButtonExam);
        buttonNext.setOnClickListener(new View.OnClickListener() {
+    	   @Override
            public void onClick(View v) {
+           	   checkMarkedStatus();
            	   nextQuestion();
            	   refreshPage();    
            }
        }); 
    }
-   private void addListenerOnMarkForReviewCheckBox() {
-	   CheckBox markForReview = (CheckBox) findViewById(R.id.markForReviewExam); 
-	   markForReview.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				// TODO Auto-generated method stub
-				if (isChecked) {
-					markForReview();
-				} else {
-					removeFromMarkedSet();
-				}
-			}
-			});
-   }
+   
 
+   private void addListenerOnGradeButton() {
+		final Button button = (Button) findViewById(R.id.gradeButtonExam);
+		button.setOnClickListener(new View.OnClickListener() {
+			 
+			  @Override
+			  public void onClick(View arg0) {
+				  grade();
+			  }
+			});
+
+  }
+   
+   private void showResultDialog(String results) {
+	// custom dialog
+			final Dialog dialog = new Dialog(ExamModeActivity.this);
+			dialog.setContentView(R.layout.grade_dialog);
+			dialog.setTitle("Exam Finished");
+			dialog.setCancelable(false);
+
+			//String results = grade();
+			// set the custom dialog components - text, image and button
+			TextView text = (TextView) dialog.findViewById(R.id.gradeTextExamEnd);
+			text.setText(results);
+			ImageView image = (ImageView) dialog.findViewById(R.id.imageExamEnd);
+			image.setImageResource(R.drawable.ic_launcher);
+
+			//Review All Button
+			Button reviewAllButton = (Button) dialog.findViewById(R.id.reviewAllButton);
+			// if button is clicked, close the custom dialog
+			reviewAllButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					System.out.println("reviewAllButton!");
+				}
+			});
+			//Review Incorrect Button
+			Button reviewIncorrectButton = (Button) dialog.findViewById(R.id.reviewInCorrectButton);
+			// if button is clicked, close the custom dialog
+			reviewIncorrectButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					System.out.println("reviewIncorrectButton!");
+
+				}
+			});
+			//Retake Exam Button
+			Button retakeExamButton = (Button) dialog.findViewById(R.id.retakeExamButton);
+			// if button is clicked, close the custom dialog
+			retakeExamButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//dialog.dismiss();
+					Intent intent = new Intent(ExamModeActivity.this, ExamModeActivity.class);				       
+				    //intent.putExtra(EXTRA_MESSAGE, message);
+				    startActivity(intent);
+					System.out.println("retakeExamButton!");
+
+				}
+			});
+			
+			//Return to Main Menu Button
+			Button returnToMainMenuButton = (Button) dialog.findViewById(R.id.returnToMainMenuButton);
+			// if button is clicked, close the custom dialog
+			returnToMainMenuButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//dialog.dismiss();
+					Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+				    //intent.putExtra(EXTRA_MESSAGE, message);
+				    startActivity(intent);
+					System.out.println("returnToMainMenuButton!");
+
+				}
+			});
+			
+			
+			dialog.show();
+   }
    //Grade the exam based on the user answer, and show the score of the user
    //TODO: save the grade result(user answer), and upload to web server.
-   private void grade(){
+   private boolean grade() {
+	   StringBuilder sb = new StringBuilder();
 	   List<SingleChoiceAnswer> answerList = exam.getAnswerList();
 	   int count=0;
+	   boolean isPassed = false;
+	   
 	   List<Integer> correctList = new ArrayList<Integer>();
 	   for(SingleChoiceAnswer answer : answerList) {
 		   ++count;
@@ -447,6 +636,18 @@ public class ExamModeActivity extends Activity{
 			   correctList.add(count);
 		   }
 	   }
-	   Toast.makeText(getApplicationContext(), "Your score is "+correctList.size()+" out of "+answerList.size(), Toast.LENGTH_LONG).show();
+	   if(correctList.size() > exam.getPassingScore()) {
+		   isPassed = true;
+		   sb.append("Congratulations! You have passed the exam. \n");
+	   } else {
+		   sb.append("Sorry, you didn't pass the exam. \n");
+	   }
+	   
+	   sb.append("Your score is "+correctList.size()+" out of "+answerList.size()+", and the passing score is "+exam.getPassingScore()+". ");
+	   
+	   showResultDialog(sb.toString());
+		
+	   return isPassed;
+	   //Toast.makeText(getApplicationContext(), "Your score is "+correctList.size()+" out of "+answerList.size(), Toast.LENGTH_LONG).show();
    }
 }

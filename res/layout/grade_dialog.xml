@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+ 
+    <ImageView
+        android:id="@+id/imageExamEnd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp" />
+ 
+    <TextView
+        android:id="@+id/gradeTextExamEnd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" You have finished all your questions. "
+        android:layout_below="@+id/imageExamEnd"/>
+     <Button
+        android:id="@+id/reviewAllButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Review all Questions "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/gradeTextExamEnd"
+        />
+     <Button
+        android:id="@+id/reviewInCorrectButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Review only Questions Answered Incorrectly "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/reviewAllButton"
+        />
+     <Button
+        android:id="@+id/retakeExamButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Re-take the Exam "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/reviewInCorrectButton"
+        />
+     <Button
+        android:id="@+id/returnToMainMenuButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Return to Main Menu "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/retakeExamButton"
+        />
+ 
+</RelativeLayout>

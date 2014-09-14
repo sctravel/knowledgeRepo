@@ -23,6 +23,16 @@ public class SingleChoiceExam {
 	private List<SingleChoiceQuestion> questionList;
 	private List<SingleChoiceAnswer> answerList;
 	private int count;
+	
+	private int examTimeInMinutes=60;
+	
+	
+	public int getExamTimeInMinutes() {
+		return examTimeInMinutes;
+	}
+	public void setExamTimeInMinutes(int examTimeInMinutes) {
+		this.examTimeInMinutes=examTimeInMinutes;
+	}
 
 	public SingleChoiceExam() {
 		initilize();
@@ -40,6 +50,9 @@ public class SingleChoiceExam {
 		questionList = new ArrayList<SingleChoiceQuestion>();
 		answerList = new ArrayList<SingleChoiceAnswer>();
 		count = 0;
+		examTimeInMinutes=60;
+		passingScore=60;
+		name = "Test Exam 1";
 	}
 	
 	
