@@ -46,14 +46,14 @@
             android:id="@+id/previousButtonExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="35dp"
             android:layout_gravity="right"
             android:text="@string/previous" />
         <Button
             android:id="@+id/nextButtonExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginRight="0dp"
             android:layout_gravity="right"
             android:text="@string/next" />
     </LinearLayout>
@@ -72,14 +72,12 @@
             android:layout_alignParentLeft="true"
       	    android:gravity="left"
       	    android:layout_gravity="left"
-      	    android:textSize="15sp"
             android:text="Grade" />
         <Button
             android:id="@+id/pauseButtonExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/gradeButtonExam"
-            android:textSize="15sp"
             android:weightSum="0.2"
             android:text="Pause" />
         <Button
@@ -87,7 +85,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textSize="15sp"
             android:gravity="right"
             android:weightSum="0.3"
             android:layout_gravity="right"

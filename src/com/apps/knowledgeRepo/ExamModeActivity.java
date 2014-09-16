@@ -63,6 +63,7 @@ public class ExamModeActivity extends Activity{
     private List<Integer> reviewList = new ArrayList<Integer>();
     private boolean isReviewMode = false;
     private int storedQuestionNumber=0;
+    private List<Integer> inCorrectList = new ArrayList<Integer>();
     
     private long startTime;
     private long pauseStartTime=0;
@@ -74,6 +75,7 @@ public class ExamModeActivity extends Activity{
  		addListenerOnPauseButton();
  		addListenerOnGradeButton();
         addListenerOnPrevAndNextButton();
+        addListenerOnReviewMarkedButton();
         parseExam();
         startTime = System.currentTimeMillis();
         totalPauseTime=0;
@@ -539,7 +541,22 @@ public class ExamModeActivity extends Activity{
        }); 
    }
    
+   private void addListenerOnReviewMarkedButton() {
+	   final Button button = (Button) findViewById(R.id.reviewButtonExam);
+	   button.setOnClickListener(new View.OnClickListener() {
+		   @Override
+		   public void onClick(View arg0) {
+			   if(isReviewMode) {
+				   leaveReviewMode();
+				   button.setText("Review Marked");
 
+			   } else {
+				   enterReviewMode();
+				   button.setText("Back to Exam");
+			   }
+		   }
+	   });
+   }
    private void addListenerOnGradeButton() {
 		final Button button = (Button) findViewById(R.id.gradeButtonExam);
 		button.setOnClickListener(new View.OnClickListener() {
@@ -572,7 +589,10 @@ public class ExamModeActivity extends Activity{
 			reviewAllButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					dialog.dismiss();
+					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
+					//need to pass exam information to ViewAnswerModeActivity
+				    //intent.putExtra(EXTRA_MESSAGE, message);
+				    startActivity(intent);
 					System.out.println("reviewAllButton!");
 				}
 			});
@@ -582,8 +602,11 @@ public class ExamModeActivity extends Activity{
 			reviewIncorrectButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					dialog.dismiss();
-					System.out.println("reviewIncorrectButton!");
+					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
+					//need to pass exam information to ViewAnswerModeActivity
+				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
+				    startActivity(intent);
+				    System.out.println("reviewIncorrectButton!");
 
 				}
 			});
@@ -630,11 +653,12 @@ public class ExamModeActivity extends Activity{
 	   
 	   List<Integer> correctList = new ArrayList<Integer>();
 	   for(SingleChoiceAnswer answer : answerList) {
-		   ++count;
-		   System.out.println("For question: "+count+", you choose:"+scoreMap.get(count)+"; and correct answer is "+answer.getAnswer());
 		   if(answer.getAnswer().equalsIgnoreCase(scoreMap.get(count))) {
 			   correctList.add(count);
+		   } else {
+			   inCorrectList.add(count);
 		   }
+		   ++count;
 	   }
 	   if(correctList.size() > exam.getPassingScore()) {
 		   isPassed = true;
