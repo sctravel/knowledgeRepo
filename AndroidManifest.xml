@@ -47,6 +47,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.apps.knowledgeRepo.ModeSelectionActivity" />
         </activity>
+         <activity
+            android:name="com.apps.knowledgeRepo.ViewAnswerModeActivity"
+            android:label="View Answer Mode"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.apps.knowledgeRepo.ModeSelectionActivity" />
+        </activity>
         
     </application>
 

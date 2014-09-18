@@ -18,19 +18,41 @@ import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
 public class SingleChoiceExam {
 	
 	
-	
+	private String name;
+	private int passingScore = 60;// This is the score user should achieve to pass the exam
 	private List<SingleChoiceQuestion> questionList;
 	private List<SingleChoiceAnswer> answerList;
 	private int count;
+	
+	private int examTimeInMinutes=60;
+	
+	
+	public int getExamTimeInMinutes() {
+		return examTimeInMinutes;
+	}
+	public void setExamTimeInMinutes(int examTimeInMinutes) {
+		this.examTimeInMinutes=examTimeInMinutes;
+	}
 
 	public SingleChoiceExam() {
 		initilize();
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public int getPassingScore() {
+		return passingScore;
 	}
 	
 	public void initilize() {
 		questionList = new ArrayList<SingleChoiceQuestion>();
 		answerList = new ArrayList<SingleChoiceAnswer>();
 		count = 0;
+		examTimeInMinutes=60;
+		passingScore=60;
+		name = "Test Exam 1";
 	}
 	
 	
@@ -140,7 +162,7 @@ public class SingleChoiceExam {
 				}
 				
 				//Extract the question text
-				sQwork = exam.substring(0, index).replace('\r', ' ').replace('\n', ' ').replace('\t',' ').trim();
+				sQwork = exam.substring(0, index).replaceAll("\r", " ").replaceAll("\n", " ").replace("\t"," ").trim();
 				index  = sQwork.indexOf("A.");
 				if(index == -1){
 					System.out.println("Unable to find the Answer choice A for question " + questionNumber);

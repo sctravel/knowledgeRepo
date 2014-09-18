@@ -47,16 +47,16 @@ public class PracticeModeActivity extends Activity {
     
     public void initilizePractice() {
     	final TextView answerText = (TextView) findViewById(R.id.checkAnswer);
-        final Button buttonShowAnswer = (Button) findViewById(R.id.showAnswer);
+        final Button buttonShowAnswer = (Button) findViewById(R.id.nextButtonPractice);
         buttonShowAnswer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	int chosen = 0;
             	int id = getCheckedSingleChoiceId();
             	switch (id) {
-            	    case  R.id.choiceA : chosen=1; break; 
-            	    case  R.id.choiceB : chosen=2; break; 
-            	    case  R.id.choiceC : chosen=3; break; 
-            	    case  R.id.choiceD : chosen=4; break; 
+            	    case  R.id.choiceAPractice : chosen=1; break; 
+            	    case  R.id.choiceBPractice : chosen=2; break; 
+            	    case  R.id.choiceCPractice : chosen=3; break; 
+            	    case  R.id.choiceDPractice : chosen=4; break; 
             	    default : chosen=0; 
             	}
             
@@ -95,16 +95,16 @@ public class PracticeModeActivity extends Activity {
  		String questionString = "none";
  		String answerString = "none";
  		
-        final TextView questionText = (TextView) findViewById(R.id.question);
+        final TextView questionText = (TextView) findViewById(R.id.questionPractice);
     	final TextView answerText = (TextView) findViewById(R.id.checkAnswer);
-        final TextView choiceA = (TextView) findViewById(R.id.choiceA);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceB);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceC);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceD);
+        final TextView choiceA = (TextView) findViewById(R.id.choiceAPractice);
+        final TextView choiceB = (TextView) findViewById(R.id.choiceBPractice);
+        final TextView choiceC = (TextView) findViewById(R.id.choiceCPractice);
+        final TextView choiceD = (TextView) findViewById(R.id.choiceDPractice);
         
-        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoice);
+        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
 
-        final Button buttonPrev = (Button) findViewById(R.id.previous);
+        final Button buttonPrev = (Button) findViewById(R.id.previousButtonPractice);
         buttonPrev.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(questionNumber<=0) return;
@@ -118,7 +118,7 @@ public class PracticeModeActivity extends Activity {
                 radioGroup.clearCheck();
             }
         });
-        final Button buttonNext = (Button) findViewById(R.id.next);
+        final Button buttonNext = (Button) findViewById(R.id.nextButtonPractice);
         buttonNext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(questionNumber >= exam.getCount()-1) return;
@@ -176,7 +176,7 @@ public class PracticeModeActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.exam_mode_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Configure the search info and add any event listeners
@@ -218,7 +218,7 @@ public class PracticeModeActivity extends Activity {
     }
     
     private int getCheckedSingleChoiceId() {
-    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoice);
+    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
     	int d = radioGroup.getCheckedRadioButtonId();
     	
     	return d;

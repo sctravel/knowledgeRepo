@@ -52,7 +52,7 @@ public class ModeSelectionActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.exam_mode_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Configure the search info and add any event listeners
@@ -108,6 +108,8 @@ public class ModeSelectionActivity extends Activity {
     	
     }
     
+    
+    
     /** Called when the user clicks the Send button */
     public void beginExam(View view) {
         Intent intent = new Intent(this, ExamModeActivity.class);
@@ -117,7 +119,7 @@ public class ModeSelectionActivity extends Activity {
         startActivity(intent);
     }
     public void beginPractice(View view) {
-        Intent intent = new Intent(this, PracticeModeActivity.class);
+        Intent intent = new Intent(this, ViewAnswerModeActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
