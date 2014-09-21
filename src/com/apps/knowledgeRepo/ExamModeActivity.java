@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
 
@@ -19,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -251,6 +253,8 @@ public class ExamModeActivity extends Activity{
     	String value = getCheckedAnswer();
     	//Store user answer
         scoreMap.put(questionNumber, value);
+        //need course id, exam id, attempt,  
+      DBTool.insertDB(DBTool.getDB(ExamModeActivity.this), "c6", "e6", "a6" , String.valueOf(questionNumber) ,value) ;
     	checkMarkedStatus();
         nextQuestion();
         refreshPage();

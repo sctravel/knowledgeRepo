@@ -2,6 +2,7 @@ package com.apps.knowledgeRepo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
@@ -16,10 +17,19 @@ import android.widget.RadioGroup;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
+import com.apps.knowledgeRepo.db.DBHelper;
+import com.apps.knowledgeRepo.db.DBTool;
 
 public class ModeSelectionActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+      //create and connect to new db or connect to existing db in the context  
+      SQLiteDatabase  db = DBTool.getDB(getApplicationContext());
+      
+   
+   // db.execSQL("insert into ceaqa values ('c1','e1','a1','q1','A')");
+        
         setContentView(R.layout.mode_selection);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher, instead use:
