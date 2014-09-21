@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+	        android:id="@+id/loginMainText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="30dp"        	        
+    	    android:layout_gravity="center_vertical|center_horizontal"
+	        android:text="Please Login to Download"    
+	        android:textAppearance="?android:attr/textAppearanceLarge"  />
+    
+    <TextView
+	        android:id="@+id/loginUserNameText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="30dp"        	        
+    	android:layout_gravity="center_vertical|center_horizontal"
+	        android:text="Username:" />
+        
+    <EditText
+            android:id="@+id/loginUserNameInpit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:padding="10dp"
+ 	        android:layout_marginLeft="40dp" 
+ 	        android:layout_marginRight="40dp"        	        
+            android:background="@drawable/edit_text_box"
+    	android:layout_gravity="center_vertical|center_horizontal"
+      	    android:hint="username"
+      	    />
+     <TextView
+	        android:id="@+id/loginPasswordText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="15dp"        
+    	android:layout_gravity="center_vertical|center_horizontal"
+	        android:text="Password:" />
+        
+    <EditText
+            android:id="@+id/loginPasswordInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:padding="10dp"
+            android:layout_marginLeft="40dp" 
+            android:layout_marginRight="40dp" 
+            android:background="@drawable/edit_text_box"
+    		android:layout_gravity="center_vertical|center_horizontal"
+      	    android:hint="password"
+      	    android:inputType="textPassword" 
+      	    />
+    <RelativeLayout 
+   			android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+  		    android:layout_marginTop="30dp"
+    		android:orientation="horizontal" >
+		    <Button
+		            android:id="@+id/loginButton"
+         		    android:layout_marginLeft="40dp" 		            
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		    		android:layout_alignParentLeft="true"
+		            android:text="Login" />
+		    
+		    <Button
+		            android:id="@+id/loginBackButton"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+          		    android:layout_marginRight="40dp" 
+		            android:layout_alignParentRight="true"
+		            android:text="Back" />
+	</RelativeLayout>
+</LinearLayout>

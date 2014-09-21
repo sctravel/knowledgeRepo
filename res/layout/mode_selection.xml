@@ -10,42 +10,41 @@
     tools:context=".ModeSelectionActivity" >
 
     <TextView
-        android:id="@+id/modeSelection"
+        android:id="@+id/homeRoomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please select a mode." 
+        android:layout_marginTop="30dp"        	        
+        android:text="Take Existing Courses" 
         android:textStyle="bold|italic"
-        android:gravity="center_horizontal"
+    	android:layout_gravity="center_vertical|center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge"  />
         
+    
      <Button
-            android:id="@+id/practiceMode"
+            android:id="@+id/homeRoom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-      	    android:layout_alignParentLeft="true"
-            android:text="Practice Mode" />
-     <Button
-            android:id="@+id/examMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-      	    android:layout_alignParentLeft="true"
-            android:text="Exam Mode" />
+    	    android:layout_gravity="center_vertical|center_horizontal"
+            android:text="HomeRoom" />
      
      
      <TextView
-        android:id="@+id/downloadTest"
+        android:id="@+id/downloadCoursesTex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please Download tests." 
+        android:text="Download Courses" 
+        android:layout_marginTop="30dp" 
         android:textStyle="bold|italic"
-        android:gravity="center_horizontal"
+    	android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="bottom"
         android:textAppearance="?android:attr/textAppearanceLarge"  />
         
      <Button
-            android:id="@+id/downloadTestButton"
+            android:id="@+id/downloadCoursesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-      	    android:layout_alignParentLeft="true"
+    	    android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="bottom"
             android:text="Download" />
      
         
