@@ -39,5 +39,16 @@ public class Course {
 	long courseType;
 	String courseOrientation; 
 	List<CourseModule> modules; 
+	
+	
+	public void serialize(){
+		
+		
+	}
+	
+	public void initialize(){
+		
+		
+	}
 
 }

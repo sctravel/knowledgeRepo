@@ -1,19 +1,33 @@
 package com.apps.knowledgeRepo.dataModel;
 
+import java.util.List;
+
 public class Question {
 	
-	long QuestionNumber;
+	long questionNumber;
 	
 	String category;
 	
 	String text;
 	
+	String explanation;
+	
+	List<Answer> answers;
+	
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
+
 	public long getQuestionNumber() {
-		return QuestionNumber;
+		return questionNumber;
 	}
 
 	public void setQuestionNumber(long questionNumber) {
-		QuestionNumber = questionNumber;
+		questionNumber = questionNumber;
 	}
 
 	public String getCategory() {
@@ -40,7 +54,7 @@ public class Question {
 		this.explanation = explanation;
 	}
 
-	String explanation;
+	
 	
 	
 	
