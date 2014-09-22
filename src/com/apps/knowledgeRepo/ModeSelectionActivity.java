@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
 
 public class ModeSelectionActivity extends Activity {
@@ -41,19 +42,19 @@ public class ModeSelectionActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
         initializeCourses();
-       /* final Button buttonExamMode = (Button) findViewById(R.id.examMode);
+        final Button buttonExamMode = (Button) findViewById(R.id.examMode);
         buttonExamMode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	beginExam(v);
             }
-        });*/
+        });
         
-       /* final Button buttonPracticeMode = (Button) findViewById(R.id.practiceMode);
+        final Button buttonPracticeMode = (Button) findViewById(R.id.practiceMode);
         buttonPracticeMode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	beginPractice(v);
             }
-        });*/
+        });
         
        
 	}
@@ -207,7 +208,13 @@ public class ModeSelectionActivity extends Activity {
         final Button buttonDownloadCourses = (Button) findViewById(R.id.downloadCoursesButton);
         buttonDownloadCourses.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	loginPage();
+            	
+            	
+            	// download restful feeds and serialize to DB 
+        	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
+        	new CoursesDownloaderTask().execute(filePath);
+            	
+            	//loginPage();
             }
         });
 	}
