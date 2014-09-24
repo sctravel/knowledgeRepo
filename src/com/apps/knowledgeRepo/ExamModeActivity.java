@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
@@ -254,7 +255,8 @@ public class ExamModeActivity extends Activity{
     	//Store user answer
         scoreMap.put(questionNumber, value);
         //need course id, exam id, attempt,  
-      DBTool.insertDB(DBTool.getDB(ExamModeActivity.this), "c6", "e6", "a6" , String.valueOf(questionNumber) ,value) ;
+        Course course = new Course();
+        
     	checkMarkedStatus();
         nextQuestion();
         refreshPage();

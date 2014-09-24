@@ -45,7 +45,7 @@ public class ModeSelectionActivity extends Activity {
       //create and connect to new db or connect to existing db in the context  
       SQLiteDatabase  db = DBTool.getDB(getApplicationContext());
       
-   
+   db.close();
    // db.execSQL("insert into ceaqa values ('c1','e1','a1','q1','A')");
         
         setContentView(R.layout.mode_selection);
