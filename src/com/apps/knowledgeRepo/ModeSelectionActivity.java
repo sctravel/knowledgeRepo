@@ -35,27 +35,17 @@ public class ModeSelectionActivity extends Activity {
 	private String currentCourse;
 	
 	protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mainPage();
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // If your minSdkVersion is 11 or higher, instead use:
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        
-        initializeCourses();
-        final Button buttonExamMode = (Button) findViewById(R.id.examMode);
-        buttonExamMode.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	beginExam(v);
-            }
-        });
-        
-        final Button buttonPracticeMode = (Button) findViewById(R.id.practiceMode);
-        buttonPracticeMode.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	beginPractice(v);
-            }
-        });
-        
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.mode_selection);
+		mainPage();
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		// If your minSdkVersion is 11 or higher, instead use:
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		         
+		initializeCourses();
+		
+		         
+		
        
 	}
 	
