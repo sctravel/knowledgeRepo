@@ -54,22 +54,88 @@ public class Course {
 	public void serialize(){
 		
 		//output as JSON format
-		String jsonContent = null;
 		
+		StringBuffer stringBuffer = new StringBuffer();
 		
+		stringBuffer.append("Courses: ");
+		stringBuffer.append("[{");
 		
+		stringBuffer.append("courseid:"+"\""+ this.courseid+"\",");
+		stringBuffer.append("courseName:"+"\""+ this.courseName+"\",");
+		stringBuffer.append("courseType:"+ this.courseType+",");
 		
+		stringBuffer.append("courseOrientation:"+"\""+ this.courseOrientation+"\",");
 		
+		stringBuffer.append("CourseModules:");
+		stringBuffer.append("[{");
+		 
+		for(int i=0;i<modules.size();i++){
+			
+			CourseModule module = modules.get(i); 
+			
+			stringBuffer.append("module:"+ module.moduleId+",");
+			
+			stringBuffer.append("guide:"+"\""+module.guide +"\",");
+			
+			stringBuffer.append("Exams:");
+			
+			stringBuffer.append("[{");
+			
+			
+			for(int j=0;j<module.exams.size();i++){
+				
+				Exam exam= module.exams.get(j);
+				stringBuffer.append("examid:"+ exam.examid+",");
+				stringBuffer.append("name:"+ "\""+ exam.name+"\",");
+				stringBuffer.append("passing:"+ exam.passing+",");
+				stringBuffer.append("timeLimit:"+ exam.timeLimit+",");
+				
+				stringBuffer.append("Questions:");
+				
+				for(int k=0;k<exam.Questions.size();k++){
+					
+					Question question = exam.Questions.get(k);
+					
+					stringBuffer.append("questionNumber:"+ question.questionNumber+",");
+					stringBuffer.append("category:"+ "\""+ question.category+"\",");
+					
+					stringBuffer.append("text:"+ "\""+ question.text+"\",");			
+					stringBuffer.append("explanation:"+ "\""+ question.explanation+"\",");			
+					stringBuffer.append("Answers");
+					
+					stringBuffer.append("[{");
+								
+					for(int p=0;p<question.answers.size();p++){
+						
+						Answer ans= question.answers.get(p);
+						stringBuffer.append("answerNumber:"+ ans.answerNumber+",");
+						
+						stringBuffer.append("score:"+ ans.score+",");
+						
+						stringBuffer.append("answerText:"+ "\""+ ans.answerText+"\",");
+				
+					}
+					
+					stringBuffer.append("}]");
+					
+					
+				}
+			
+			}
 		
+			stringBuffer.append("}]");
+		}
 		
+	
 		
-		
+		stringBuffer.append("}]");
+		stringBuffer.append("}]");
 		
 		
 		
 		//save to database
 		
-		storeToDB(courseid, jsonContent);
+		storeToDB(courseid, stringBuffer.toString());
 		
 		
 	}
