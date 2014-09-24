@@ -32,6 +32,7 @@ import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 	/*
@@ -57,6 +58,8 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		    JSONParser parser = new JSONParser();
 		 		    
 			try{
+				
+				Log.d("JSON parser", "start parsing JSON, file Name: "+ fileName);
 				Object obj = parser.parse(new FileReader(fileName));
 			
 			    JSONObject jsonObject = (JSONObject) obj;  
@@ -73,6 +76,8 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		           String courseName = (String) course.get("courseName");
 		           long courseType = (Long) course.get("courseType");
 		           String courseOrientation = (String) course.get("courseOrientation");
+		           
+		           Log.d("JSON parser", "course: "+ courseName);
 		           
 		           courseObj.setCourseid(courseid);
 		           courseObj.setCourseName(courseName);
@@ -110,6 +115,8 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		        		   String name= (String) exam.get("name");           		   
 		        		   Long passing= (Long) exam.get("passing");            		   
 		        		   Long timeLimit= (Long) exam.get("timeLimit");
+		        		   
+		        		   Log.d("JSON parser", "exam: "+ name);
 		        		   
 		        		   examObj.setExamid(examid);
 		        		   examObj.setName(name);
@@ -171,16 +178,13 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		           courseObj.serialize();
 				 }	
 			}
-			catch( ParseException ex){			
-				System.out.print(ex.toString()); 			
+			catch(Exception ex){			
+
+				Log.e("parser error",ex.toString()+"  "+ex.getStackTrace());
 				return false;
-			} catch (FileNotFoundException ex) {
-				System.out.print(ex.toString()); 
-				return false;			
-			} catch (IOException ex) {
-				System.out.print(ex.toString());
-				return false;
-			}		
+			}
+			
+			Log.d("JSON parser", "finished parsing JSON");
 			return true; 
 	}
 /*		
@@ -211,21 +215,23 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 	public Boolean doInBackground(String... urls) {
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
-		
 
-	
-		if(DownloadUsingRestfulAPI(urls[1])) 
-			if(parseJSON(urls[1]))  //parse JSON	
+		if(DownloadUsingRestfulAPI(urls[0])) 
+			if(parseJSON(urls[0]))  //parse JSON	
 				return true; 
 		return false;	
 	
 	}
 	
-	public static boolean DownloadUsingRestfulAPI(String URL) {
+	public static boolean DownloadUsingRestfulAPI(String filePath) {
 		try {
 			
+			
+			//File f = new File(filePath);
 			//need to serialize to DB 
-	      BufferedWriter  out = new BufferedWriter(new FileWriter("database"));
+			
+		  Log.d("DownloadUsingRestfulAPI", "start downloading from restful service: path: "+ filePath);
+	      BufferedWriter  out = new BufferedWriter(new FileWriter(filePath));
 		
 		  HttpClient client = new DefaultHttpClient();
 		
@@ -236,18 +242,27 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		  BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
 		
 		  String line = "";
-	
-		  while ((line = rd.readLine()) != null) {	  
-			  out.write(line);	
-		  }
 		  
+		  int row=0;
+	
+		  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
+		  while ((line = rd.readLine()) != null) {	  
+			  out.write(line);
+			  
+			  row++;
+			
+		  }
+		  Log.d("DownloadUsingRestfulAPI", "finish writing to the file from buffer, total rows: " + row);
 		  out.close();
 		}
 		catch(Exception ex){
 			
+			Log.e("downloader error",ex.toString()+"  "+ex.getStackTrace());
+			
 			return false; 
 		}
 		  
+		  Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
 		  return true; 
 	}
 }
