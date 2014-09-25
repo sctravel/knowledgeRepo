@@ -43,37 +43,22 @@ public class ModeSelectionActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         
-      //create and connect to new db or connect to existing db in the context  
-      SQLiteDatabase  db = DBTool.getDB(getApplicationContext());
-      
-   db.close();
-   // db.execSQL("insert into ceaqa values ('c1','e1','a1','q1','A')");
+    
         
-        setContentView(R.layout.mode_selection);
-        mainPage();
-
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // If your minSdkVersion is 11 or higher, instead use:
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        
+     
         initializeCourses();
-        final Button buttonExamMode = (Button) findViewById(R.id.examMode);
-        buttonExamMode.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	beginExam(v);
-            }
-        });
-        
-        final Button buttonPracticeMode = (Button) findViewById(R.id.practiceMode);
-        buttonPracticeMode.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	beginPractice(v);
-            }
-        });
-        
-       
+		setContentView(R.layout.mode_selection);
+		mainPage();
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		// If your minSdkVersion is 11 or higher, instead use:
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		         
+		initializeCourses();
+		
+		         
+		       
 	}
-	
+
 	private void initializeCourses() {
 		List<String> course1ExamList = new ArrayList<String>();
 		course1ExamList.add("Exam1");
