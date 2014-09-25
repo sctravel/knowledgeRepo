@@ -63,12 +63,12 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 				Object obj = parser.parse(new FileReader(fileName));
 			
 			    JSONObject jsonObject = (JSONObject) obj;  
-				
+			    Log.d("preloop", "prelooping");
 			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
 			    Iterator<JSONObject> iterator = listOfCourses.iterator();
 			   
 			    while (iterator.hasNext()) {
-			    	
+			    	Log.d("loop", "looping");
 			       Course courseObj= new Course();
 			    	
 				   JSONObject course= (JSONObject)iterator.next();
@@ -173,6 +173,8 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		        	   couseModuleObjs.add(couseModuleObj);
 		           } 
 		           
+        		   Log.d("JSON parser", "exam++++++++");
+        		   
 		           courseObj.setModules(couseModuleObjs);
 		           System.out.print("courseid:" + courseid); 		           
 		           courseObj.serialize();
