@@ -37,15 +37,12 @@ public class ModeSelectionActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mode_selection);
-		mainPage();
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		         
 		initializeCourses();
-		
-		         
-		
+		mainPage();		         
        
 	}
 	
@@ -161,9 +158,14 @@ public class ModeSelectionActivity extends Activity {
 			bt.setTextColor(Color.parseColor("black"));
 			bt.setLayoutParams(lpbt);
 			bt.setGravity(Gravity.CENTER_VERTICAL);
+			
+			//
+			final String courseId="";
+			final String courseModuleId="";
+			final String examId="";
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
-	            	beginExam(v);
+	            	beginExam(v, courseId, courseModuleId, examId);
 	            }
 	        });
 	    }
@@ -288,14 +290,14 @@ public class ModeSelectionActivity extends Activity {
     
     
     /** Called when the user clicks the Send button */
-    public void beginExam(View view) {
+    public void beginExam(View view, String courseId, String courseModuleId, String examId) {
         Intent intent = new Intent(this, ExamModeActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
-    public void beginPractice(View view) {
+    public void beginPractice(View view, String courseId, String courseModuleId, String examId) {
         Intent intent = new Intent(this, ViewAnswerModeActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();

@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,12 +19,16 @@ import android.util.Log;
 
 
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+//This class is not used currently, 
+// see CoursesDownloaderTask.java
+@SuppressWarnings("unused")
 public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		     	    
         public boolean DownloadFromUrl(String fileURL, String fileName) {  //this is the downloader method
