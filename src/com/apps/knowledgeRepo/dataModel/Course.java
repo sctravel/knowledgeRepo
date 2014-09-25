@@ -10,6 +10,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.apps.knowledgeRepo.db.DBTool;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class Course {
@@ -55,18 +59,7 @@ public class Course {
 		
 		//output as JSON format
 		String jsonContent = null;
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		//save to database
 		
 		storeToDB(courseid, jsonContent);
@@ -209,7 +202,11 @@ public class Course {
 		return null;
 	}
 	
-	public void storeToDB(String CourseID, String jsonContent){
+	public void storeToDB(String CourseID, String jsonContent,Context context){
+		
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertCourse(context, db, CourseID, jsonContent);
+		
 		
 		return; 
 		
