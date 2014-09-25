@@ -5,6 +5,12 @@ import java.util.List;
 public class Exam {
 	
 	long examid;
+	String name;
+	long passing;
+	long timeLimit; 
+	List<Question> Questions; 
+	
+	
 	public long getExamid() {
 		return examid;
 	}
@@ -35,9 +41,6 @@ public class Exam {
 	public void setQuestions(List<Question> questions) {
 		Questions = questions;
 	}
-	String name;
-	long passing;
-	long timeLimit; 
-	List<Question> Questions; 
+	
 
 }

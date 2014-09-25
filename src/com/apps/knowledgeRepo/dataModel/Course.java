@@ -19,6 +19,11 @@ import android.util.Log;
 public class Course {
 	
 	String courseid;
+	String courseName;
+	long courseType;
+	String courseOrientation; 
+	List<CourseModule> modules; 
+	
 	public String getCourseid() {
 		return courseid;
 	}
@@ -49,6 +54,7 @@ public class Course {
 	public void setModules(List<CourseModule> modules) {
 		this.modules = modules;
 	}
+
 	Context context;
 	public Context getContext() {
 		return context;
@@ -56,10 +62,10 @@ public class Course {
 	public void setContext(Context context) {
 		this.context = context;
 	}
-	String courseName;
-	long courseType;
-	String courseOrientation; 
-	List<CourseModule> modules; 
+
+
+
+
 	
 	//store courseID and JSON string to SQLLite database
 	public void serialize(){
@@ -70,7 +76,7 @@ public class Course {
 
 
 		
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer stringBuffer = new StringBuffer(1024*1024*10);
 		
 		stringBuffer.append("Courses: ");
 		stringBuffer.append("[{");
@@ -97,7 +103,7 @@ public class Course {
 			stringBuffer.append("[{");
 			
 			
-			for(int j=0;j<module.exams.size();i++){
+			for(int j=0;j<module.exams.size();j++){
 				
 				Exam exam= module.exams.get(j);
 				stringBuffer.append("examid:"+ exam.examid+",");
