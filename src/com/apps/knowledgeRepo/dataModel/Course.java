@@ -82,7 +82,7 @@ public class Course {
 			stringBuffer.append("[{");
 			
 			
-			for(int j=0;j<module.exams.size();i++){
+			for(int j=0;j<module.exams.size();j++){
 				
 				Exam exam= module.exams.get(j);
 				stringBuffer.append("examid:"+ exam.examid+",");
@@ -97,6 +97,12 @@ public class Course {
 					Question question = exam.Questions.get(k);
 					
 					stringBuffer.append("questionNumber:"+ question.questionNumber+",");
+					
+					Log.d("JSON Parser ", "questionNumber:"+ question.questionNumber+",");
+					Log.d("JSON Parser ", "explanation:"+ question.explanation);
+					Log.d("JSON Parser ", "text:"+ question.text);
+					
+					
 					stringBuffer.append("category:"+ "\""+ question.category+"\",");
 					
 					stringBuffer.append("text:"+ "\""+ question.text+"\",");			
@@ -107,18 +113,22 @@ public class Course {
 								
 					for(int p=0;p<question.answers.size();p++){
 						
+										
 						Answer ans= question.answers.get(p);
+						
+				  
 						stringBuffer.append("answerNumber:"+ ans.answerNumber+",");
 						
 						stringBuffer.append("score:"+ ans.score+",");
 						
-						stringBuffer.append("answerText:"+ "\""+ ans.answerText+"\",");
+						stringBuffer.append("answerText:"+ "\""+ ans.answerText+"\",");				
 				
+						Log.d("JSON Parser", "answerNumber:"+ ans.answerNumber+"," + "score:"+ ans.score+",");
+					
 					}
 					
 					stringBuffer.append("}]");
-					
-					
+									
 				}
 			
 			}
