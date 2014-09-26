@@ -14,17 +14,17 @@ import android.util.Log;
 
 public class Course {
 	
-	String courseid;
+	String courseId;
 	String courseName;
 	long courseType;
 	String courseOrientation; 
 	List<CourseModule> modules; 
 	
-	public String getCourseid() {
-		return courseid;
+	public String getCourseId() {
+		return courseId;
 	}
-	public void setCourseid(String courseid) {
-		this.courseid = courseid;
+	public void setCourseid(String courseId) {
+		this.courseId = courseId;
 	}
 	public String getCourseName() {
 		return courseName;
@@ -57,12 +57,12 @@ public class Course {
 		
 		//output as JSON format
 		
-		StringBuffer stringBuffer = new StringBuffer(1024*1024*10);
+		StringBuffer stringBuffer = new StringBuffer();
 		
 		stringBuffer.append("Courses: ");
 		stringBuffer.append("[{");
 		
-		stringBuffer.append("courseid:"+"\""+ this.courseid+"\",");
+		stringBuffer.append("courseid:"+"\""+ this.courseId+"\",");
 		stringBuffer.append("courseName:"+"\""+ this.courseName+"\",");
 		stringBuffer.append("courseType:"+ this.courseType+",");
 		
@@ -124,7 +124,7 @@ public class Course {
 				}
 			
 			}
-		
+			
 			stringBuffer.append("}]");
 		}
 		
@@ -137,19 +137,21 @@ public class Course {
 		
 		//save to database
 		
-		storeToDB(courseid, stringBuffer.toString());
+		storeToDB(courseId, stringBuffer.toString());
 		
 		
 	}
 	
 	public Course(){
 		
-	
 	}
 	
-	public Course(int CourseId){
-				
-		String jsonStr= retrieveFromDB(CourseId);
+	public Course(int courseId){				
+		initilizeCourse(courseId);	 		
+	}
+	
+	public void initilizeCourse(int courseId){
+		String jsonStr= retrieveFromDB(courseId);
 		
 		JSONParser parser = new JSONParser();
 		Object obj;
@@ -268,8 +270,7 @@ public class Course {
 		catch(Exception ex){
 			
 			Log.d("Couse initalizer",ex.getMessage());
-		}		 
-		
+		}	
 	}
 	 // to-do BoChen to connect SQLLite
 	public String retrieveFromDB(int CourseID){

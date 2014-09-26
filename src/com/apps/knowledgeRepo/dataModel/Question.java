@@ -27,7 +27,7 @@ public class Question {
 	}
 
 	public void setQuestionNumber(long questionNumber) {
-		questionNumber = questionNumber;
+		this.questionNumber = questionNumber;
 	}
 
 	public String getCategory() {
