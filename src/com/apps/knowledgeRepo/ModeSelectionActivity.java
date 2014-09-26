@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -212,14 +213,10 @@ public class ModeSelectionActivity extends Activity {
         
         final Button buttonDownloadCourses = (Button) findViewById(R.id.downloadCoursesButton);
         buttonDownloadCourses.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            	
-            	// download restful feeds and serialize to DB 
-        	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
-        	new CoursesDownloaderTask().execute(getApplicationContext());
-            	
-            	//loginPage();
+          
+            public void onClick(View v) {    	
+            	loginPage();
+
             }
         });
 	}
@@ -228,6 +225,11 @@ public class ModeSelectionActivity extends Activity {
         final Button buttonLogin = (Button) findViewById(R.id.loginButton);
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+             	// download restful feeds and serialize to DB 
+            	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
+            	new CoursesDownloaderTask().execute(getApplicationContext());
+   			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
+
             	selectCoursesPage();
             }
         });
