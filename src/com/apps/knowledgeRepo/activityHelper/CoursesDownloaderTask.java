@@ -31,10 +31,11 @@ import com.apps.knowledgeRepo.dataModel.CoursePackage;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
+public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	/*
 	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 		InputStream in = entity.getContent();
@@ -53,7 +54,7 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		}
 	*/
 	
-	public boolean parseJSON(String fileName){
+	public boolean parseJSON(String fileName,Context context){
 		
 		    JSONParser parser = new JSONParser();
 		 		    
@@ -177,7 +178,7 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
         		   
 		           courseObj.setModules(couseModuleObjs);
 		           System.out.print("courseid:" + courseid); 		           
-		           courseObj.serialize();
+		           courseObj.serialize(context);
 				 }	
 			}
 			catch(Exception ex){			
@@ -213,22 +214,23 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 	}
 	*/
 	
-	@Override
-	public Boolean doInBackground(String... urls) {
+	
+	public Boolean doInBackground(Context context) {
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
 
-		if(DownloadUsingRestfulAPI(urls[0])) 
-			if(parseJSON(urls[0]))  //parse JSON	
+		if(DownloadUsingRestfulAPI(context)) 
+			if(parseJSON(context.getFilesDir().getPath().toString() + "/CourseDB.json",context) ) //parse JSON	
 				return true; 
 		return false;	
 	
 	}
 	
-	public static boolean DownloadUsingRestfulAPI(String filePath) {
+	public static boolean DownloadUsingRestfulAPI(Context context) {
+		String filePath = context.getFilesDir().getPath().toString()  + "/CourseDB.json";
 		try {
 			
-			
+		
 			//File f = new File(filePath);
 			//need to serialize to DB 
 			
@@ -266,5 +268,12 @@ public class CoursesDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		  
 		  Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
 		  return true; 
+	}
+
+
+	@Override
+	protected Boolean doInBackground(Context... params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -68,7 +68,7 @@ public class Course {
 
 	
 	//store courseID and JSON string to SQLLite database
-	public void serialize(){
+	public void serialize(Context context){
 		
 		//output as JSON format
 

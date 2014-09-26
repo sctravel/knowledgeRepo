@@ -217,7 +217,7 @@ public class ModeSelectionActivity extends Activity {
             	
             	// download restful feeds and serialize to DB 
         	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
-        	new CoursesDownloaderTask().execute(filePath);
+        	new CoursesDownloaderTask().execute(getApplicationContext());
             	
             	//loginPage();
             }
