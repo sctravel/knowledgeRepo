@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public final class DBHelper extends SQLiteOpenHelper {
 
 	    private static final String SQL_CREATE_CEAQA =
-	    	    "CREATE TABLE CEAQA ('CID' varchar(256)," +
-	    	    "'EID' varchar(256), " +
+	    	    "CREATE TABLE CEAQA ('COURSE_ID' varchar(256)," +
+	    	    "'EXAM_ID' varchar(256), " +
 	    	    "'ATTEMPT' varchar(256)," +
 	    	    " 'QNUM' varchar(256)," +
 	    	    "'ANSWER' varchar(256))";

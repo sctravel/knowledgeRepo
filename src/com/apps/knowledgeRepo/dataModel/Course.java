@@ -168,7 +168,7 @@ public class Course {
 		//save to database
 		
 
-		storeToDB(courseId, stringBuffer.toString(), context);
+		storeToDB(courseId, courseName, stringBuffer.toString(), context);
 
 		
 		
@@ -310,12 +310,13 @@ public class Course {
 		return null;
 	}
 	
-	public void storeToDB(String CourseID, String jsonContent,Context context){
+	public void storeToDB(String courseId, String courseName, String jsonContent,Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertCourse(context, db, CourseID, jsonContent);
-		
-		
+		Log.d("InDB", "COuseId---"+courseId+"; Length---"+jsonContent.length());
+		System.out.println("COuseId---"+courseId+"; Length---"+jsonContent.length());
+		DBTool.insertCourse(context, db, courseId, courseName, jsonContent);
+		Log.d("FinishDB","Finish");
 		return; 
 		
 	}

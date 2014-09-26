@@ -66,7 +66,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 			    JSONObject jsonObject = (JSONObject) obj;  
 			    Log.d("preloop", "prelooping");
 			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
-			    Iterator<JSONObject> iterator = listOfCourses.iterator();
+			    @SuppressWarnings("unchecked")
+				Iterator<JSONObject> iterator = listOfCourses.iterator();
 			   
 			    while (iterator.hasNext()) {
 			    	Log.d("loop", "looping");
@@ -214,13 +215,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	}
 	*/
 	
-	
-	public Boolean doInBackground(Context context) {
+	@Override
+	public Boolean doInBackground(Context... context) {
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
-
-		if(DownloadUsingRestfulAPI(context)) 
-			if(parseJSON(context.getFilesDir().getPath().toString() + "/CourseDB.json",context) ) //parse JSON	
+		Context con = context[0];
+		if(DownloadUsingRestfulAPI(con)) 
+			if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
 				return true; 
 		return false;	
 	
@@ -271,9 +272,5 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	}
 
 
-	@Override
-	protected Boolean doInBackground(Context... params) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

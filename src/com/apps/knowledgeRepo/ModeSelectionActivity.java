@@ -43,7 +43,8 @@ public class ModeSelectionActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        
+        SQLiteDatabase db = DBTool.getDB(getApplicationContext());
+        db.close();
     
         
      
@@ -228,6 +229,7 @@ public class ModeSelectionActivity extends Activity {
              	// download restful feeds and serialize to DB 
             	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
             	new CoursesDownloaderTask().execute(getApplicationContext());
+            	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
 
             	selectCoursesPage();
