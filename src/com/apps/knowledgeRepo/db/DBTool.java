@@ -21,6 +21,19 @@ public class DBTool {
     	 
      } 
     
+     public static void getIDsandNames (Context context,SQLiteDatabase db){
+    	 if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+    	 String getIDsandNames = "select course_id, course_name from course" ; 
+    	 Cursor idsAndNames = db.rawQuery(getIDsandNames, null);
+    	 idsAndNames.moveToNext();
+    	 int a = idsAndNames.getPosition();
+    	 Log.d("idandnames",idsAndNames.getString(idsAndNames.getPosition()));
+    	 
+    	 
+     }
      
      public static ArrayList<String> queryDB(Context context,SQLiteDatabase db, String sql, String[] selectionArgs ){
     		if( !db.isOpen()){
