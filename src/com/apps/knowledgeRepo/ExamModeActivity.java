@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
@@ -58,7 +59,7 @@ public class ExamModeActivity extends Activity{
 	//This is the current question number user is working on.
 	private int questionNumber = 0;
 	private int reviewQuestionNumberIndex = 0;
-    SingleChoiceExam exam = null;
+    Exam exam = null;
     
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
@@ -81,7 +82,6 @@ public class ExamModeActivity extends Activity{
  		addListenerOnGradeButton();
         addListenerOnPrevAndNextButton();
         addListenerOnReviewMarkedButton();
-        parseExam();
         startTime = System.currentTimeMillis();
         totalPauseTime=0;
         pauseStartTime=0;
@@ -113,7 +113,7 @@ public class ExamModeActivity extends Activity{
     public void nextQuestion() {
     	if(!isReviewMode) {
     		//The last Question
-        	if(questionNumber >= exam.getCount()-1) {
+        	if(questionNumber >= exam.getQuestions().size()-1) {
         		//TODO need to go to the summary page instead
         		return;
         	}
@@ -146,6 +146,7 @@ public class ExamModeActivity extends Activity{
 
     	}
     }
+    /*
     private void parseExam() {
     	exam = new SingleChoiceExam();
     	String questionString = "none";
@@ -165,11 +166,11 @@ public class ExamModeActivity extends Activity{
          }
          
   	   exam.parseExam(questionString,answerString);
-    }
+    }*/
     
     private long getRemainTimeInMillis() {
     	System.out.println("Total pause time is: "+totalPauseTime);
-    	return exam.getExamTimeInMinutes()*1000*60 - (System.currentTimeMillis() - startTime - totalPauseTime) ;
+    	return exam.getTimeLimit()*1000*60 - (System.currentTimeMillis() - startTime - totalPauseTime) ;
     }
     private void refreshPage() {
     	
@@ -180,7 +181,7 @@ public class ExamModeActivity extends Activity{
     	}
     	
         final TextView qnumText = (TextView) findViewById(R.id.singleChoiceExamNumber);
-        qnumText.setText((questionNumber+1)+"/"+exam.getCount());
+        qnumText.setText((questionNumber+1)+"/"+exam.getQuestions().size() );
         
         final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextExam);
         goToNumber.setText("");
@@ -245,11 +246,11 @@ public class ExamModeActivity extends Activity{
         final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
-        questionText.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getQuestion()));
-        choiceA.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(0)));
-        choiceB.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(1)));
-        choiceC.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(2)));
-        choiceD.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(3)));
+        questionText.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getText()));
+        choiceA.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
+        choiceB.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
+        choiceC.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
+        choiceD.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
     }
     public  void onRadioButtonClicked(View view) {
     	
@@ -310,11 +311,13 @@ public class ExamModeActivity extends Activity{
         
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-	        Exam exam = (Exam) extras.getSerializable("exam");
+	        exam = (Exam) extras.getSerializable("exam");
 	        if(exam!=null) {
 	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
 	        }
+	        
         }
+        if(exam==null) throw new RuntimeException("Exam is null");
         initilizeExam();
     }
    
@@ -606,7 +609,7 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
 					//need to pass exam information to ViewAnswerModeActivity
-				    //intent.putExtra(EXTRA_MESSAGE, message);
+				    intent.putExtra("exam", exam);
 				    startActivity(intent);
 					System.out.println("reviewAllButton!");
 				}
@@ -619,6 +622,7 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
 					//need to pass exam information to ViewAnswerModeActivity
+					intent.putExtra("exam", exam);
 				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
 				    startActivity(intent);
 				    System.out.println("reviewIncorrectButton!");
@@ -633,7 +637,7 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					//dialog.dismiss();
 					Intent intent = new Intent(ExamModeActivity.this, ExamModeActivity.class);				       
-				    //intent.putExtra(EXTRA_MESSAGE, message);
+					intent.putExtra("exam", exam);
 				    startActivity(intent);
 					System.out.println("retakeExamButton!");
 
@@ -658,31 +662,42 @@ public class ExamModeActivity extends Activity{
 			
 			dialog.show();
    }
+   
+   private void printOutScoreMap() {
+	   for(Map.Entry<Integer,String> entry : scoreMap.entrySet()) {
+		   Log.d("ScoreMap","Number: "+entry.getKey()+"---|--- Value: "+entry.getValue());
+	   }
+   }
    //Grade the exam based on the user answer, and show the score of the user
    //TODO: save the grade result(user answer), and upload to web server.
    private boolean grade() {
 	   StringBuilder sb = new StringBuilder();
-	   List<SingleChoiceAnswer> answerList = exam.getAnswerList();
+	   List<Question> questionList = exam.getQuestions() ;
 	   int count=0;
 	   boolean isPassed = false;
 	   
 	   List<Integer> correctList = new ArrayList<Integer>();
-	   for(SingleChoiceAnswer answer : answerList) {
-		   if(answer.getAnswer().equalsIgnoreCase(scoreMap.get(count))) {
+	   for(Question question : questionList) {
+		  // if(answer.getAnswer().equalsIgnoreCase(scoreMap.get(count))) {
+		   char storedAnswer = scoreMap.get(count).charAt(0);
+		   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer);
+		   long score =  question.getAnswers().get( storedAnswer-'A' ).getScore();
+		   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer+" ---- Score: "+score);
+		   if( score==1 ) {
 			   correctList.add(count);
 		   } else {
 			   inCorrectList.add(count);
 		   }
 		   ++count;
 	   }
-	   if(correctList.size() > exam.getPassingScore()) {
+	   if(correctList.size() > exam.getPassing() ) {
 		   isPassed = true;
 		   sb.append("Congratulations! You have passed the exam. \n");
 	   } else {
 		   sb.append("Sorry, you didn't pass the exam. \n");
 	   }
 	   
-	   sb.append("Your score is "+correctList.size()+" out of "+answerList.size()+", and the passing score is "+exam.getPassingScore()+". ");
+	   sb.append("Your score is "+correctList.size()+" out of "+questionList.size()+", and the passing score is "+exam.getPassing()+". ");
 	   
 	   showResultDialog(sb.toString());
 		

@@ -8,12 +8,10 @@ public class Answer implements Serializable {
 
 	public long answerNumber;
 	
-	public Long score;
+	public Long score; //0 is wrong and 1 is correct
 	
 	public String answerText;
 	
-	public String userAnswer;
-
 
 
 	public long getAnswerNumber() {
@@ -39,11 +37,6 @@ public class Answer implements Serializable {
 	public void setAnswerText(String answerText) {
 		this.answerText = answerText;
 	}
-	public String getUserAnswer() {
-		return userAnswer;
-	}
+	
 
-	public void setUserAnswer(String userAnswer) {
-		this.userAnswer = userAnswer;
-	}
 }
