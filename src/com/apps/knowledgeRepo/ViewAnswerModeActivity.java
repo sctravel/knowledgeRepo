@@ -6,12 +6,13 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.exams.SingleChoiceExam;
-
+import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.Answer;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,7 +26,7 @@ public class ViewAnswerModeActivity extends Activity{
 	public final static char CHOICE_A= 'A';
 	
 	private int questionNumber = -1;
-    private SingleChoiceExam exam = null;
+    private Exam exam = null;
     private List<Integer> inCorrectList=null;
     private int inCorrectListIndex=0;
     private boolean viewInCorrectMode = false;
@@ -35,7 +36,7 @@ public class ViewAnswerModeActivity extends Activity{
  		addListenerOnJumpToButton();
  		
         addListenerOnPrevAndNextButton();
-        parseExam();
+        //parseExam();
 
 	    questionNumber=0;
 	    refreshPage();
@@ -50,8 +51,12 @@ public class ViewAnswerModeActivity extends Activity{
         	if(inCorrectList!=null && !inCorrectList.isEmpty()) {
         		viewInCorrectMode = true;
         	}
+        	
+    	    exam = (Exam) extras.getSerializable("exam");
+    	    
         }
-        
+        if(exam==null) throw new RuntimeException("Exam is null");
+
         setContentView(R.layout.practice_mode);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher, instead use:
@@ -90,7 +95,7 @@ public class ViewAnswerModeActivity extends Activity{
     		}
     	} else {
     		//The last Question
-			if(questionNumber >= exam.getCount()-1) {
+			if(questionNumber >= exam.getQuestions().size()-1) {
 				return;
 			}
 		    ++questionNumber;		        	
@@ -115,7 +120,7 @@ public class ViewAnswerModeActivity extends Activity{
     	}
     	
     }
-    
+    /*
     private void parseExam() {
     	exam = new SingleChoiceExam();
     	String questionString = "none";
@@ -135,19 +140,30 @@ public class ViewAnswerModeActivity extends Activity{
          }
          
   	   exam.parseExam(questionString,answerString);
-    }
+    }*/
     
     private void refreshPage() {
     	
         final TextView qnumText = (TextView) findViewById(R.id.singleChoicePracticeNumber);
-        qnumText.setText((questionNumber+1)+"/"+exam.getCount());
+        qnumText.setText((questionNumber+1)+"/"+exam.getQuestions().size() );
         
         final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextPractice);
         goToNumber.setText("");
     	setQuestionText(questionNumber);
     	setAnswerText(questionNumber);
-    	String answer = exam.getAnswerList().get(questionNumber).getAnswer();
-        setRadioButtonChecked(answer);
+    	List<Answer> answerList= exam.getQuestions().get(questionNumber).getAnswers();
+    	
+    	
+    	//TODO make sure there's at least one correct answer
+    	for(Answer answer : answerList ) {
+    		if(answer.getScore() ==1) {
+    			String a = ""+(char)(answer.getAnswerNumber()+'A'-1);
+    			setRadioButtonChecked(a);
+    			break;
+    		}
+    	}
+    	//String answer = ;
+        
         
         
     }
@@ -176,7 +192,15 @@ public class ViewAnswerModeActivity extends Activity{
     
     private void setAnswerText( int  questionNumber) {
     	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
-    	answerText.setText("Correct Answer is "+exam.getAnswerList().get(questionNumber).getAnswer()+"\n"+exam.getAnswerList().get(questionNumber).getExplaination());
+    	List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
+    	String answerNum=" ";
+    	for(Answer answer : answerList ) {
+    		if(answer.getScore() ==1) {
+    			answerNum = ""+(char)(answer.getAnswerNumber()+'A'-1);
+       			break;
+    		}
+    	}
+    	answerText.setText(Html.fromHtml("Correct Answer is "+answerNum+"\n"+exam.getQuestions().get(questionNumber).getExplanation() ));
     	//answerText.setTextColor(0xff);
     }
     private void setQuestionText(int questionNumber) {
@@ -185,11 +209,13 @@ public class ViewAnswerModeActivity extends Activity{
         final TextView choiceB = (TextView) findViewById(R.id.choiceBPractice);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCPractice);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDPractice);
-        questionText.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getQuestion()));
-        choiceA.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(0)));
-        choiceB.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(1)));
-        choiceC.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(2)));
-        choiceD.setText(Html.fromHtml(exam.getQuestionList().get(questionNumber).getChoices().get(3)));
+        questionText.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getText() ));
+        //List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
+        //for(Answer answer : answerList )
+        choiceA.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
+        choiceB.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText() ));
+        choiceC.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText() ));
+        choiceD.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText() ));
     }
     
     private void addListenerOnJumpToButton() {
@@ -197,7 +223,7 @@ public class ViewAnswerModeActivity extends Activity{
         buttonJump.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextPractice);
-     		   int upperBound = exam.getCount();
+     		   int upperBound = exam.getQuestions().size();  
 
          	   try{
          		   int jumpToNumber = Integer.parseInt(goToNumber.getText().toString())-1;

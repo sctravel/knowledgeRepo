@@ -1,15 +1,17 @@
 package com.apps.knowledgeRepo.dataModel;
 
-public class Answer {
+import java.io.Serializable;
+
+public class Answer implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	public long answerNumber;
 	
-	public Long score;
+	public Long score; //0 is wrong and 1 is correct
 	
 	public String answerText;
 	
-	public String userAnswer;
-
 
 
 	public long getAnswerNumber() {
@@ -35,11 +37,6 @@ public class Answer {
 	public void setAnswerText(String answerText) {
 		this.answerText = answerText;
 	}
-	public String getUserAnswer() {
-		return userAnswer;
-	}
+	
 
-	public void setUserAnswer(String userAnswer) {
-		this.userAnswer = userAnswer;
-	}
 }

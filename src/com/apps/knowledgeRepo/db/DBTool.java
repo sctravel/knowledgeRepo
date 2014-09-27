@@ -94,7 +94,7 @@ public class DBTool {
         		Log.d("Open new DB","Open new DB");
         	}
     		
-    	 course_content=course_content.replaceAll("'", "''");
+    	 course_content=course_content.replaceAll("'", "!!pattern!!") ;
     	 String sqlInsert = "insert into course values ( " + "'" +  course_id + "'" + "," 
     			 									+ "'" + course_name + "'"+ "," 
     	                                            + "'" +  course_content + "'" + ");"; 
@@ -102,19 +102,21 @@ public class DBTool {
     	 String sqlQuery = "select count(*) from Course where "  + 
     	                   "course_id =?;";  
     	
-    	 String sqlUpdate = "update Course set courseContent=? where course_id=?; " ;
+    	 String sqlUpdate = "update Course set course_content=? where course_id=?; " ;
     	 
-    	 DBTool.queryDB(context, db, sqlQuery, new String[]{course_id}).get(0);
-    	 Log.d("after query","after query");
+    	 //DBTool.queryDB(context, db, sqlQuery, new String[]{course_id}).get(0);
+    	 //Log.d("after query","after query");
 
     	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{course_id}).get(0));
     	 
     	 if ( a  > 0){
-    
-    		db.execSQL(sqlUpdate, new String[]{course_id,course_content});
+        	Log.d("DB operation","Doing Update!");
+
+    		db.execSQL(sqlUpdate, new String[]{course_content,course_id});
     	 } else {
     		 
-    
+         	Log.d("DB operation","Doing Insert!");
+
     		 db.execSQL(sqlInsert);
     		 
     	 };
@@ -129,7 +131,16 @@ public class DBTool {
      		
      	}
     	ArrayList<String> courseContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid});
-    	return courseContent.get(0);
+    	
+    	db.close();
+    	if(courseContent==null || courseContent.isEmpty() ) {
+    		Log.d("query course empty", "query course empty");
+    		return null;
+    	}
+    	String content = courseContent.get(0);
+    	content=content.replaceAll( "!!pattern!!", "'") ;
+
+    	return content;
      }
      
 }
