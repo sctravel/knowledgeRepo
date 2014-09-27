@@ -2,16 +2,15 @@ package com.apps.knowledgeRepo;
 
 import android.app.Activity;
 import android.content.Intent;
-
 import android.database.sqlite.SQLiteDatabase;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,8 +31,12 @@ import java.util.HashMap;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
+import com.apps.knowledgeRepo.dataModel.Course;
+import com.apps.knowledgeRepo.dataModel.CourseModule;
+import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 public class ModeSelectionActivity extends Activity {
 	
@@ -62,11 +65,12 @@ public class ModeSelectionActivity extends Activity {
 	}
 
 	private void initializeCourses() {
+		//TODO get all the courseIds and courseNames from DB
 		List<String> course1ExamList = new ArrayList<String>();
-		course1ExamList.add("Exam1");
+		course1ExamList.add("iLF6");
 		course1ExamList.add("Exam2");
 		course1ExamList.add("Exam3");
-		courseMap.put("course1", course1ExamList);
+		courseMap.put("iLF6", course1ExamList);
 		
 		List<String> course2ExamList = new ArrayList<String>();
 		courseMap.put("course2", course2ExamList);
@@ -106,9 +110,9 @@ public class ModeSelectionActivity extends Activity {
 		//tv.setTextSize(10);
 	
 		for(Map.Entry<String, List<String>> entry : courseMap.entrySet()) {
-			final String courseName = entry.getKey();
+			final String courseId = entry.getKey();
 			Button bt = new Button(getApplicationContext());
-			bt.setText(courseName);
+			bt.setText(courseId);
 			linear.addView(bt);
 			lpbt.topMargin=10;
 			lpbt.bottomMargin=10;
@@ -117,7 +121,8 @@ public class ModeSelectionActivity extends Activity {
 			bt.setGravity(Gravity.CENTER_VERTICAL);
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
-	            	selectExamsPage(courseName);
+	            	Course course = CourseUtil.initilizeCourse(courseId, getApplicationContext());
+	            	selectCourseModulePage(course);
 	            }
 	        });
 		}
@@ -142,12 +147,73 @@ public class ModeSelectionActivity extends Activity {
 
 	}
 	
-	private void selectExamsPage(String courseName) {
-		List<String> examList = courseMap.get(courseName);
+	private void selectCourseModulePage(final Course course) {
+		Log.d("CourseInfo",course.getCourseId()+" "+course.getCourseName()+" "+
+					course.getCourseType() );//+"  number of modules:"+course.getModules().size());
+		
+		List<CourseModule> moduleList = course.getModules();
+		
+		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
+		tv.setText("Exams in Course "+course.getCourseName());
+		tv.setTextColor(Color.parseColor("black"));
+		tv.setTextSize(20);
+		
+		LayoutParams lptv = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+		LinearLayout linear = new LinearLayout(getApplicationContext());
+		linear.setLayoutParams(lptv);
+		linear.setVerticalGravity(MODE_APPEND);
+		linear.addView(tv);
+		lptv.topMargin=50;
+		lptv.bottomMargin=50;
+		tv.setLayoutParams(lptv);
+		tv.setGravity(Gravity.CENTER_VERTICAL);
+		
+		 for(final CourseModule courseModule : moduleList) {
+		    	Button bt = new Button(getApplicationContext());
+		    	bt.setText(courseModule.getModuleId()+"");
+				linear.addView(bt);
+				lpbt.topMargin=10;
+				lpbt.bottomMargin=10;
+				bt.setTextColor(Color.parseColor("black"));
+				bt.setLayoutParams(lpbt);
+				bt.setGravity(Gravity.CENTER_VERTICAL);
+				
+				bt.setOnClickListener(new View.OnClickListener() {
+		            public void onClick(View v) {
+		            	selectExamsPage(course,courseModule);
+		            }
+		        });
+		    }
+		    
+			Button back = new Button(getApplicationContext());
+			back.setText("Back");
+			back.setTextColor(Color.parseColor("black"));
+			
+			lptv.topMargin=30;
+			lptv.bottomMargin=30;
+			back.setLayoutParams(lptv);
+			back.setGravity(Gravity.BOTTOM);
+			back.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	selectCoursesPage();
+	            }
+	        });
+			linear.addView(back);
+			linear.setOrientation(LinearLayout.VERTICAL);
+	        setContentView(linear);
+	}
+	
+	//TODO: Need to have course information in courseModule
+	private void selectExamsPage(final Course course, CourseModule courseModule) {
+		
+		List<Exam> examList = courseModule.getExams();
 		//setContentView(R.layout.course_selection);
 		
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
-		tv.setText("Exams in Course "+courseName);
+		tv.setText("Exams in CourseModule: "+course.getCourseName()+", Module: "+courseModule.getModuleId());
 		tv.setTextColor(Color.parseColor("black"));
 		tv.setTextSize(20);
 		
@@ -164,9 +230,9 @@ public class ModeSelectionActivity extends Activity {
 		tv.setLayoutParams(lptv);
 		tv.setGravity(Gravity.CENTER_VERTICAL);
 
-	    for(String examName : examList) {
+	    for(final Exam exam : examList) {
 	    	Button bt = new Button(getApplicationContext());
-	    	bt.setText(examName);
+	    	bt.setText(exam.getName());
 			linear.addView(bt);
 			lpbt.topMargin=10;
 			lpbt.bottomMargin=10;
@@ -174,13 +240,9 @@ public class ModeSelectionActivity extends Activity {
 			bt.setLayoutParams(lpbt);
 			bt.setGravity(Gravity.CENTER_VERTICAL);
 			
-			//
-			final String courseId="";
-			final String courseModuleId="";
-			final String examId="";
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
-	            	beginExam(v, courseId, courseModuleId, examId);
+	            	beginExam(v, exam);
 	            }
 	        });
 	    }
@@ -195,7 +257,7 @@ public class ModeSelectionActivity extends Activity {
 		back.setGravity(Gravity.BOTTOM);
 		back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	selectCoursesPage();
+            	selectCourseModulePage(course);
             }
         });
 		linear.addView(back);
@@ -307,11 +369,12 @@ public class ModeSelectionActivity extends Activity {
     
     
     /** Called when the user clicks the Send button */
-    public void beginExam(View view, String courseId, String courseModuleId, String examId) {
+    public void beginExam(View view, Exam exam) {
         Intent intent = new Intent(this, ExamModeActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra("exam", exam);
         startActivity(intent);
     }
     public void beginPractice(View view, String courseId, String courseModuleId, String examId) {

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Course;
+import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
@@ -29,6 +30,7 @@ import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -306,6 +308,13 @@ public class ExamModeActivity extends Activity{
            getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+	        Exam exam = (Exam) extras.getSerializable("exam");
+	        if(exam!=null) {
+	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
+	        }
+        }
         initilizeExam();
     }
    
