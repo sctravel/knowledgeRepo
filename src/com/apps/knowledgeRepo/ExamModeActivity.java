@@ -15,6 +15,7 @@ import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
@@ -258,9 +259,8 @@ public class ExamModeActivity extends Activity{
     	//Store user answer
         scoreMap.put(questionNumber, value);
         //need course id, exam id, attempt,  
-        Course course = new Course();
-        
-    	checkMarkedStatus();
+        Course course = new Course(); 	
+        checkMarkedStatus();
         nextQuestion();
         refreshPage();
     }
