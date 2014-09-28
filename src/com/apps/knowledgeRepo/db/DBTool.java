@@ -1,6 +1,7 @@
 package com.apps.knowledgeRepo.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,18 +22,22 @@ public class DBTool {
     	 
      } 
     
-     public static void getIDsandNames (Context context,SQLiteDatabase db){
+     public static HashMap<String, String> getIDsandNames (Context context,SQLiteDatabase db){
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
     	 String getIDsandNames = "select course_id, course_name from course" ; 
     	 Cursor idsAndNames = db.rawQuery(getIDsandNames, null);
-    	 idsAndNames.moveToNext();
-    	 int a = idsAndNames.getPosition();
-    	 Log.d("idandnames",idsAndNames.getString(idsAndNames.getPosition()));
     	 
-    	 
+    	HashMap<String, String> id_names = new HashMap<String, String>();
+    	while(idsAndNames.moveToNext()){
+               String course_id = idsAndNames.getString(0);
+               String course_name = idsAndNames.getString(1);
+    		   id_names.put(course_id, course_name);
+    	}
+    	db.close();
+    	 return id_names;
      }
      
      public static ArrayList<String> queryDB(Context context,SQLiteDatabase db, String sql, String[] selectionArgs ){
@@ -45,7 +50,16 @@ public class DBTool {
     	 Cursor cursor = db.rawQuery(sql, selectionArgs);
     
     	 while(cursor.moveToNext()){
-    	       result.add(cursor.getString(cursor.getPosition()));              } 
+    		 int count = cursor.getColumnCount();
+    		 String row = "";
+    		 for (int i =0; i < count; i++){
+    			 
+    			 String currentColumn = cursor.getString(i);
+    			 row = row +currentColumn;
+    			 
+    			 
+    		 }
+    		 result.add(row);           } 
     	
     	 //db.close();
     

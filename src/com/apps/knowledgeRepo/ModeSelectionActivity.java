@@ -47,8 +47,10 @@ public class ModeSelectionActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         SQLiteDatabase db = DBTool.getDB(getApplicationContext());
+      
+       if(db.isOpen()){
         db.close();
-    
+      }
         
      
         initializeCourses();
