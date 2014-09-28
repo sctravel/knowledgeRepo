@@ -66,8 +66,40 @@ public class DBTool {
 		return result;
      }   
      
+     public static HashMap<String,String> retriveStatus (Context context,SQLiteDatabase db, String course_id, String exam_id, String att, String qnum) {
+    	 if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+    	 
+
+    	 String sqlQuery = "select * from ceaqa where "  + 
+    	                   "course_id =? and exam_id=? and attempt = ? and qnum=  ?;";
+        
+    	Cursor cursor= db.rawQuery(sqlQuery, new String[]{course_id,exam_id,att,qnum});
+    	int courseIdIndex = cursor.getColumnIndex("COURSE_ID");
+    	int examIdIndex = cursor.getColumnIndex("EXAM_ID");
+    	int attIndex = cursor.getColumnIndex("ATTEMPT");
+    	int qnumIndex = cursor.getColumnIndex("QNUM");
+    	int answerIndex = cursor.getColumnIndex("ANSWER");
+    	int timeIndex = cursor.getColumnIndex("TIME");
+    	HashMap<String, String> result = new HashMap<String,String>();
+    	while(cursor.moveToNext()){
+    		   
+    		 String key = cursor.getString(courseIdIndex) + "_"
+    		            + cursor.getString(examIdIndex) + "_"
+    		            + cursor.getString(attIndex) + "_"
+    		            + cursor.getString(qnumIndex) ;
+    		            
+    		String answer_time = cursor.getString(answerIndex) + "_" + cursor.getString(timeIndex);	 
+    	   
+    		result.put(key, answer_time); 
+    	}
+    	return result;
+     }
      
-     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String exam_id, String att, String qnum, String ans){
+     
+     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String exam_id, String att, String qnum, String ans, String time){
     		if( !db.isOpen()){
         		db=DBTool.getDB(context);
         		
@@ -76,12 +108,13 @@ public class DBTool {
     	                                            + "'" +  exam_id + "'" + ","
     			                                    + "'" +  att + "'" + ","
     	                                            + "'" +  qnum+ "'" + ","
-    			                                    + "'" +  ans + "'" + ");"; 
+    			                                    + "'" +  ans + "'" + "," 
+    	                                            + "'" +  time +"'" +  ")" ; 
     	
     	 String sqlQuery = "select count(*) from ceaqa where "  + 
-    	                   "cid =? and eid=? and attempt = ? and qnum=  ?;";  
+    	                   "course_id =? and exam_id=? and attempt = ? and qnum=  ?;";  
     	
-    	 String sqlUpdate = "update ceaqa set answer=? where cid=? and eid=? and attempt=? and qnum=?; " ;
+    	 String sqlUpdate = "update ceaqa set answer=? , time= ? where course_id=? and exam_id=? and attempt=? and qnum=?; " ;
     	 
     	 DBTool.queryDB(context, db, sqlQuery, new String[]{course_id,exam_id,att,qnum}).get(0);
     	 

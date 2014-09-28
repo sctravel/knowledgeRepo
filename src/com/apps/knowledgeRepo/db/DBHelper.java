@@ -11,7 +11,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    	    "'EXAM_ID' varchar(256), " +
 	    	    "'ATTEMPT' varchar(256)," +
 	    	    " 'QNUM' varchar(256)," +
-	    	    "'ANSWER' varchar(256))";
+	    	    "'ANSWER' varchar(256)," + 
+	    	    "'TIME' varchar(256)"  +
+	    	    ")";
 	    
 	    private static final String SQL_CREATE_COURSE =
 	    	    "CREATE TABLE COURSE ('COURSE_ID' varchar(256)," + 
