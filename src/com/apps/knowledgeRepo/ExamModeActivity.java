@@ -119,6 +119,7 @@ public class ExamModeActivity extends Activity{
         }
         
         Bundle extras = getIntent().getExtras();
+        //TODO: we also need to get marked questions' information
         if (extras != null) {
 	        exam = (Exam) extras.getSerializable("exam");
 	        courseId =  extras.getString("courseId");
@@ -161,6 +162,8 @@ public class ExamModeActivity extends Activity{
         });
         return super.onCreateOptionsMenu(menu);
     }
+    
+    //TODO: Need to remove unnecessary menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -257,27 +260,7 @@ public class ExamModeActivity extends Activity{
 
     	}
     }
-    /*
-    private void parseExam() {
-    	exam = new SingleChoiceExam();
-    	String questionString = "none";
- 		String answerString = "none";
-    	try {
-      	  //make it configuable  here
-         	 InputStream question = getAssets().open("exams/exam1.txt");
-         	 InputStream answer = getAssets().open("exams/exp1.txt");
 
-  		    questionString = exam.readFromFile(question);
-  		    answerString = exam.readFromFile(answer);
-
-         } catch (FileNotFoundException e) {
-         	  System.err.println("File not found ");
-         } catch (IOException e) {
-           	System.err.println("Error pasing file a");
-         }
-         
-  	   exam.parseExam(questionString,answerString);
-    }*/
     
     private long getRemainTimeInMillis() {
     	System.out.println("Total pause time is: "+totalPauseTime);
@@ -359,11 +342,11 @@ public class ExamModeActivity extends Activity{
         final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
-        questionText.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getText()));
-        choiceA.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
-        choiceB.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
-        choiceC.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
-        choiceD.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
+        questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
+        choiceA.setText(Html.fromHtml("A. "+exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
+        choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
+        choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
+        choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
     }
     public  void onRadioButtonClicked(View view) {
     	
@@ -695,12 +678,18 @@ public class ExamModeActivity extends Activity{
 	   List<Integer> correctList = new ArrayList<Integer>();
 	   for(Question question : questionList) {
 		  // if(answer.getAnswer().equalsIgnoreCase(scoreMap.get(count))) {
-		   char storedAnswer = scoreMap.get(count).charAt(0);
-		   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer);
-		   long score =  question.getAnswers().get( storedAnswer-'A' ).getScore();
-		   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer+" ---- Score: "+score);
-		   if( score==1 ) {
-			   correctList.add(count);
+		   String as = scoreMap.get(count);
+		   if(as != null && !as.isEmpty()) {
+			   
+			   char storedAnswer = as.charAt(0);
+			   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer);
+			   long score =  question.getAnswers().get( storedAnswer-'A' ).getScore();
+			   Log.d("grade", "questionNumber: "+count+" ---- answer: "+storedAnswer+" ---- Score: "+score);
+			   if( score==1 ) {
+				   correctList.add(count);
+			   } else {
+				   inCorrectList.add(count);
+			   }
 		   } else {
 			   inCorrectList.add(count);
 		   }
