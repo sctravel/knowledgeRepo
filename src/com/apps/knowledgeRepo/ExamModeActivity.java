@@ -18,8 +18,6 @@ import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
-import com.apps.knowledgeRepo.exams.SingleChoiceExam;
-import com.apps.knowledgeRepo.om.SingleChoiceAnswer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

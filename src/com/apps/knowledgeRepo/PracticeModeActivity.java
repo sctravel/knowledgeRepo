@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.exams.SingleChoiceExam;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -37,12 +36,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PracticeModeActivity extends Activity {
-	public final static String EXTRA_MESSAGE = "com.apps.knowledagerepo.MESSAGE";
+/*	public final static String EXTRA_MESSAGE = "com.apps.knowledagerepo.MESSAGE";
 	public final static char CHOICE_A= 'A';
 	private ShareActionProvider mShareActionProvider;
 
 	private int questionNumber = -1;
-    SingleChoiceExam exam = null;
+    //SingleChoiceExam exam = null;
     //private Map<Long, Long> scoreMap = new HashMap<Long, Long>(); //store the answer of the question which user already finished 
     
     public void initilizePractice() {
@@ -61,7 +60,7 @@ public class PracticeModeActivity extends Activity {
             	}
             
             	System.out.println("chosen=="+chosen+";  You've chosen --- "+(char)(CHOICE_A+chosen-1));
-            	System.out.println("answer is --"+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
+            	//System.out.println("answer is --"+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
             	if(chosen==0) {
             		answerText.setText("Please select an answer.");        
             		answerText.setTextColor(Color.RED);
@@ -70,20 +69,14 @@ public class PracticeModeActivity extends Activity {
             		System.out.println("Congraturations! You are correct with answer - "+(char)(CHOICE_A+chosen-1));
             		answerText.setText("Congraturations! You are correct with answer - "+(char)(CHOICE_A+chosen-1));
             		answerText.setTextColor(Color.GREEN);
-            		/*//Using Customer Toast
-            		Toast toast=new Toast(getApplicationContext());
-            		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-            		toast.setDuration(Toast.LENGTH_LONG);
-            		toast.setView(getLayoutInflater().inflate(R.layout.custom_toast, null));
-            		toast.show();*/
-            		Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
+            		
             	} else {
-            		System.out.println("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
-            		answerText.setText("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
+            		//System.out.println("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
+            		//answerText.setText("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
             		answerText.setTextColor(Color.RED);
             		
             		
-            		Toast.makeText(getApplicationContext(), "Sorry! Answer is "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0), Toast.LENGTH_LONG).show();
+            		//Toast.makeText(getApplicationContext(), "Sorry! Answer is "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0), Toast.LENGTH_LONG).show();
 
             	}
             }
@@ -91,7 +84,7 @@ public class PracticeModeActivity extends Activity {
     }
     
     public void initilizeExam() {
-    	exam = new SingleChoiceExam();
+    	//exam = new SingleChoiceExam();
  		String questionString = "none";
  		String answerString = "none";
  		
@@ -224,11 +217,6 @@ public class PracticeModeActivity extends Activity {
     	return d;
     }
    
-    /** Defines a default (dummy) share intent to initialize the action provider.
-     * However, as soon as the actual content to be used in the intent
-     * is known or changes, you must update the share intent by again calling
-     * mShareActionProvider.setShareIntent()
-     */
    private Intent getDefaultIntent() {
        Intent intent = new Intent(Intent.ACTION_SEND);
        intent.setType("image/*");
@@ -250,6 +238,6 @@ public class PracticeModeActivity extends Activity {
     
     private void openSettings(){
     	
-    }
+    }*/
     
 }
