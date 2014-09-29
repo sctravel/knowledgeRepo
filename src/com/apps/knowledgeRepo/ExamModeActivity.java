@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
@@ -61,6 +62,7 @@ public class ExamModeActivity extends Activity{
 	private int questionNumber = 0;
 	private int reviewQuestionNumberIndex = 0;
     Exam exam = null;
+    String courseId = null;
     
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
@@ -71,22 +73,30 @@ public class ExamModeActivity extends Activity{
     private boolean isReviewMode = false;
     private int storedQuestionNumber=0;
     private List<Integer> inCorrectList = new ArrayList<Integer>();
-    
+    //set attempt to 1 first
+	//TODO:  add attempt to the app
+    private int attempt=1;
     private long startTime;
     private long pauseStartTime=0;
     private long totalPauseTime=0;
     
     public void initilizeExam() {
+    		
+    	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
+    			DBTool.getDB(getApplicationContext()), courseId, ""+exam.getExamId(), attempt); 
     	
+    	scoreMap = examStatus.getUserAnswerMap();
+    	questionNumber = scoreMap.size();
+        totalPauseTime=examStatus.getUsedTime();
+
  		addListenerOnJumpToButton();
  		addListenerOnPauseButton();
  		addListenerOnGradeButton();
         addListenerOnPrevAndNextButton();
         addListenerOnReviewMarkedButton();
         startTime = System.currentTimeMillis();
-        totalPauseTime=0;
         pauseStartTime=0;
-	    questionNumber=0;
+        
 	    refreshPage();
     }
   //Review Mode can only see the questions marked for review
@@ -98,6 +108,108 @@ public class ExamModeActivity extends Activity{
     	this.isReviewMode=isReviewMode;
     }
     
+    
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.exam_mode);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // If your minSdkVersion is 11 or higher, instead use:
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+           getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+	        exam = (Exam) extras.getSerializable("exam");
+	        courseId =  extras.getString("courseId");
+	        if(exam!=null) {
+	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
+	        }
+	        
+        }
+        if(exam==null) throw new RuntimeException("Exam is null");
+        initilizeExam();
+    }
+   
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.exam_mode_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        // Configure the search info and add any event listeners
+        
+       // MenuItem shareItem = menu.findItem(R.id.action_share);
+       // mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+       // mShareActionProvider.setShareIntent(getDefaultIntent());
+        
+     // When using the support library, the setOnActionExpandListener() method is
+        // static and accepts the MenuItem object as an argument
+        MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                openSearch();
+                return true;
+            case R.id.action_settings:
+                openSettings();
+                return true;
+            case R.id.action_enter_review_mode:
+                enterReviewMode();
+                return true;
+            case R.id.action_leave_review_mode:
+                leaveReviewMode();
+                return true;
+            case R.id.action_grade:
+                grade();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    /** Defines a default (dummy) share intent to initialize the action provider.
+     * However, as soon as the actual content to be used in the intent
+     * is known or changes, you must update the share intent by again calling
+     * mShareActionProvider.setShareIntent()
+     */
+   @SuppressWarnings("unused")
+   private Intent getDefaultIntent() {
+       Intent intent = new Intent(Intent.ACTION_SEND);
+       intent.setType("image/*");
+       return intent;
+   }
+   
+   @Override
+   public void onResume() {
+       super.onResume();  // Always call the superclass method first
+       resume();
+   } 
+   @Override
+   public void onPause() {
+       super.onPause();  // Always call the superclass method first
+       pause();
+   }
+   
     //Store the marked status, called before refresh to a new page
     private void checkMarkedStatus() {
     	CheckBox mark = (CheckBox) findViewById(R.id.markForReviewExam);
@@ -205,6 +317,8 @@ public class ExamModeActivity extends Activity{
     		mark.setChecked(true);
     	}
         
+    	
+    	
     }
     
     private void disableButtons() {
@@ -258,8 +372,10 @@ public class ExamModeActivity extends Activity{
     	String value = getCheckedAnswer();
     	//Store user answer
         scoreMap.put(questionNumber, value);
-        //need course id, exam id, attempt,  
-        Course course = new Course(); 	
+        DBTool.recordStatus(getApplicationContext(), DBTool.getDB(getApplicationContext()), 
+    			courseId, ""+exam.getExamId(), ""+attempt, ""+questionNumber, 
+    			value, ""+(exam.getTimeLimit()*60*1000-getRemainTimeInMillis()) );
+        Log.d("DB operation","Write question:"+questionNumber+" with answer:"+value+" to DB");
         checkMarkedStatus();
         nextQuestion();
         refreshPage();
@@ -298,105 +414,7 @@ public class ExamModeActivity extends Activity{
     	if (chosen==0) return null;
     	return (char)(CHOICE_A+chosen-1)+"";
     }
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.exam_mode);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // If your minSdkVersion is 11 or higher, instead use:
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-           getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-	        exam = (Exam) extras.getSerializable("exam");
-	        if(exam!=null) {
-	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
-	        }
-	        
-        }
-        if(exam==null) throw new RuntimeException("Exam is null");
-        initilizeExam();
-    }
    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.exam_mode_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        // Configure the search info and add any event listeners
-        
-       // MenuItem shareItem = menu.findItem(R.id.action_share);
-       // mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-       // mShareActionProvider.setShareIntent(getDefaultIntent());
-        
-     // When using the support library, the setOnActionExpandListener() method is
-        // static and accepts the MenuItem object as an argument
-        MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Do something when collapsed
-                return true;  // Return true to collapse action view
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // Do something when expanded
-                return true;  // Return true to expand action view
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                openSearch();
-                return true;
-            case R.id.action_settings:
-                openSettings();
-                return true;
-            case R.id.action_enter_review_mode:
-                enterReviewMode();
-                return true;
-            case R.id.action_leave_review_mode:
-                leaveReviewMode();
-                return true;
-            case R.id.action_grade:
-                grade();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    
-    /** Defines a default (dummy) share intent to initialize the action provider.
-     * However, as soon as the actual content to be used in the intent
-     * is known or changes, you must update the share intent by again calling
-     * mShareActionProvider.setShareIntent()
-     */
-   @SuppressWarnings("unused")
-   private Intent getDefaultIntent() {
-       Intent intent = new Intent(Intent.ACTION_SEND);
-       intent.setType("image/*");
-       return intent;
-   }
-   
-   @Override
-   public void onResume() {
-       super.onResume();  // Always call the superclass method first
-       resume();
-   } 
-   @Override
-   public void onPause() {
-       super.onPause();  // Always call the superclass method first
-       pause();
-   }
    
    public void pause() {
 	   System.out.println("Exam paused;");

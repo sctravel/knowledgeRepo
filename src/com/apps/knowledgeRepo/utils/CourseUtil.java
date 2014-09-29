@@ -90,14 +90,14 @@ public class CourseUtil {
 	        		   Exam examObj = new Exam(); 
 	        		   
 	        		   JSONObject exam= (JSONObject)examIterator.next();          		   
-	        		   Long examid= (Long) exam.get("examid");           		   
+	        		   Long examId= (Long) exam.get("examid");           		   
 	        		   String name= (String) exam.get("name");           		   
 	        		   Long passing= (Long) exam.get("passing");            		   
 	        		   Long timeLimit= (Long) exam.get("timeLimit");
 	        		   
 	        		   Log.d("JSON parser", "exam: "+ name);
 	        		   
-	        		   examObj.setExamid(examid);
+	        		   examObj.setExamId(examId);
 	        		   examObj.setName(name);
 	        		   examObj.setPassing(passing);
 	        		   examObj.setTimeLimit(timeLimit);

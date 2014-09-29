@@ -3,6 +3,8 @@ package com.apps.knowledgeRepo.db;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.apps.knowledgeRepo.dataModel.ExamStatus;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,7 +24,9 @@ public class DBTool {
     	 
      } 
     
-     public static HashMap<String, String> getIDsandNames (Context context,SQLiteDatabase db){
+     public static HashMap<String, String> getIDsandNames (Context context){
+    	 SQLiteDatabase db = DBTool.getDB(context);
+    	 
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
@@ -66,36 +70,45 @@ public class DBTool {
 		return result;
      }   
      
-     public static HashMap<String,String> retriveStatus (Context context,SQLiteDatabase db, String course_id, String exam_id, String att, String qnum) {
+     public static ExamStatus retriveStatus (Context context,SQLiteDatabase db, String courseId, String examId, int attempt ) {
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
     	 
+    	ExamStatus examStatus = new ExamStatus();
+    	examStatus.setCourseId(courseId);
+    	examStatus.setExamId(examId);
+    	examStatus.setAttempt(attempt);
+    	examStatus.setUsedTime(0); //set it to 0 initially
 
     	 String sqlQuery = "select * from ceaqa where "  + 
-    	                   "course_id =? and exam_id=? and attempt = ? and qnum=  ?;";
+    	                   "course_id =? and exam_id=? and attempt = ?;";
         
-    	Cursor cursor= db.rawQuery(sqlQuery, new String[]{course_id,exam_id,att,qnum});
-    	int courseIdIndex = cursor.getColumnIndex("COURSE_ID");
-    	int examIdIndex = cursor.getColumnIndex("EXAM_ID");
-    	int attIndex = cursor.getColumnIndex("ATTEMPT");
+    	Cursor cursor= db.rawQuery(sqlQuery, new String[]{courseId,examId,""+attempt});
+    	//int courseIdIndex = cursor.getColumnIndex("COURSE_ID");
+    	//int examIdIndex = cursor.getColumnIndex("EXAM_ID");
+    	//int attIndex = cursor.getColumnIndex("ATTEMPT");
     	int qnumIndex = cursor.getColumnIndex("QNUM");
     	int answerIndex = cursor.getColumnIndex("ANSWER");
-    	int timeIndex = cursor.getColumnIndex("TIME");
-    	HashMap<String, String> result = new HashMap<String,String>();
+    	int usedTimeIndex = cursor.getColumnIndex("TIME");
+    	
+    	long usedTimeMax = examStatus.getUsedTime();
     	while(cursor.moveToNext()){
-    		   
-    		 String key = cursor.getString(courseIdIndex) + "_"
-    		            + cursor.getString(examIdIndex) + "_"
-    		            + cursor.getString(attIndex) + "_"
-    		            + cursor.getString(qnumIndex) ;
-    		            
-    		String answer_time = cursor.getString(answerIndex) + "_" + cursor.getString(timeIndex);	 
-    	   
-    		result.put(key, answer_time); 
+    		 
+    		 Integer questionNumber = cursor.getInt(qnumIndex);
+    		 String answer = cursor.getString(answerIndex);
+    		 Long usedTime = cursor.getLong(usedTimeIndex);
+    		 if(usedTime!=null && usedTime > usedTimeMax) {
+    			 usedTimeMax = usedTime;
+    		 }
+    		 
+    		 examStatus.getUserAnswerMap().put(questionNumber, answer);
     	}
-    	return result;
+    	examStatus.setUsedTime(usedTimeMax);
+    	
+    	//Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
+    	return examStatus;
      }
      
      
@@ -135,7 +148,7 @@ public class DBTool {
      
      public static void insertCourse(Context context,SQLiteDatabase db, String course_id, String course_name, String course_content){
     	 
-    	 Log.d("insertCourse","insertCourse");
+    	 //Log.d("insertCourse","insertCourse");
     		if( !db.isOpen()){
         		db=DBTool.getDB(context);
         		Log.d("Open new DB","Open new DB");

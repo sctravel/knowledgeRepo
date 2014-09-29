@@ -40,50 +40,26 @@ import com.apps.knowledgeRepo.utils.CourseUtil;
 
 public class ModeSelectionActivity extends Activity {
 	
-	private Map<String, List<String>> courseMap = new HashMap<String, List<String>>();
-	private String currentCourse;
+	private Map<String, String> courseMetaData = new HashMap<String, String>();
+	private String currentCourseId=null;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SQLiteDatabase db = DBTool.getDB(getApplicationContext());
+        /*SQLiteDatabase db = DBTool.getDB(getApplicationContext());
       
-       if(db.isOpen()){
-        db.close();
-      }
+        if(db.isOpen()){
+          db.close();
+        }*/
         
-     
-        initializeCourses();
-		setContentView(R.layout.mode_selection);
+   		setContentView(R.layout.mode_selection);
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		         
-		initializeCourses();
-
+		      
+	
 		mainPage();		         
        
-
-	}
-
-	private void initializeCourses() {
-		//TODO get all the courseIds and courseNames from DB
-		List<String> course1ExamList = new ArrayList<String>();
-		course1ExamList.add("iLF6");
-		course1ExamList.add("Exam2");
-		course1ExamList.add("Exam3");
-		courseMap.put("iLF6", course1ExamList);
-		
-		List<String> course2ExamList = new ArrayList<String>();
-		courseMap.put("course2", course2ExamList);
-		course2ExamList.add("Exam4");
-		course2ExamList.add("Exam5");
-
-		List<String> course3ExamList = new ArrayList<String>();
-		courseMap.put("course3", course3ExamList);
-		course3ExamList.add("Exam6");
-		course3ExamList.add("Exam7");
-		course3ExamList.add("Exam8");
 
 	}
 	
@@ -111,7 +87,7 @@ public class ModeSelectionActivity extends Activity {
 		//tv.setGravity(Gravity.CENTER);
 		//tv.setTextSize(10);
 	
-		for(Map.Entry<String, List<String>> entry : courseMap.entrySet()) {
+		for(Map.Entry<String, String> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
 			Button bt = new Button(getApplicationContext());
 			bt.setText(courseId);
@@ -124,6 +100,7 @@ public class ModeSelectionActivity extends Activity {
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	Course course = CourseUtil.initilizeCourse(courseId, getApplicationContext());
+	            	currentCourseId = course.getCourseId();
 	            	selectCourseModulePage(course);
 	            }
 	        });
@@ -272,6 +249,9 @@ public class ModeSelectionActivity extends Activity {
         final Button buttonHomeRoom = (Button) findViewById(R.id.homeRoom);
         buttonHomeRoom.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	//Get course information  List of Ids and Names
+        		courseMetaData = DBTool.getIDsandNames(getApplicationContext());
+
             	selectCoursesPage();
             }
         });
@@ -377,6 +357,7 @@ public class ModeSelectionActivity extends Activity {
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
         intent.putExtra("exam", exam);
+        intent.putExtra("courseId", currentCourseId);
         startActivity(intent);
     }
     public void beginPractice(View view, String courseId, String courseModuleId, String examId) {

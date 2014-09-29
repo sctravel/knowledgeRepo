@@ -9,7 +9,7 @@ import java.util.List;
 public class Exam implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	long examid;
+	long examId;
 	String name;
 	long passing;
 	long timeLimit; 
@@ -38,11 +38,11 @@ public class Exam implements Serializable{
 	      aOutputStream.defaultWriteObject();
 	    }
 	
-	public long getExamid() {
-		return examid;
+	public long getExamId() {
+		return examId;
 	}
-	public void setExamid(long examid) {
-		this.examid = examid;
+	public void setExamId(long examId) {
+		this.examId = examId;
 	}
 	public String getName() {
 		return name;
