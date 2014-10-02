@@ -15,6 +15,16 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    	    "'TIME' varchar(256)"  +
 	    	    ")";
 	    
+	    private static final String SQL_CREATE_GRADE = 
+	    		"CREATE TABLE EXAM_GRADE ('COURSE_ID' varchar(256)," +
+	    		"'MODULE_ID varchar(256)'"+
+	    		"'EXAM_ID varchar(256)'" +
+	    		"'ATTEMPT varchar(256)'" +
+	    		"'IS_GRADE boolean" +
+	    		"'GRADE' varchar(256)" +
+	    		"'GRADT_TIME' TEXT" +
+	    		")";
+	    
 	    private static final String SQL_CREATE_COURSE =
 	    	    "CREATE TABLE COURSE ('COURSE_ID' varchar(256)," + 
 	            "'COURSE_NAME' varchar(256)," +  
