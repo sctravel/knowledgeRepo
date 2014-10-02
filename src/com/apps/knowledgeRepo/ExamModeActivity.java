@@ -203,12 +203,12 @@ public class ExamModeActivity extends Activity{
    @Override
    public void onResume() {
        super.onResume();  // Always call the superclass method first
-       resume();
+       //resume();
    } 
    @Override
    public void onPause() {
        super.onPause();  // Always call the superclass method first
-       pause();
+       //pause();
    }
    
     //Store the marked status, called before refresh to a new page
@@ -695,14 +695,17 @@ public class ExamModeActivity extends Activity{
 		   }
 		   ++count;
 	   }
-	   if(correctList.size() > exam.getPassing() ) {
+	   int totalScore = 100*correctList.size()/questionList.size() ;
+
+	   if(totalScore > exam.getPassing() ) {
 		   isPassed = true;
 		   sb.append("Congratulations! You have passed the exam. \n");
 	   } else {
 		   sb.append("Sorry, you didn't pass the exam. \n");
 	   }
 	   
-	   sb.append("Your score is "+correctList.size()+" out of "+questionList.size()+", and the passing score is "+exam.getPassing()+". ");
+	   
+	   sb.append("Your score is "+totalScore+", and the passing score is "+exam.getPassing()+". ");
 	   
 	   showResultDialog(sb.toString());
 		

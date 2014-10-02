@@ -200,7 +200,7 @@ public class ViewAnswerModeActivity extends Activity{
        			break;
     		}
     	}
-    	answerText.setText(Html.fromHtml("Correct Answer is "+answerNum+"\n"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	answerText.setText(Html.fromHtml("Correct Answer is "+answerNum+"<br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
     	//answerText.setTextColor(0xff);
     }
     private void setQuestionText(int questionNumber) {
@@ -209,13 +209,13 @@ public class ViewAnswerModeActivity extends Activity{
         final TextView choiceB = (TextView) findViewById(R.id.choiceBPractice);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCPractice);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDPractice);
-        questionText.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getText() ));
+        questionText.setText(Html.fromHtml( (questionNumber+1)+". "+exam.getQuestions().get(questionNumber).getText() ));
         //List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
         //for(Answer answer : answerList )
-        choiceA.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
-        choiceB.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText() ));
-        choiceC.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText() ));
-        choiceD.setText(Html.fromHtml(exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText() ));
+        choiceA.setText(Html.fromHtml("A. "+exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
+        choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText() ));
+        choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText() ));
+        choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText() ));
     }
     
     private void addListenerOnJumpToButton() {

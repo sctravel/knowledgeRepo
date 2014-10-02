@@ -89,8 +89,9 @@ public class ModeSelectionActivity extends Activity {
 	
 		for(Map.Entry<String, String> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
+			final String courseName = entry.getValue();
 			Button bt = new Button(getApplicationContext());
-			bt.setText(courseId);
+			bt.setText(courseName);
 			linear.addView(bt);
 			lpbt.topMargin=10;
 			lpbt.bottomMargin=10;

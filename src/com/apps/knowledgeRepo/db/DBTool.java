@@ -57,7 +57,8 @@ public class DBTool {
     		 int count = cursor.getColumnCount();
     		 String row = "";
     		 for (int i =0; i < count; i++){
-    			 
+    			 int j = cursor.getColumnIndex("COURSE_CONTENT");
+    			 Log.d("name","i-"+i+"; j-"+j);
     			 String currentColumn = cursor.getString(i);
     			 row = row +currentColumn;
     			 
