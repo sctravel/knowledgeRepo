@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
@@ -65,7 +66,8 @@ public class ModeSelectionActivity extends Activity {
 	
 	private void selectCoursesPage(){
 		
-		
+		ScrollView scrollView = new ScrollView(getApplicationContext());
+
 		LayoutParams lptv = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
 		lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
@@ -102,7 +104,12 @@ public class ModeSelectionActivity extends Activity {
 	            public void onClick(View v) {
 	            	Course course = CourseUtil.initilizeCourse(courseId, getApplicationContext());
 	            	currentCourseId = course.getCourseId();
-	            	selectCourseModulePage(course);
+	            	if(course.getModules().size()>1) {
+	            		selectCourseModulePage(course);
+	            	} else {
+	            		//If there's only one module, skip the select Module page
+	            		selectExamsPage(course,course.getModules().get(0));
+	            	}
 	            }
 	        });
 		}
@@ -122,8 +129,8 @@ public class ModeSelectionActivity extends Activity {
             }
         });
 		linear.setOrientation(LinearLayout.VERTICAL);
-
-        setContentView(linear);
+		scrollView.addView(linear);
+        setContentView(scrollView);
 
 	}
 	
@@ -131,6 +138,8 @@ public class ModeSelectionActivity extends Activity {
 		Log.d("CourseInfo",course.getCourseId()+" "+course.getCourseName()+" "+
 					course.getCourseType() );//+"  number of modules:"+course.getModules().size());
 		
+		ScrollView scrollView = new ScrollView(getApplicationContext());
+
 		List<CourseModule> moduleList = course.getModules();
 		
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
@@ -183,11 +192,15 @@ public class ModeSelectionActivity extends Activity {
 	        });
 			linear.addView(back);
 			linear.setOrientation(LinearLayout.VERTICAL);
-	        setContentView(linear);
+			
+			scrollView.addView(linear);
+	        setContentView(scrollView);
 	}
 	
 	//TODO: Need to have course information in courseModule
 	private void selectExamsPage(final Course course, CourseModule courseModule) {
+		
+		ScrollView scrollView = new ScrollView(getApplicationContext());
 		
 		List<Exam> examList = courseModule.getExams();
 		//setContentView(R.layout.course_selection);
@@ -202,6 +215,7 @@ public class ModeSelectionActivity extends Activity {
 		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		LinearLayout linear = new LinearLayout(getApplicationContext());
+		linear.setLayoutParams(lptv);
 		linear.setLayoutParams(lptv);
 		linear.setVerticalGravity(MODE_APPEND);
 		linear.addView(tv);
@@ -237,12 +251,18 @@ public class ModeSelectionActivity extends Activity {
 		back.setGravity(Gravity.BOTTOM);
 		back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	selectCourseModulePage(course);
+            	if(course.getModules().size() > 1) {
+            		selectCourseModulePage(course);
+            	} else {
+            		selectCoursesPage();
+            	}
             }
         });
 		linear.addView(back);
 		linear.setOrientation(LinearLayout.VERTICAL);
-        setContentView(linear);
+		
+		scrollView.addView(linear);
+        setContentView(scrollView);
 
 	}
 	private void mainPage() {
