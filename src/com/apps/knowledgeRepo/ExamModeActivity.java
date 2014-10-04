@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -337,12 +338,16 @@ public class ExamModeActivity extends Activity{
     }
     
     private void setQuestionText(int questionNumber) {
-    	final TextView questionText = (TextView) findViewById(R.id.questionExam);
+    	//final TextView questionText = (TextView) findViewById(R.id.questionExam);
+    	final WebView questionText = (WebView) findViewById(R.id.questionExam);
+
         final TextView choiceA = (TextView) findViewById(R.id.choiceAExam);
         final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
         final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
         final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
-        questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
+        
+        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText(),"text/html","utf-8");
+        //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
         choiceA.setText(Html.fromHtml("A. "+exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
         choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
         choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
