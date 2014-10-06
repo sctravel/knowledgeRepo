@@ -147,6 +147,12 @@ public class DBTool {
     	 db.close();
      }
      
+     
+     public static void insertCourse(Context context,SQLiteDatabase db, String courseId, String courseName, Long moduleId, Long examid,String examName, String examContent){
+    	 	
+    	 return;
+     }
+     
      public static void insertCourse(Context context,SQLiteDatabase db, String course_id, String course_name, String course_content){
     	 
     	 //Log.d("insertCourse","insertCourse");

@@ -80,12 +80,42 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		           String courseName = (String) course.get("courseName");
 		           long courseType = (Long) course.get("courseType");
 		           String courseOrientation = (String) course.get("courseOrientation");
-		           String courseContent = course.toJSONString();
+		           // String courseContent = course.toJSONString();
 		          // JSONObject test = (JSONObject) parser.parse(courseContent);
 		          // Log.d("Test Parse","Parse the courseContent succeed. Length--"+courseContent.length()+"Storing into DB--"+test.get("courseName"));
-		           storeToDB(courseId, courseName, courseContent, context);
 		           
+		           JSONArray courseModules = (JSONArray)course.get("Modules"); 
+		           Iterator<JSONObject> modelIterator = courseModules.iterator();
 		           
+		           List<CourseModule> couseModuleObjs= new ArrayList<CourseModule>();
+		           		           	        	   
+		           while (modelIterator.hasNext()) {
+		        	   
+		        	   CourseModule couseModuleObj= new CourseModule();
+		        	   
+		        	   JSONObject module= (JSONObject)modelIterator.next();   	   
+		        	   Long moduleId = (Long) module.get("module");    	       	   
+		        	   JSONArray exams = (JSONArray)module.get("Exams");
+        	            	   
+		        	   Iterator<JSONObject> examIterator = exams.iterator();
+	        	   
+		        	   List<Exam> examObjs = new ArrayList<Exam>(); 
+		        	   
+		        	   while (examIterator.hasNext()) {
+		        		   
+		        		   Exam examObj = new Exam(); 
+		        		   
+		        		   JSONObject exam= (JSONObject)examIterator.next();          		   
+		        		   Long examid= (Long) exam.get("examid");           		   
+		        		   String examName= (String) exam.get("name"); 
+		        		   
+		        		   String examContent = exam.toJSONString();
+		        		   
+		        		   storeToDB(courseId, courseName, moduleId, examid,examName, examContent, context);
+		        	   }
+		           }
+			           
+		          // storeToDB(courseId, courseName, courseContent, context);	           
 				 }	
 			}
 			catch(Exception ex){			
@@ -96,6 +126,17 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 			
 			Log.d("JSON parser", "finished parsing JSON");
 			return true; 
+	}
+	
+	
+	public void storeToDB(String courseId, String courseName, Long moduleId, Long examid,String examName, String examContent, Context context){
+		
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertCourse(context, db, courseId, courseName, moduleId, examid,examName, examContent);
+		Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
+		
+		return; 
+	
 	}
 
 	public void storeToDB(String courseId, String courseName, String jsonContent,Context context){
