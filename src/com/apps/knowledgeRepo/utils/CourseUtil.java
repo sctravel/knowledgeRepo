@@ -22,6 +22,22 @@ import com.apps.knowledgeRepo.db.DBTool;
 
 public class CourseUtil {
 	
+	
+	public static String retrieveFromDB(Long examId,Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+		String examContent = DBTool.queryExam(context, db, examId);
+		
+		if(examContent == null || examContent.isEmpty()) {
+			Log.d("retrieveFromDB", " examContent is  null!!!");
+		} else {
+			examContent=examContent.replaceAll("!!pattern!!", "'");
+			Log.d("retrieveFromDB", " examContent is  not null with length--"+examContent.length());
+		}
+		Log.d("Retrieve fromDB ", " Retrieve fromDB  with length--"+examContent.length());
+
+		return examContent;
+	}
+	
 	public static String retrieveFromDB(String courseId,Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
 		String courseContent = DBTool.queryCourse(context, db, courseId);
@@ -35,6 +51,88 @@ public class CourseUtil {
 		Log.d("Retrieve fromDB ", " Retrieve fromDB  with length--"+courseContent.length());
 
 		return courseContent;
+	}
+	
+	
+	public static Exam initilizeExam(Long examId, Context context){
+		
+		   String jsonStr= retrieveFromDB(examId,context);		
+		   JSONParser parser = new JSONParser();
+		
+		   Exam examObj = new Exam();
+		 
+		   JSONObject exam;
+		try {
+			exam = (JSONObject) parser.parse(jsonStr);
+     		       		   
+		   String name= (String) exam.get("name");           		   
+		   Long passing= (Long) exam.get("passing");            		   
+		   Long timeLimit= (Long) exam.get("timeLimit");
+		   
+		   Log.d("JSON parser", "exam: "+ name);
+		   
+		   examObj.setExamId(examId);
+		   examObj.setName(name);
+		   examObj.setPassing(passing);
+		   examObj.setTimeLimit(timeLimit);
+		   	            		   
+		   JSONArray questions = (JSONArray)exam.get("Questions");	            		   
+		   Iterator<JSONObject> questionIterator = questions.iterator();
+		   
+		   List<Question> quesstionObjs = new ArrayList<Question>(); 
+   	   
+   	   while (questionIterator.hasNext()) {
+   		   
+   		   Question questionObj = new Question();
+   		   
+   		   JSONObject question= (JSONObject)questionIterator.next();		            		   
+   		   Long questionNumber= (Long) question.get("questionNumber");		            		   
+   		   String category= (String) question.get("category");	            		   
+   		   String text= (String) question.get("text");	            		   
+   		   String explanation= (String) question.get("explanation");	            		   
+   		   JSONArray answers = (JSONArray)question.get("Answers");
+   		   
+   		   
+   		   questionObj.setCategory(category);
+   		   questionObj.setText(text);
+   		   questionObj.setQuestionNumber(questionNumber);
+   		   questionObj.setExplanation(explanation);
+   		   		            		   
+   		   List<Answer> answerObjs = new ArrayList<Answer>(); 
+   		   
+   		   Iterator<JSONObject> answersIterator = answers.iterator();
+       	   
+       	   while (answersIterator.hasNext()) {
+       		   
+       		   Answer answerObj = new Answer();
+       		   
+       		   JSONObject answer= (JSONObject)answersIterator.next();         		   
+       		   Long answerNumber= (Long) answer.get("answerNumber");           		   
+       		   Long score= (Long) answer.get("score");            					            		   
+       		   String answerText= (String) answer.get("answerText");
+       		   			            		   
+       		   answerObj.setAnswerNumber(answerNumber);
+       		   answerObj.setAnswerText(answerText);
+       		   answerObj.setScore(score);			            		   
+       		   answerObjs.add(answerObj);			            		   
+       	   } 
+       	   questionObj.setAnswers(answerObjs);
+       	   quesstionObjs.add(questionObj);
+   	   }
+   	   	examObj.setQuestions(quesstionObjs);
+   	   	
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			Log.d("Exam initalizer","parser error during initialization"+e.getMessage());
+		}
+		
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			Log.d("Exam initalizer","parser error during initialization"+e.getMessage());
+		}
+  
+	    		        	   
+		return examObj; 
 	}
 	
 	public static Course initilizeCourse(String courseId, Context context){

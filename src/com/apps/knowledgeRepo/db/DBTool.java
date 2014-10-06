@@ -190,6 +190,15 @@ public class DBTool {
     	 
     	 db.close();
      }
+     
+     
+     // todo BoChen fill in the details
+     public static String queryExam(Context context,SQLiteDatabase db, Long examid){
+    	 
+    	 return null;
+     
+     }
+     
      public static String queryCourse(Context context,SQLiteDatabase db, String cid){
     	 
     	 String queryCourseSQL = "select COURSE_CONTENT from Course where COURSE_ID= ?" ;
