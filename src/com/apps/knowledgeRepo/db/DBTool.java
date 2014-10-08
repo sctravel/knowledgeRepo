@@ -100,7 +100,7 @@ public class DBTool {
     	 String sqlQuery = "select * from ceaqa where "  + 
     	                   "course_id =? and module_id=? and exam_id=? and attempt = ?;";
         
-    	Cursor cursor= db.rawQuery(sqlQuery, new String[]{courseId,examId,""+attempt});
+    	Cursor cursor= db.rawQuery(sqlQuery, new String[]{courseId,moduleId,examId,""+attempt});
     	//int courseIdIndex = cursor.getColumnIndex("COURSE_ID");
     	//int examIdIndex = cursor.getColumnIndex("EXAM_ID");
     	//int moduleIndex = cursor.getColumnIndex("MODULE_ID");
@@ -123,7 +123,7 @@ public class DBTool {
     	}
     	examStatus.setUsedTime(usedTimeMax);
     	db.close();
-    	//Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
+    	Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
     	return examStatus;
      }
      

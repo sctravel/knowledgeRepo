@@ -73,6 +73,7 @@ public class ExamModeActivity extends Activity{
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
 	private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
+    List<TextView> choiceList = null;
     
     //A list of questions numbers that are marked for review
     private List<Integer> reviewList = new ArrayList<Integer>();
@@ -85,7 +86,9 @@ public class ExamModeActivity extends Activity{
     private long totalPauseTime=0;
     
     public void initilizeExam() {
-    		
+    	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
+        if(exam==null) throw new RuntimeException("Exam is null after initialization for id-"+examId);
+        
     	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
     			DBTool.getDB(getApplicationContext()), courseId, moduleId, examId, attempt); 
     	
@@ -130,16 +133,20 @@ public class ExamModeActivity extends Activity{
 	        //exam = (Exam) extras.getSerializable("exam");
 	        courseId =  extras.getString("courseId");
 	        moduleId =extras.getString("moduleId");
-	        examId = extras.getString("examId");
-	        
-	        exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
-	        if(exam!=null) {
-	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
-	        }
-	        
-        }
-        if(exam==null) throw new RuntimeException("Exam is null");
+	        examId = extras.getString("examId");       
+        }     
+        choiceList = new ArrayList<TextView>();
+        final TextView choiceA = (TextView) findViewById(R.id.choiceAExam);
+        final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
+        final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
+        final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
+        choiceList.add(choiceA);
+        choiceList.add(choiceB);
+        choiceList.add(choiceC);
+        choiceList.add(choiceD);
+        
         initilizeExam();
+        
     }
    
     @Override
@@ -351,18 +358,19 @@ public class ExamModeActivity extends Activity{
     private void setQuestionText(int questionNumber) {
     	//final TextView questionText = (TextView) findViewById(R.id.questionExam);
     	final WebView questionText = (WebView) findViewById(R.id.questionExam);
-
-        final TextView choiceA = (TextView) findViewById(R.id.choiceAExam);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
+       
         
         questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText(),"text/html","utf-8");
         //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
-        choiceA.setText(Html.fromHtml("A. "+exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
-        choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
-        choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
-        choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
+        
+        for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
+        	Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	char c = (char) ('A'+i);
+        	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
+        }
+        //choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
+        //choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
+        //choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
     }
     public  void onRadioButtonClicked(View view) {
     	
@@ -442,7 +450,7 @@ public class ExamModeActivity extends Activity{
 	   
    }
    
-   private void leaveReviewMode() {
+   private boolean leaveReviewMode() {
 	   if(isReviewMode) {
 		   final  TextView title = (TextView) findViewById(R.id.singleChoiceExamTitle);
 		   title.setText(TITLE);
@@ -452,26 +460,31 @@ public class ExamModeActivity extends Activity{
 		   questionNumber = storedQuestionNumber;
 		   isReviewMode = false;
 		   refreshPage();
+		   return true;
 	   }
+	   return false;
    }
    
-   private void enterReviewMode() {
+   private boolean enterReviewMode() {
 	   if(!isReviewMode) {
 		   
 	   		if(reviewList.isEmpty()) {
 	   		   Toast.makeText(getApplicationContext(), "Your review list is empty", Toast.LENGTH_LONG).show();
+	   		   return false;
 	   		} else {
 	   			final  TextView title = (TextView) findViewById(R.id.singleChoiceExamTitle);
-	 		   title.setText(TITLE_REVIEW_MODE);
-	 		   final Button buttonJump = (Button) findViewById(R.id.jumpToButtonExam);
-	 		   buttonJump.setEnabled(false);
+	 		    title.setText(TITLE_REVIEW_MODE);
+	 		    final Button buttonJump = (Button) findViewById(R.id.jumpToButtonExam);
+	 		    buttonJump.setEnabled(false);
 	   		    Toast.makeText(getApplicationContext(), "Entering review mode.", Toast.LENGTH_LONG).show();
 	   			storedQuestionNumber = questionNumber;
 	   			questionNumber = reviewList.get(0);
 	   			isReviewMode = true;
 	   			refreshPage();
+	   			return true;
 	   		}
 	   }
+	   return false;
    }
    
    //Mark a question for review. 
@@ -580,12 +593,14 @@ public class ExamModeActivity extends Activity{
 		   @Override
 		   public void onClick(View arg0) {
 			   if(isReviewMode) {
-				   leaveReviewMode();
-				   button.setText("Review Marked");
+				   if( leaveReviewMode() ) {
+					   button.setText("Review Marked");
+				   }
 
 			   } else {
-				   enterReviewMode();
-				   button.setText("Back to Exam");
+				   if( enterReviewMode() ) {
+					   button.setText("Back to Exam");
+				   }
 			   }
 		   }
 	   });
@@ -624,7 +639,10 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
 					//need to pass exam information to ViewAnswerModeActivity
-				    intent.putExtra("exam", exam);
+				    intent.putExtra("examId", examId);
+				    intent.putExtra("courseId", courseId);
+				    intent.putExtra("moduleId", moduleId);
+
 				    startActivity(intent);
 					System.out.println("reviewAllButton!");
 				}
@@ -637,7 +655,10 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
 					//need to pass exam information to ViewAnswerModeActivity
-					intent.putExtra("exam", exam);
+					//intent.putExtra("exam", exam);
+					intent.putExtra("examId", examId);
+				    intent.putExtra("courseId", courseId);
+					intent.putExtra("moduleId", moduleId);
 				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
 				    startActivity(intent);
 				    System.out.println("reviewIncorrectButton!");
@@ -652,7 +673,10 @@ public class ExamModeActivity extends Activity{
 				public void onClick(View v) {
 					//dialog.dismiss();
 					Intent intent = new Intent(ExamModeActivity.this, ExamModeActivity.class);				       
-					intent.putExtra("exam", exam);
+					//intent.putExtra("exam", exam);
+					intent.putExtra("examId", examId);
+					intent.putExtra("courseId", courseId);
+					intent.putExtra("moduleId", moduleId);
 				    startActivity(intent);
 					System.out.println("retakeExamButton!");
 
