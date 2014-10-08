@@ -94,7 +94,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		        	   CourseModule couseModuleObj= new CourseModule();
 		        	   
 		        	   JSONObject module= (JSONObject)modelIterator.next();   	   
-		        	   Long moduleId = (Long) module.get("module");    	       	   
+		        	   String moduleId = String.valueOf( module.get("module"));    	       	   
 		        	   JSONArray exams = (JSONArray)module.get("Exams");
         	            	   
 		        	   Iterator<JSONObject> examIterator = exams.iterator();
@@ -106,7 +106,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		        		   Exam examObj = new Exam(); 
 		        		   
 		        		   JSONObject exam= (JSONObject)examIterator.next();          		   
-		        		   Long examid= (Long) exam.get("examid");           		   
+		        		   String examid= String.valueOf((Long) exam.get("examid"));           		   
 		        		   String examName= (String) exam.get("name"); 
 		        		   
 		        		   String examContent = exam.toJSONString();
@@ -129,7 +129,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	}
 	
 	
-	public void storeToDB(String courseId, String courseName, Long moduleId, Long examid,String examName, String examContent, Context context){
+	public void storeToDB(String courseId, String courseName, String moduleId, String examid,String examName, String examContent, Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
 		DBTool.insertCourse(context, db, courseId, courseName, moduleId, examid,examName, examContent);
@@ -139,15 +139,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	
 	}
 
-	public void storeToDB(String courseId, String courseName, String jsonContent,Context context){
 	
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertCourse(context, db, courseId, courseName, jsonContent);
-		Log.d("InDB", "COuseId---"+courseId+"; Length---"+jsonContent.length());
-	
-		return; 
-	
-	}
 
 /*		
 	private boolean DownloadUsingRestfulAPI(String URL){

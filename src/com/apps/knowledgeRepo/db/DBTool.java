@@ -148,12 +148,9 @@ public class DBTool {
      }
      
      
-     public static void insertCourse(Context context,SQLiteDatabase db, String courseId, String courseName, Long moduleId, Long examid,String examName, String examContent){
-    	 	
-    	 return;
-     }
+   
      
-     public static void insertCourse(Context context,SQLiteDatabase db, String course_id, String course_name, String course_content){
+     public static void insertCourse(Context context,SQLiteDatabase db, String courseId, String courseName, String moduleId, String examId,String examName, String courseContent){
     	 
     	 //Log.d("insertCourse","insertCourse");
     		if( !db.isOpen()){
@@ -161,25 +158,29 @@ public class DBTool {
         		Log.d("Open new DB","Open new DB");
         	}
     		
-    	 course_content=course_content.replaceAll("'", "!!pattern!!") ;
-    	 String sqlInsert = "insert into course values ( " + "'" +  course_id + "'" + "," 
-    			 									+ "'" + course_name + "'"+ "," 
-    	                                            + "'" +  course_content + "'" + ");"; 
+    	 courseContent=courseContent.replaceAll("'", "!!pattern!!") ;
+    	 String sqlInsert = "insert into course values ( " + "'" +  courseId + "'" + "," 
+    			 									+ "'" + courseName + "'"+ "," 
+    			 									+ "'" + moduleId + "'"+ "," 
+    			 									+ "'" + examId + "'"+ ","
+    			 									+ "'" + examName + "'"+ ","
+    			 									
+    	                                            + "'" +  courseContent + "'" + ");"; 
     	
     	 String sqlQuery = "select count(*) from Course where "  + 
-    	                   "course_id =?;";  
+    	                   "course_id =? and exam_id=?;";  
     	
-    	 String sqlUpdate = "update Course set course_content=? where course_id=?; " ;
+    	 String sqlUpdate = "update Course set course_content=? where course_id=? and exam_id=?; " ;
     	 
     	 //DBTool.queryDB(context, db, sqlQuery, new String[]{course_id}).get(0);
     	 //Log.d("after query","after query");
 
-    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{course_id}).get(0));
+    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{courseId,examId}).get(0));
     	 
-    	 if ( a  > 0){
+    	 if ( a > 0){
         	Log.d("DB operation","Doing Update!");
 
-    		db.execSQL(sqlUpdate, new String[]{course_content,course_id});
+    		db.execSQL(sqlUpdate, new String[]{courseContent,courseId,examId});
     	 } else {
     		 
          	Log.d("DB operation","Doing Insert!");
@@ -193,27 +194,60 @@ public class DBTool {
      
      
      // todo BoChen fill in the details
-     public static String queryExam(Context context,SQLiteDatabase db, Long examid){
-    	 
-    	 return null;
-     
+    
+     public static void recordGrade(Context context,SQLiteDatabase db, String cId, String examId, String moduleId, String attempt, boolean is_grade, String grade, String grade_time ){
+    	
+    		if( !db.isOpen()){
+        		db=DBTool.getDB(context);
+        		Log.d("Open new DB","Open new DB");
+        	}
+    		
+    		String sqlRecordGrade = "insert into EXAM_GRADE values (" 
+		    		                  +"'"+ cId + "',"
+		    		                  +"'"+ moduleId + "',"
+		    		                  +"'"+ examId + "',"
+		    		                  +"'"+ attempt+ "',"
+		    		                  +"'"+ is_grade + "',"
+		    		                  +"'"+ grade + "',"
+		    		                  +"'" +grade_time +"'"
+		    				          + ")";
+    		 
+    		db.execSQL(sqlRecordGrade);
+    		 db.close();
+    	
      }
      
-     public static String queryCourse(Context context,SQLiteDatabase db, String cid){
+     public static String retriveGrade (Context context,SQLiteDatabase db, String cId,  String moduleId, String examId, String attempt ){
+    	
+    	 if( !db.isOpen()){
+      		db=DBTool.getDB(context);
+      		
+      	}
+    	 String queryGrade = "select grade from GRADE where COURSE_ID= ? and module_id=? and exam_id=? and attempt=?" ; 
+    	
+    	 ArrayList<String> grade = DBTool.queryDB(context, db, queryGrade, new String[]{cId,moduleId,examId,attempt});
     	 
-    	 String queryCourseSQL = "select COURSE_CONTENT from Course where COURSE_ID= ?" ;
+    	 String  exam_grade = grade.get(0);
+    	
+    	 exam_grade = exam_grade.replaceAll( "!!pattern!!", "'") ;
+    	 
+    	 return exam_grade;
+     }
+     public static String queryExam(Context context,SQLiteDatabase db, String cid, String examId){
+    	 
+    	 String queryCourseSQL = "select COURSE_CONTENT from Course where COURSE_ID= ? and exam_id=? " ;
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
-    	ArrayList<String> courseContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid});
+    	ArrayList<String> examContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid,examId});
     	
     	db.close();
-    	if(courseContent==null || courseContent.isEmpty() ) {
+    	if(examContent==null || examContent.isEmpty() ) {
     		Log.d("query course empty", "query course empty");
     		return null;
     	}
-    	String content = courseContent.get(0);
+    	String content = examContent.get(0);
     	content=content.replaceAll( "!!pattern!!", "'") ;
 
     	return content;

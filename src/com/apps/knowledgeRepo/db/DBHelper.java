@@ -16,7 +16,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    	    ")";
 	    
 	    private static final String SQL_CREATE_GRADE = 
-	    		"CREATE TABLE EXAM_GRADE ('COURSE_ID' varchar(256)," +
+	    		"CREATE TABLE GRADE ('COURSE_ID' varchar(256)," +
 	    		"'MODULE_ID varchar(256)'"+
 	    		"'EXAM_ID varchar(256)'" +
 	    		"'ATTEMPT varchar(256)'" +
@@ -28,7 +28,10 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    private static final String SQL_CREATE_COURSE =
 	    	    "CREATE TABLE COURSE ('COURSE_ID' varchar(256)," + 
 	            "'COURSE_NAME' varchar(256)," +  
-	   	    	"'COURSE_CONTENT' TEXT)";
+	            "'MODULE_ID' varchar(256)," +
+	            "'EXAM_ID' varchar(256)," +
+	            "'EXAM_NAME' varchar(256)," +
+	            "'COURSE_CONTENT' TEXT)";
 	    
 	    
 	    

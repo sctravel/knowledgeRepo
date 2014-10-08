@@ -102,7 +102,7 @@ public class ModeSelectionActivity extends Activity {
 			bt.setGravity(Gravity.CENTER_VERTICAL);
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
-	            	Course course = CourseUtil.initilizeCourse(courseId, getApplicationContext());
+	            	Course course = CourseUtil.initilizeExam(courseId, examId, getBaseContext());
 	            	currentCourseId = course.getCourseId();
 	            	if(course.getModules().size()>1) {
 	            		selectCourseModulePage(course);
