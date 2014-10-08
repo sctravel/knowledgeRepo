@@ -94,7 +94,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		        	   CourseModule couseModuleObj= new CourseModule();
 		        	   
 		        	   JSONObject module= (JSONObject)modelIterator.next();   	   
-		        	   String moduleId = String.valueOf( module.get("module"));    	       	   
+		        	   String moduleId = String.valueOf( module.get("module"));    
+		        	   String guide = String.valueOf( module.get("guide")); 
 		        	   JSONArray exams = (JSONArray)module.get("Exams");
         	            	   
 		        	   Iterator<JSONObject> examIterator = exams.iterator();
@@ -111,7 +112,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		        		   
 		        		   String examContent = exam.toJSONString();
 		        		   
-		        		   storeToDB(courseId, courseName, moduleId, examid,examName, examContent, context);
+		        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
 		        	   }
 		           }
 			           
@@ -129,10 +130,11 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 	}
 	
 	
-	public void storeToDB(String courseId, String courseName, String moduleId, String examid,String examName, String examContent, Context context){
+	public void storeToDB(String courseId, String courseName, String courseType, String courseOrientation, 
+			String moduleId, String guide, String examid,String examName, String examContent, Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertCourse(context, db, courseId, courseName, moduleId, examid,examName, examContent);
+		DBTool.insertExam(context, db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
 		Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
 		
 		return; 

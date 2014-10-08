@@ -47,5 +47,14 @@
             android:gravity="bottom"
             android:text="Download" />
      
+    
+     <Button
+            android:id="@+id/quitAppButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    	    android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:text="Quit" />
+     
         
 </LinearLayout>

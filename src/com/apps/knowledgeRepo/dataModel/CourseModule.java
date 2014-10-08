@@ -1,5 +1,6 @@
 package com.apps.knowledgeRepo.dataModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseModule {
@@ -8,6 +9,15 @@ public class CourseModule {
 	String guide;
 	
 	List<Exam> exams;
+	
+	public CourseModule(){
+		this.exams = new ArrayList<Exam>();
+	}
+	public CourseModule(long moduleId, String guide){
+		this.moduleId = moduleId;
+		this.guide = guide;
+		this.exams = new ArrayList<Exam>();
+	}
 	
 	public long getModuleId() {
 		return moduleId;

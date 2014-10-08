@@ -35,14 +35,20 @@ import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.CourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 public class ModeSelectionActivity extends Activity {
 	
-	private Map<String, String> courseMetaData = new HashMap<String, String>();
+	// Map< courseId, Map<moduleId, List<examId> >
+	private Map<String,Course> courseMetaData = new HashMap<String, Course>();
+	private List<ExamMetaData> examMetaDataList = new ArrayList<ExamMetaData>();
+	
 	private String currentCourseId=null;
+	private String currentModuleId=null;
+	private String currentExamId=null;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +67,44 @@ public class ModeSelectionActivity extends Activity {
 	
 		mainPage();		         
        
+	}
+	
+	private void extractCourseInfoFromExamMetaData() {
+		
+		Log.d("extractCourseInfoFromExamMetaData", "ExamMetaDataList size: "+examMetaDataList.size());
+		
+		for(ExamMetaData emd : examMetaDataList) {
+			String courseId = emd.getCourseId();
+			String moduleId = emd.getModuleId();
+			String examId = emd.getExamId();
+			String examName = emd.getExamName();
 
+			
+			//Get course Info
+			Course course = null;
+			course = courseMetaData.get(courseId);
+			if(course == null) {
+				course = new Course(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
+			}
+			CourseModule module= null;
+			//Get module info
+			for(CourseModule m : course.getModules()) {
+				if(m.getModuleId() == Long.parseLong(moduleId)) {
+					module = m;
+					break;
+				}
+			}
+			if(module == null) {
+				module = new CourseModule(Long.parseLong(emd.getModuleId()), emd.getGuide());
+				course.getModules().add(module);
+			}
+			
+			module.getExams().add(new Exam(courseId,moduleId, Long.parseLong(examId),examName));
+			//new Course(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
+			//Exam exam = new Exam(Long.parseLong(examId));		
+			
+			courseMetaData.put(courseId, course);
+		}
 	}
 	
 	private void selectCoursesPage(){
@@ -89,11 +132,11 @@ public class ModeSelectionActivity extends Activity {
 		//tv.setGravity(Gravity.CENTER);
 		//tv.setTextSize(10);
 	
-		for(Map.Entry<String, String> entry : courseMetaData.entrySet()) {
+		for(Map.Entry<String, Course> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
-			final String courseName = entry.getValue();
+			final Course course = entry.getValue();
 			Button bt = new Button(getApplicationContext());
-			bt.setText(courseName);
+			bt.setText(course.getCourseName());
 			linear.addView(bt);
 			lpbt.topMargin=10;
 			lpbt.bottomMargin=10;
@@ -102,12 +145,13 @@ public class ModeSelectionActivity extends Activity {
 			bt.setGravity(Gravity.CENTER_VERTICAL);
 			bt.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
-	            	Course course = CourseUtil.initilizeExam(courseId, examId, getBaseContext());
+	            	//Course course = CourseUtil.initilizeExam(courseId, moduleId, examId, getBaseContext());
 	            	currentCourseId = course.getCourseId();
 	            	if(course.getModules().size()>1) {
 	            		selectCourseModulePage(course);
 	            	} else {
 	            		//If there's only one module, skip the select Module page
+	            		currentModuleId=""+course.getModules().get(0).getModuleId();
 	            		selectExamsPage(course,course.getModules().get(0));
 	            	}
 	            }
@@ -172,6 +216,7 @@ public class ModeSelectionActivity extends Activity {
 				
 				bt.setOnClickListener(new View.OnClickListener() {
 		            public void onClick(View v) {
+		            	currentModuleId = ""+courseModule.getModuleId();
 		            	selectExamsPage(course,courseModule);
 		            }
 		        });
@@ -235,7 +280,8 @@ public class ModeSelectionActivity extends Activity {
 			bt.setGravity(Gravity.CENTER_VERTICAL);
 			
 			bt.setOnClickListener(new View.OnClickListener() {
-	            public void onClick(View v) {
+	            public void onClick(View v) {         	
+	            	currentExamId = ""+exam.getExamId();
 	            	beginExam(v, exam);
 	            }
 	        });
@@ -271,8 +317,8 @@ public class ModeSelectionActivity extends Activity {
         buttonHomeRoom.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	//Get course information  List of Ids and Names
-        		courseMetaData = DBTool.getIDsandNames(getApplicationContext());
-
+        		examMetaDataList = DBTool.getExamMeataDataList(getApplicationContext());
+        		extractCourseInfoFromExamMetaData();
             	selectCoursesPage();
             }
         });
@@ -318,11 +364,11 @@ public class ModeSelectionActivity extends Activity {
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Configure the search info and add any event listeners
         
-       // MenuItem shareItem = menu.findItem(R.id.action_share);
-       // mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-       // mShareActionProvider.setShareIntent(getDefaultIntent());
+        // MenuItem shareItem = menu.findItem(R.id.action_share);
+        // mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+        // mShareActionProvider.setShareIntent(getDefaultIntent());
         
-     // When using the support library, the setOnActionExpandListener() method is
+        // When using the support library, the setOnActionExpandListener() method is
         // static and accepts the MenuItem object as an argument
         MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
             @Override
@@ -374,11 +420,10 @@ public class ModeSelectionActivity extends Activity {
     /** Called when the user clicks the Send button */
     public void beginExam(View view, Exam exam) {
         Intent intent = new Intent(this, ExamModeActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        intent.putExtra("exam", exam);
+        
         intent.putExtra("courseId", currentCourseId);
+        intent.putExtra("moduleId", currentModuleId);
+        intent.putExtra("examId", currentExamId);
         startActivity(intent);
     }
     public void beginPractice(View view, String courseId, String courseModuleId, String examId) {

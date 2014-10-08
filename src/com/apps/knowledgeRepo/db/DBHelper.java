@@ -7,31 +7,39 @@ import android.database.sqlite.SQLiteOpenHelper;
 public final class DBHelper extends SQLiteOpenHelper {
 
 	    private static final String SQL_CREATE_CEAQA =
-	    	    "CREATE TABLE CEAQA ('COURSE_ID' varchar(256)," +
-	    	    "'EXAM_ID' varchar(256), " +
-	    	    "'ATTEMPT' varchar(256)," +
-	    	    " 'QNUM' varchar(256)," +
-	    	    "'ANSWER' varchar(256)," + 
-	    	    "'TIME' varchar(256)"  +
+	    	    "CREATE TABLE CEAQA (" + 
+	    	    " 'COURSE_ID' varchar(256) ," +
+	    	    " 'MODULE_ID' varchar(256), " +
+	    	    " 'EXAM_ID' varchar(256), " +
+	    	    " 'ATTEMPT' varchar(256), " +
+	    	    " 'QNUM' varchar(256), " +
+	    	    " 'ANSWER' varchar(256), " + 
+	    	    " 'TIME' varchar(256), " + 
+	    	    " PRIMARY KEY (COURSE_ID,MODULE_ID,EXAM_ID,ATTEMPT,QNUM) "  +
 	    	    ")";
 	    
 	    private static final String SQL_CREATE_GRADE = 
 	    		"CREATE TABLE GRADE ('COURSE_ID' varchar(256)," +
-	    		"'MODULE_ID varchar(256)'"+
-	    		"'EXAM_ID varchar(256)'" +
-	    		"'ATTEMPT varchar(256)'" +
-	    		"'IS_GRADE boolean" +
-	    		"'GRADE' varchar(256)" +
-	    		"'GRADT_TIME' TEXT" +
+	    		"'MODULE_ID' varchar(256), "+
+	    		"'EXAM_ID' varchar(256), " +
+	    		"'ATTEMPT' varchar(256), " +
+	    		"'IS_GRADE' boolean, " +
+	    		"'GRADE' varchar(256), " +
+	    		"'GRADE_TIME' TEXT, " +
+	    		" PRIMARY KEY (COURSE_ID,MODULE_ID,EXAM_ID,ATTEMPT) " +
 	    		")";
 	    
-	    private static final String SQL_CREATE_COURSE =
-	    	    "CREATE TABLE COURSE ('COURSE_ID' varchar(256)," + 
-	            "'COURSE_NAME' varchar(256)," +  
+	    private static final String SQL_CREATE_EXAM =
+	    	    "CREATE TABLE EXAM ('COURSE_ID' varchar(256)," + 
+	            "'COURSE_NAME' varchar(256)," + 
+	            "'COURSE_TYPE' varchar(256)," +
+	            "'COURSE_ORIENTATION' varchar(256)," +
 	            "'MODULE_ID' varchar(256)," +
+	            "'GUIDE' varchar(256)," +
 	            "'EXAM_ID' varchar(256)," +
 	            "'EXAM_NAME' varchar(256)," +
-	            "'COURSE_CONTENT' TEXT)";
+	            "'EXAM_CONTENT' TEXT, " +
+	            " PRIMARY KEY (COURSE_ID,MODULE_ID,EXAM_ID)  )";
 	    
 	    
 	    
@@ -43,8 +51,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    }
 	    public void onCreate(SQLiteDatabase db) {
 	        
-	        db.execSQL(SQL_CREATE_COURSE);
+	        db.execSQL(SQL_CREATE_EXAM);
 	        db.execSQL(SQL_CREATE_CEAQA);
+	        db.execSQL(SQL_CREATE_GRADE);
 	    }
 	    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	        // This database is only a cache for online data, so its upgrade policy is

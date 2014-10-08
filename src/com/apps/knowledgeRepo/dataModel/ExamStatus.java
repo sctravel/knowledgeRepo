@@ -7,6 +7,7 @@ public class ExamStatus {
 	
 	private String courseId;
 	private String examId;
+	private String moduleId;
 	private int attempt;
 	private long usedTime; //in mili-second
 	
@@ -18,6 +19,12 @@ public class ExamStatus {
 		attempt=1;
 	}
 	
+	public void setModuleId(String moduleId) {
+		this.moduleId = moduleId;
+	}
+	public String getModuleId() {
+		return moduleId;
+	}
 	public void setCourseId(String courseId){
 		this.courseId = courseId;
 	}

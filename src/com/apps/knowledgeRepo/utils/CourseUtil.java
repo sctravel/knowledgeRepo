@@ -23,9 +23,9 @@ import com.apps.knowledgeRepo.db.DBTool;
 public class CourseUtil {
 	
 	
-	public static String retrieveFromDB(String cid, String examId,Context context){
+	public static String retrieveFromDB(String cid, String moduleId, String examId,Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
-		String examContent = DBTool.queryExam(context, db, cid, examId);
+		String examContent = DBTool.queryExam(context, db, cid, moduleId, examId);
 		
 		if(examContent == null || examContent.isEmpty()) {
 			Log.d("retrieveFromDB", " examContent is  null!!!");
@@ -41,16 +41,16 @@ public class CourseUtil {
 	
 	
 	
-	public static Exam initilizeExam( String courseId, String examId, Context context){
+	public static Exam initilizeExam( String courseId, String moduleId, String examId, Context context){
 		
-		   String jsonStr= retrieveFromDB(courseId, examId,context);		
+		   String jsonStr= retrieveFromDB(courseId, moduleId,examId,context);		
 		   JSONParser parser = new JSONParser();
 		
 		   Exam examObj = new Exam();
 		 
 		   JSONObject exam;
 		try {
-			exam = (JSONObject) parser.parse(jsonStr);
+		   exam = (JSONObject) parser.parse(jsonStr);
      		       		   
 		   String name= (String) exam.get("name");           		   
 		   Long passing= (Long) exam.get("passing");            		   
@@ -68,46 +68,46 @@ public class CourseUtil {
 		   
 		   List<Question> quesstionObjs = new ArrayList<Question>(); 
    	   
-   	   while (questionIterator.hasNext()) {
-   		   
-   		   Question questionObj = new Question();
-   		   
-   		   JSONObject question= (JSONObject)questionIterator.next();		            		   
-   		   Long questionNumber= (Long) question.get("questionNumber");		            		   
-   		   String category= (String) question.get("category");	            		   
-   		   String text= (String) question.get("text");	            		   
-   		   String explanation= (String) question.get("explanation");	            		   
-   		   JSONArray answers = (JSONArray)question.get("Answers");
-   		   
-   		   
-   		   questionObj.setCategory(category);
-   		   questionObj.setText(text);
-   		   questionObj.setQuestionNumber(questionNumber);
-   		   questionObj.setExplanation(explanation);
-   		   		            		   
-   		   List<Answer> answerObjs = new ArrayList<Answer>(); 
-   		   
-   		   Iterator<JSONObject> answersIterator = answers.iterator();
-       	   
-       	   while (answersIterator.hasNext()) {
-       		   
-       		   Answer answerObj = new Answer();
-       		   
-       		   JSONObject answer= (JSONObject)answersIterator.next();         		   
-       		   Long answerNumber= (Long) answer.get("answerNumber");           		   
-       		   Long score= (Long) answer.get("score");            					            		   
-       		   String answerText= (String) answer.get("answerText");
-       		   			            		   
-       		   answerObj.setAnswerNumber(answerNumber);
-       		   answerObj.setAnswerText(answerText);
-       		   answerObj.setScore(score);			            		   
-       		   answerObjs.add(answerObj);			            		   
-       	   } 
-       	   questionObj.setAnswers(answerObjs);
-       	   quesstionObjs.add(questionObj);
-   	   }
-   	   	examObj.setQuestions(quesstionObjs);
-   	   	
+	   	   while (questionIterator.hasNext()) {
+	   		   
+	   		   Question questionObj = new Question();
+	   		   
+	   		   JSONObject question= (JSONObject)questionIterator.next();		            		   
+	   		   Long questionNumber= (Long) question.get("questionNumber");		            		   
+	   		   String category= (String) question.get("category");	            		   
+	   		   String text= (String) question.get("text");	            		   
+	   		   String explanation= (String) question.get("explanation");	            		   
+	   		   JSONArray answers = (JSONArray)question.get("Answers");
+	   		   
+	   		   
+	   		   questionObj.setCategory(category);
+	   		   questionObj.setText(text);
+	   		   questionObj.setQuestionNumber(questionNumber);
+	   		   questionObj.setExplanation(explanation);
+	   		   		            		   
+	   		   List<Answer> answerObjs = new ArrayList<Answer>(); 
+	   		   
+	   		   Iterator<JSONObject> answersIterator = answers.iterator();
+	       	   
+	       	   while (answersIterator.hasNext()) {
+	       		   
+	       		   Answer answerObj = new Answer();
+	       		   
+	       		   JSONObject answer= (JSONObject)answersIterator.next();         		   
+	       		   Long answerNumber= (Long) answer.get("answerNumber");           		   
+	       		   Long score= (Long) answer.get("score");            					            		   
+	       		   String answerText= (String) answer.get("answerText");
+	       		   			            		   
+	       		   answerObj.setAnswerNumber(answerNumber);
+	       		   answerObj.setAnswerText(answerText);
+	       		   answerObj.setScore(score);			            		   
+	       		   answerObjs.add(answerObj);			            		   
+	       	   } 
+	       	   questionObj.setAnswers(answerObjs);
+	       	   quesstionObjs.add(questionObj);
+	   	   }
+	   	   examObj.setQuestions(quesstionObjs);
+			 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			Log.d("Exam initalizer","parser error during initialization"+e.getMessage());

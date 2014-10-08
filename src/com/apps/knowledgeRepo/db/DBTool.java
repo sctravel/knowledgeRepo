@@ -2,7 +2,9 @@ package com.apps.knowledgeRepo.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 
 import android.content.Context;
@@ -24,24 +26,35 @@ public class DBTool {
     	 
      } 
     
-     public static HashMap<String, String> getIDsandNames (Context context){
+     public static List<ExamMetaData> getExamMeataDataList (Context context){
     	 SQLiteDatabase db = DBTool.getDB(context);
     	 
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
-    	 String getIDsandNames = "select course_id, course_name from course" ; 
-    	 Cursor idsAndNames = db.rawQuery(getIDsandNames, null);
+    	 String getExamMataDataSQL = "select course_id, course_name, course_Type, course_orientation, "
+    	 		+ " module_Id, guide, exam_id, exam_name from exam" ; 
+    	 Cursor metaDataCursor = db.rawQuery(getExamMataDataSQL, null);
     	 
-    	HashMap<String, String> id_names = new HashMap<String, String>();
-    	while(idsAndNames.moveToNext()){
-               String course_id = idsAndNames.getString(0);
-               String course_name = idsAndNames.getString(1);
-    		   id_names.put(course_id, course_name);
+    	 List<ExamMetaData> metaDataList = new ArrayList<ExamMetaData>();
+    	 while(metaDataCursor.moveToNext()){
+               String courseId = metaDataCursor.getString(0);
+               String courseName = metaDataCursor.getString(1);
+               Long courseType = metaDataCursor.getLong(2);
+               String courseOrientation = metaDataCursor.getString(3);
+               String moduleId = metaDataCursor.getString(4);
+               String guide = metaDataCursor.getString(5);
+               String examId = metaDataCursor.getString(6);
+               String examName = metaDataCursor.getString(7);
+               ExamMetaData metaData = new ExamMetaData(courseId,courseName,courseType,courseOrientation,
+            		   moduleId,guide,examId,examName  );
+               metaDataList.add(metaData);
     	}
     	db.close();
-    	 return id_names;
+    	
+    	Log.d("DB", "number of exams in db: "+metaDataList.size());
+    	return metaDataList;
      }
      
      public static ArrayList<String> queryDB(Context context,SQLiteDatabase db, String sql, String[] selectionArgs ){
@@ -57,7 +70,7 @@ public class DBTool {
     		 int count = cursor.getColumnCount();
     		 String row = "";
     		 for (int i =0; i < count; i++){
-    			 int j = cursor.getColumnIndex("COURSE_CONTENT");
+    			 int j = cursor.getColumnIndex("EXAM_CONTENT");
     			 Log.d("name","i-"+i+"; j-"+j);
     			 String currentColumn = cursor.getString(i);
     			 row = row +currentColumn;
@@ -71,7 +84,7 @@ public class DBTool {
 		return result;
      }   
      
-     public static ExamStatus retriveStatus (Context context,SQLiteDatabase db, String courseId, String examId, int attempt ) {
+     public static ExamStatus retriveStatus (Context context,SQLiteDatabase db, String courseId, String moduleId, String examId, int attempt ) {
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
@@ -80,15 +93,17 @@ public class DBTool {
     	ExamStatus examStatus = new ExamStatus();
     	examStatus.setCourseId(courseId);
     	examStatus.setExamId(examId);
+    	examStatus.setModuleId(moduleId);
     	examStatus.setAttempt(attempt);
     	examStatus.setUsedTime(0); //set it to 0 initially
 
     	 String sqlQuery = "select * from ceaqa where "  + 
-    	                   "course_id =? and exam_id=? and attempt = ?;";
+    	                   "course_id =? and module_id=? and exam_id=? and attempt = ?;";
         
     	Cursor cursor= db.rawQuery(sqlQuery, new String[]{courseId,examId,""+attempt});
     	//int courseIdIndex = cursor.getColumnIndex("COURSE_ID");
     	//int examIdIndex = cursor.getColumnIndex("EXAM_ID");
+    	//int moduleIndex = cursor.getColumnIndex("MODULE_ID");
     	//int attIndex = cursor.getColumnIndex("ATTEMPT");
     	int qnumIndex = cursor.getColumnIndex("QNUM");
     	int answerIndex = cursor.getColumnIndex("ANSWER");
@@ -107,36 +122,35 @@ public class DBTool {
     		 examStatus.getUserAnswerMap().put(questionNumber, answer);
     	}
     	examStatus.setUsedTime(usedTimeMax);
-    	
+    	db.close();
     	//Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
     	return examStatus;
      }
      
      
-     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String exam_id, String att, String qnum, String ans, String time){
+     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String module_id,String exam_id, String att, String qnum, String ans, String time){
     		if( !db.isOpen()){
         		db=DBTool.getDB(context);
         		
         	}
     	 String sqlInsert = "insert into ceaqa values ( " + "'" +  course_id + "'" + "," 
-    	                                            + "'" +  exam_id + "'" + ","
+    			 									+ "'" +  module_id + "'" + ","
+    			                                    + "'" +  exam_id + "'" + ","
     			                                    + "'" +  att + "'" + ","
     	                                            + "'" +  qnum+ "'" + ","
     			                                    + "'" +  ans + "'" + "," 
     	                                            + "'" +  time +"'" +  ")" ; 
     	
     	 String sqlQuery = "select count(*) from ceaqa where "  + 
-    	                   "course_id =? and exam_id=? and attempt = ? and qnum=  ?;";  
+    	                   "course_id =? and module_id=? and exam_id=? and attempt = ? and qnum=  ?;";  
     	
-    	 String sqlUpdate = "update ceaqa set answer=? , time= ? where course_id=? and exam_id=? and attempt=? and qnum=?; " ;
-    	 
-    	 DBTool.queryDB(context, db, sqlQuery, new String[]{course_id,exam_id,att,qnum}).get(0);
-    	 
-    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{course_id,exam_id,att,qnum}).get(0));
+    	 String sqlUpdate = "update ceaqa set answer=? , time= ? where course_id=? and module_id=? and exam_id=? and attempt=? and qnum=?; " ;
+    	     	 
+    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{course_id,module_id,exam_id,att,qnum}).get(0));
     	 
     	 if ( a  > 0){
     
-    		db.execSQL(sqlUpdate, new String[]{ans,course_id,exam_id,att,qnum});
+    		db.execSQL(sqlUpdate, new String[]{ans,course_id,module_id,exam_id,att,qnum});
     	 } else {
     		 
     
@@ -150,7 +164,8 @@ public class DBTool {
      
    
      
-     public static void insertCourse(Context context,SQLiteDatabase db, String courseId, String courseName, String moduleId, String examId,String examName, String courseContent){
+     public static void insertExam(Context context,SQLiteDatabase db, String courseId, String courseName, 
+    		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String courseContent){
     	 
     	 //Log.d("insertCourse","insertCourse");
     		if( !db.isOpen()){
@@ -159,15 +174,17 @@ public class DBTool {
         	}
     		
     	 courseContent=courseContent.replaceAll("'", "!!pattern!!") ;
-    	 String sqlInsert = "insert into course values ( " + "'" +  courseId + "'" + "," 
+    	 String sqlInsert = "insert into EXAM values ( " + "'" +  courseId + "'" + "," 
     			 									+ "'" + courseName + "'"+ "," 
+    			 									+ "'" + courseType + "'"+ ","
+    			 									+ "'" + courseOrientation + "'"+ ","
     			 									+ "'" + moduleId + "'"+ "," 
+    			 									+ "'" + guide + "'"+ ","
     			 									+ "'" + examId + "'"+ ","
-    			 									+ "'" + examName + "'"+ ","
-    			 									
+    			 									+ "'" + examName + "'"+ ","	 									
     	                                            + "'" +  courseContent + "'" + ");"; 
     	
-    	 String sqlQuery = "select count(*) from Course where "  + 
+    	 String sqlQuery = "select count(*) from EXAM where "  + 
     	                   "course_id =? and exam_id=?;";  
     	
     	 String sqlUpdate = "update Course set course_content=? where course_id=? and exam_id=?; " ;
@@ -233,14 +250,15 @@ public class DBTool {
     	 
     	 return exam_grade;
      }
-     public static String queryExam(Context context,SQLiteDatabase db, String cid, String examId){
+     public static String queryExam(Context context,SQLiteDatabase db, String cid, String moduleId, String examId){
     	 
-    	 String queryCourseSQL = "select COURSE_CONTENT from Course where COURSE_ID= ? and exam_id=? " ;
+    	 String queryCourseSQL = "select EXAM_CONTENT from EXAM where COURSE_ID= ? and module_id=? and exam_id=? " ;
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
-    	ArrayList<String> examContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid,examId});
+    	Log.d("DB","cid:"+cid+"; moduleId: "+moduleId+"; examId: "+examId);
+    	ArrayList<String> examContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid,moduleId,examId});
     	
     	db.close();
     	if(examContent==null || examContent.isEmpty() ) {

@@ -18,6 +18,7 @@ import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -60,9 +61,15 @@ public class ExamModeActivity extends Activity{
 	//This is the current question number user is working on.
 	private int questionNumber = 0;
 	private int reviewQuestionNumberIndex = 0;
+	
     Exam exam = null;
     String courseId = null;
-    
+    String moduleId = null;
+    String examId = null;
+    //set attempt to 1 first
+  	//TODO:  add attempt to the app
+    private int attempt=1;
+      
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
 	private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
@@ -72,17 +79,15 @@ public class ExamModeActivity extends Activity{
     private boolean isReviewMode = false;
     private int storedQuestionNumber=0;
     private List<Integer> inCorrectList = new ArrayList<Integer>();
-    //set attempt to 1 first
-	//TODO:  add attempt to the app
-    private int attempt=1;
-    private long startTime;
+    
+    private long startTime= System.currentTimeMillis();
     private long pauseStartTime=0;
     private long totalPauseTime=0;
     
     public void initilizeExam() {
     		
     	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
-    			DBTool.getDB(getApplicationContext()), courseId, ""+exam.getExamId(), attempt); 
+    			DBTool.getDB(getApplicationContext()), courseId, moduleId, examId, attempt); 
     	
     	scoreMap = examStatus.getUserAnswerMap();
     	questionNumber = scoreMap.size();
@@ -122,8 +127,12 @@ public class ExamModeActivity extends Activity{
         Bundle extras = getIntent().getExtras();
         //TODO: we also need to get marked questions' information
         if (extras != null) {
-	        exam = (Exam) extras.getSerializable("exam");
+	        //exam = (Exam) extras.getSerializable("exam");
 	        courseId =  extras.getString("courseId");
+	        moduleId =extras.getString("moduleId");
+	        examId = extras.getString("examId");
+	        
+	        exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
 	        if(exam!=null) {
 	        	Log.d("Exam Mode","exam not null!! exam---"+exam.getName());
 	        }
@@ -264,8 +273,10 @@ public class ExamModeActivity extends Activity{
 
     
     private long getRemainTimeInMillis() {
-    	System.out.println("Total pause time is: "+totalPauseTime);
-    	return exam.getTimeLimit()*1000*60 - (System.currentTimeMillis() - startTime - totalPauseTime) ;
+    	long passedTime = System.currentTimeMillis() - startTime ;
+    	System.out.println("Total pause time is: "+totalPauseTime+"; Total pass time is: "+passedTime);
+
+    	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime) ;
     }
     private void refreshPage() {
     	
@@ -359,7 +370,7 @@ public class ExamModeActivity extends Activity{
     	//Store user answer
         scoreMap.put(questionNumber, value);
         DBTool.recordStatus(getApplicationContext(), DBTool.getDB(getApplicationContext()), 
-    			courseId, ""+exam.getExamId(), ""+attempt, ""+questionNumber, 
+    			courseId, moduleId, examId , ""+attempt, ""+questionNumber, 
     			value, ""+(exam.getTimeLimit()*60*1000-getRemainTimeInMillis()) );
         Log.d("DB operation","Write question:"+questionNumber+" with answer:"+value+" to DB");
         checkMarkedStatus();

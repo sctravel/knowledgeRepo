@@ -24,6 +24,17 @@ public class Course {
 	String courseOrientation; 
 	List<CourseModule> modules; 
 	
+	public Course(){
+		this.modules=new ArrayList<CourseModule>();
+	};
+	public Course(String courseId, String courseName, long courseType, String courseOrientation) {
+		this.courseId = courseId;
+		this.courseName = courseName;
+		this.courseType = courseType;
+		this.courseOrientation = courseOrientation;
+		this.modules=new ArrayList<CourseModule>();
+	}
+	
 	public String getCourseId() {
 		return courseId;
 	}
@@ -55,10 +66,5 @@ public class Course {
 		this.modules = modules;
 	}
 
-	
-	public Course(){
-		
-	}
-	
 	
 }

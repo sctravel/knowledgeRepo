@@ -9,11 +9,22 @@ import java.util.List;
 public class Exam implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	String courseId;
+	String moduleId;
 	long examId;
+	
 	String name;
 	long passing;
 	long timeLimit; 
 	List<Question> Questions; 
+	
+	public Exam() {}
+	public Exam(String courseId, String moduleId, long examId, String name) {
+		this.courseId =courseId;
+		this.moduleId = moduleId;
+		this.examId = examId;
+		this.name=name;
+	}
 	
 	/**
 	   * Always treat de-serialization as a full-blown constructor, by
@@ -37,6 +48,19 @@ public class Exam implements Serializable{
 	      //perform the default serialization for all non-transient, non-static fields
 	      aOutputStream.defaultWriteObject();
 	    }
+	
+	public String getCourseId() {
+		return courseId;
+	}
+	public void setCourseId(String courseId) {
+		this.courseId = courseId;
+	}
+	public String getModuleId() {
+		return moduleId;
+	}
+	public void setModuleId(String moduleId) {
+		this.moduleId = moduleId;
+	}
 	
 	public long getExamId() {
 		return examId;
