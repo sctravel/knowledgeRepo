@@ -55,6 +55,9 @@ public class ViewAnswerModeActivity extends Activity{
         choiceList.add(choiceC);
         choiceList.add(choiceD);
 
+        TextView titleView = (TextView) findViewById(R.id.practiceModeExamName);
+        titleView.setText(exam.getName());
+        
  		addListenerOnJumpToButton();
  		
         addListenerOnPrevAndNextButton();

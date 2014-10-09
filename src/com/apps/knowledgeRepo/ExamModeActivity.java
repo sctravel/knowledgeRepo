@@ -83,6 +83,7 @@ public class ExamModeActivity extends Activity{
     private List<Integer> inCorrectList = new ArrayList<Integer>();
     
     private long startTime= System.currentTimeMillis();
+    private long totalUsedTime = 0;
     private long pauseStartTime=0;
     private long totalPauseTime=0;
     
@@ -95,7 +96,7 @@ public class ExamModeActivity extends Activity{
     	
     	scoreMap = examStatus.getUserAnswerMap();
     	questionNumber = scoreMap.size();
-        totalPauseTime=examStatus.getUsedTime();
+    	totalUsedTime=examStatus.getUsedTime();
 
  		addListenerOnJumpToButton();
  		addListenerOnPauseButton();
@@ -104,7 +105,8 @@ public class ExamModeActivity extends Activity{
         addListenerOnReviewMarkedButton();
         startTime = System.currentTimeMillis();
         pauseStartTime=0;
-        
+        TextView titleView = (TextView) findViewById(R.id.examModeExamName);
+        titleView.setText(exam.getName());
 	    refreshPage();
     }
   //Review Mode can only see the questions marked for review
@@ -282,9 +284,9 @@ public class ExamModeActivity extends Activity{
     
     private long getRemainTimeInMillis() {
     	long passedTime = System.currentTimeMillis() - startTime ;
-    	System.out.println("Total pause time is: "+totalPauseTime+"; Total pass time is: "+passedTime);
+    	System.out.println("Total used time is: "+totalUsedTime+"; Total pass time is: "+passedTime);
 
-    	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime) ;
+    	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime + totalUsedTime) ;
     }
     private void refreshPage() {
     	
