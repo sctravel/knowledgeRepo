@@ -331,6 +331,14 @@ public class ModeSelectionActivity extends Activity {
 
             }
         });
+        final Button quitAppButton = (Button) findViewById(R.id.quitAppButton);
+        quitAppButton.setOnClickListener(new View.OnClickListener() {
+          
+            public void onClick(View v) {    	
+            	System.exit(0);
+
+            }
+        });
 	}
 	private void loginPage() {
         setContentView(R.layout.login_page);

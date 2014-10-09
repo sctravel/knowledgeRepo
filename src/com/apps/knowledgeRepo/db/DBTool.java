@@ -70,8 +70,6 @@ public class DBTool {
     		 int count = cursor.getColumnCount();
     		 String row = "";
     		 for (int i =0; i < count; i++){
-    			 int j = cursor.getColumnIndex("EXAM_CONTENT");
-    			 Log.d("name","i-"+i+"; j-"+j);
     			 String currentColumn = cursor.getString(i);
     			 row = row +currentColumn;
     			 
@@ -213,14 +211,12 @@ public class DBTool {
      
      // todo BoChen fill in the details
     
-     public static void recordGrade(Context context,SQLiteDatabase db, String cId, String examId, String moduleId, String attempt, boolean is_grade, String grade, String grade_time ){
+     public static void recordGrade(Context context,String cId, String examId, String moduleId, String attempt, boolean is_grade, String grade, String grade_time ){
     	
-    		if( !db.isOpen()){
-        		db=DBTool.getDB(context);
-        		Log.d("Open new DB","Open new DB");
-        	}
+    	    SQLiteDatabase	db=DBTool.getDB(context);
+        	
     		
-    		String sqlRecordGrade = "insert into EXAM_GRADE values (" 
+    		String sqlRecordGrade = "insert into GRADE values (" 
 		    		                  +"'"+ cId + "',"
 		    		                  +"'"+ moduleId + "',"
 		    		                  +"'"+ examId + "',"
@@ -231,24 +227,35 @@ public class DBTool {
 		    				          + ")";
     		 
     		db.execSQL(sqlRecordGrade);
-    		 db.close();
+    		db.close();
     	
      }
      
-     public static String retriveGrade (Context context,SQLiteDatabase db, String cId,  String moduleId, String examId, String attempt ){
+     public static int retriveNewAttempt(Context context, String cId, String moduleId, String examId) {
+    	 int attempt = 1;
+    	 
+         SQLiteDatabase	db=DBTool.getDB(context);	
+
+    	 String queryMaxAttempt = "select count(1) from GRADE where COURSE_ID= ? and module_id=? and exam_id=? ";
+    	 ArrayList<String> result = DBTool.queryDB(context, db, queryMaxAttempt, new String[]{cId,moduleId,examId});
+    	 
+    	 if( result!=null && !result.isEmpty() ) {
+			 attempt = Integer.parseInt(result.get(0))+1;
+    	 }
+    	 
+    	 return attempt;
+     }
+     
+     public static String retriveGrade (Context context,  String cId,  String moduleId, String examId, String attempt ){
     	
-    	 if( !db.isOpen()){
-      		db=DBTool.getDB(context);
-      		
-      	}
+         SQLiteDatabase	db=DBTool.getDB(context);	
+      	
     	 String queryGrade = "select grade from GRADE where COURSE_ID= ? and module_id=? and exam_id=? and attempt=?" ; 
     	
     	 ArrayList<String> grade = DBTool.queryDB(context, db, queryGrade, new String[]{cId,moduleId,examId,attempt});
     	 
-    	 String  exam_grade = grade.get(0);
-    	
-    	 exam_grade = exam_grade.replaceAll( "!!pattern!!", "'") ;
-    	 
+    	 String exam_grade = grade.get(0);
+    	    	 
     	 return exam_grade;
      }
      public static String queryExam(Context context,SQLiteDatabase db, String cid, String moduleId, String examId){

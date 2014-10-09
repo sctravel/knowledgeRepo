@@ -91,6 +91,8 @@ public class ExamModeActivity extends Activity{
     	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
         if(exam==null) throw new RuntimeException("Exam is null after initialization for id-"+examId);
         
+        attempt=DBTool.retriveNewAttempt(getApplicationContext(), courseId, moduleId, examId);
+        Log.d("Attemp", "Current attempt is: "+attempt);
     	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
     			DBTool.getDB(getApplicationContext()), courseId, moduleId, examId, attempt); 
     	
@@ -743,7 +745,13 @@ public class ExamModeActivity extends Activity{
 		   ++count;
 	   }
 	   int totalScore = 100*correctList.size()/questionList.size() ;
+	   
+	   long usedTime = System.currentTimeMillis() - startTime - totalPauseTime + totalUsedTime;
+       System.out.println("Total used time is: "+totalUsedTime+"; Total pass time is: "+usedTime);
 
+	   //Insert the grade information of the course/module/exam/attempt into DB
+	   DBTool.recordGrade(getApplicationContext(), courseId, examId, moduleId, ""+attempt, true, ""+totalScore, ""+usedTime);
+	   
 	   if(totalScore > exam.getPassing() ) {
 		   isPassed = true;
 		   sb.append("Congratulations! You have passed the exam. \n");
