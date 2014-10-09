@@ -149,11 +149,12 @@ public class DBTool {
     	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{course_id,module_id,exam_id,att,qnum}).get(0));
     	 
     	 if ( a  > 0){
-    
-    		db.execSQL(sqlUpdate, new String[]{ans,course_id,module_id,exam_id,att,qnum});
+         	Log.d("DB operation","Doing Update question status!");
+
+    		db.execSQL(sqlUpdate, new String[]{ans,time,course_id,module_id,exam_id,att,qnum});
     	 } else {
     		 
-    
+         	Log.d("DB operation","Doing Insert question status!");
     		 db.execSQL(sqlInsert);
     		 
     	 };
@@ -165,15 +166,15 @@ public class DBTool {
    
      
      public static void insertExam(Context context,SQLiteDatabase db, String courseId, String courseName, 
-    		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String courseContent){
+    		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String examContent){
     	 
     	 //Log.d("insertCourse","insertCourse");
     		if( !db.isOpen()){
         		db=DBTool.getDB(context);
-        		Log.d("Open new DB","Open new DB");
+        		//Log.d("Open new DB","Open new DB");
         	}
     		
-    	 courseContent=courseContent.replaceAll("'", "!!pattern!!") ;
+    	 examContent=examContent.replaceAll("'", "!!pattern!!") ;
     	 String sqlInsert = "insert into EXAM values ( " + "'" +  courseId + "'" + "," 
     			 									+ "'" + courseName + "'"+ "," 
     			 									+ "'" + courseType + "'"+ ","
@@ -182,22 +183,22 @@ public class DBTool {
     			 									+ "'" + guide + "'"+ ","
     			 									+ "'" + examId + "'"+ ","
     			 									+ "'" + examName + "'"+ ","	 									
-    	                                            + "'" +  courseContent + "'" + ");"; 
+    	                                            + "'" +  examContent + "'" + ");"; 
     	
     	 String sqlQuery = "select count(*) from EXAM where "  + 
-    	                   "course_id =? and exam_id=?;";  
+    	                   "course_id =? and module_id=? and exam_id=?;";  
     	
-    	 String sqlUpdate = "update Course set course_content=? where course_id=? and exam_id=?; " ;
+    	 String sqlUpdate = "update Exam set exam_content=? where course_id=? and module_id=? and exam_id=?; " ;
     	 
     	 //DBTool.queryDB(context, db, sqlQuery, new String[]{course_id}).get(0);
     	 //Log.d("after query","after query");
 
-    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{courseId,examId}).get(0));
+    	 int a = Integer.valueOf(DBTool.queryDB(context,db, sqlQuery, new String[]{courseId,moduleId,examId}).get(0));
     	 
     	 if ( a > 0){
         	Log.d("DB operation","Doing Update!");
 
-    		db.execSQL(sqlUpdate, new String[]{courseContent,courseId,examId});
+    		db.execSQL(sqlUpdate, new String[]{examContent,courseId,moduleId,examId});
     	 } else {
     		 
          	Log.d("DB operation","Doing Insert!");

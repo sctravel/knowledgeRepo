@@ -3,20 +3,25 @@ package com.apps.knowledgeRepo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.utils.CourseUtil;
+
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +36,25 @@ public class ViewAnswerModeActivity extends Activity{
     private int inCorrectListIndex=0;
     private boolean viewInCorrectMode = false;
     
+    private String examId;
+    private String courseId;
+    private String moduleId;
+    
+    private List<RadioButton> choiceList; 
+    
     public void initilizeExam() {
     	
+    	//final WebView questionText = (WebView) findViewById(R.id.questionPractice);
+        final RadioButton choiceA = (RadioButton) findViewById(R.id.choiceAPractice);
+        final RadioButton choiceB = (RadioButton) findViewById(R.id.choiceBPractice);
+        final RadioButton choiceC = (RadioButton) findViewById(R.id.choiceCPractice);
+        final RadioButton choiceD = (RadioButton) findViewById(R.id.choiceDPractice);
+        choiceList = new ArrayList<RadioButton>();
+        choiceList.add(choiceA);
+        choiceList.add(choiceB);
+        choiceList.add(choiceC);
+        choiceList.add(choiceD);
+
  		addListenerOnJumpToButton();
  		
         addListenerOnPrevAndNextButton();
@@ -51,8 +73,12 @@ public class ViewAnswerModeActivity extends Activity{
         	if(inCorrectList!=null && !inCorrectList.isEmpty()) {
         		viewInCorrectMode = true;
         	}
+        	examId = extras.getString("examId");
+        	courseId = extras.getString("courseId");
+        	moduleId = extras.getString("moduleId");
         	
-    	    exam = (Exam) extras.getSerializable("exam");
+        	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
+    	    //exam = (Exam) extras.getSerializable("exam");
     	    
         }
         if(exam==null) throw new RuntimeException("Exam is null");
@@ -204,18 +230,20 @@ public class ViewAnswerModeActivity extends Activity{
     	//answerText.setTextColor(0xff);
     }
     private void setQuestionText(int questionNumber) {
-    	final TextView questionText = (TextView) findViewById(R.id.questionPractice);
-        final TextView choiceA = (TextView) findViewById(R.id.choiceAPractice);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceBPractice);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceCPractice);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceDPractice);
-        questionText.setText(Html.fromHtml( (questionNumber+1)+". "+exam.getQuestions().get(questionNumber).getText() ));
-        //List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
-        //for(Answer answer : answerList )
-        choiceA.setText(Html.fromHtml("A. "+exam.getQuestions().get(questionNumber).getAnswers().get(0).getAnswerText() ));
-        choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText() ));
-        choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText() ));
-        choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText() ));
+    	final WebView questionText = (WebView) findViewById(R.id.questionPractice);
+        
+        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
+        //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
+        for(int i=0; i< choiceList.size(); ++i) {
+        	//Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	choiceList.get(i).setVisibility(View.INVISIBLE); 
+        }
+        for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
+        	Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	char c = (char) ('A'+i);
+        	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
+        	choiceList.get(i).setVisibility(View.VISIBLE); 
+        }
     }
     
     private void addListenerOnJumpToButton() {

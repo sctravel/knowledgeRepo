@@ -59,25 +59,22 @@
             android:text="@string/next" />
     </LinearLayout>
     
-    <TextView
-        android:id="@+id/practiceModeTitle"
+  
+   <WebView
+        android:id="@+id/questionPractice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title" 
-        android:textStyle="bold|italic"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge"  />
+        android:text="@string/hello_world" 
+        android:paddingBottom="0dp"
+   		android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"/>
         
     <RadioGroup
         android:id="@+id/singleChoicePractice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
- 
-        <TextView
-        android:id="@+id/questionPractice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+       
         <RadioButton
             android:id="@+id/choiceAPractice"
             android:layout_width="wrap_content"
@@ -102,7 +99,7 @@
  
     </RadioGroup>
     
-     <TextView
+    <TextView
         android:id="@+id/checkAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

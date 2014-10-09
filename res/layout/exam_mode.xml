@@ -36,7 +36,7 @@
             android:textCursorDrawable="@null"
             android:padding="10dp"
             android:background="@drawable/edit_text_box"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
       	    android:gravity="left"
       	    android:hint="Page"
       	    android:inputType="number"/>
@@ -51,7 +51,7 @@
             android:id="@+id/previousButtonExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="20dp"
             android:layout_gravity="right"
             android:text="@string/previous" />
         <Button
@@ -113,6 +113,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" 
+        android:paddingBottom="0dp"
+   		android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
         />    
         
    	<LinearLayout 

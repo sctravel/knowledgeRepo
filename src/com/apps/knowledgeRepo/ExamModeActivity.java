@@ -43,6 +43,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView; 
 import android.widget.Toast;
@@ -73,7 +74,7 @@ public class ExamModeActivity extends Activity{
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
 	private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
-    List<TextView> choiceList = null;
+    List<RadioButton> choiceList = null;
     
     //A list of questions numbers that are marked for review
     private List<Integer> reviewList = new ArrayList<Integer>();
@@ -135,11 +136,11 @@ public class ExamModeActivity extends Activity{
 	        moduleId =extras.getString("moduleId");
 	        examId = extras.getString("examId");       
         }     
-        choiceList = new ArrayList<TextView>();
-        final TextView choiceA = (TextView) findViewById(R.id.choiceAExam);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
+        choiceList = new ArrayList<RadioButton>();
+        final RadioButton choiceA = (RadioButton) findViewById(R.id.choiceAExam);
+        final RadioButton choiceB = (RadioButton) findViewById(R.id.choiceBExam);
+        final RadioButton choiceC = (RadioButton) findViewById(R.id.choiceCExam);
+        final RadioButton choiceD = (RadioButton) findViewById(R.id.choiceDExam);
         choiceList.add(choiceA);
         choiceList.add(choiceB);
         choiceList.add(choiceC);
@@ -360,13 +361,17 @@ public class ExamModeActivity extends Activity{
     	final WebView questionText = (WebView) findViewById(R.id.questionExam);
        
         
-        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText(),"text/html","utf-8");
+        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
         //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
-        
+        for(int i=0; i< choiceList.size(); ++i) {
+        	//Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	choiceList.get(i).setVisibility(View.INVISIBLE); 
+        }
         for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
         	Log.d("Choice","size of choiceList  is "+choiceList.size());
         	char c = (char) ('A'+i);
         	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
+        	choiceList.get(i).setVisibility(View.VISIBLE); 
         }
         //choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
         //choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
