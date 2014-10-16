@@ -76,6 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" 
+        android:background="@android:color/transparent"
         android:paddingBottom="0dp"
    		android:paddingLeft="0dp"
         android:paddingRight="0dp"
@@ -90,23 +91,27 @@
             android:id="@+id/choiceAPractice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceA" />
+            android:text="@string/choiceA" 
+            android:onClick="onRadioButtonClicked" />
  
         <RadioButton
             android:id="@+id/choiceBPractice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceB" />
+            android:text="@string/choiceB" 
+            android:onClick="onRadioButtonClicked" />
         <RadioButton
             android:id="@+id/choiceCPractice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceC"  />
+            android:text="@string/choiceC" 
+            android:onClick="onRadioButtonClicked"  />
         <RadioButton
             android:id="@+id/choiceDPractice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choiceD" />
+            android:text="@string/choiceD" 
+            android:onClick="onRadioButtonClicked" />
  
     </RadioGroup>
     
@@ -114,7 +119,7 @@
         android:id="@+id/checkAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ABCDEFG" />
+        android:text="" />
     
         
   </LinearLayout>

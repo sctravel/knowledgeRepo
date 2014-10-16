@@ -12,6 +12,7 @@ import com.apps.knowledgeRepo.dataModel.Answer;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -27,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ViewAnswerModeActivity extends Activity{
-	public final static String EXTRA_MESSAGE = "com.apps.knowledagerepo.MESSAGE";
 	public final static char CHOICE_A= 'A';
 	
 	private int questionNumber = -1;
@@ -236,6 +236,8 @@ public class ViewAnswerModeActivity extends Activity{
     	final WebView questionText = (WebView) findViewById(R.id.questionPractice);
         
         questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
+        questionText.setBackgroundColor(Color.TRANSPARENT);
+
         //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
         for(int i=0; i< choiceList.size(); ++i) {
         	//Log.d("Choice","size of choiceList  is "+choiceList.size());

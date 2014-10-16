@@ -334,7 +334,8 @@ public class ModeSelectionActivity extends Activity {
         final Button quitAppButton = (Button) findViewById(R.id.quitAppButton);
         quitAppButton.setOnClickListener(new View.OnClickListener() {
           
-            public void onClick(View v) {    	
+            public void onClick(View v) { 
+            	finish();
             	System.exit(0);
 
             }
@@ -427,8 +428,12 @@ public class ModeSelectionActivity extends Activity {
     
     /** Called when the user clicks the Send button */
     public void beginExam(View view, Exam exam) {
-        Intent intent = new Intent(this, ExamModeActivity.class);
-        
+        Intent intent ;
+        if(Integer.parseInt(exam.getModuleId())%2 == 0 ) {
+        	intent = new Intent(this, ExamModeActivity.class);
+    	} else {
+        	intent = new Intent(this, PracticeModeActivity.class);
+    	}
         intent.putExtra("courseId", currentCourseId);
         intent.putExtra("moduleId", currentModuleId);
         intent.putExtra("examId", currentExamId);
