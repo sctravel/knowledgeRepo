@@ -56,7 +56,7 @@ public final static char CHOICE_A= 'A';
     private String moduleId;
     
     private List<RadioButton> choiceList; 
-    
+    private int answerValue=0;
     private boolean isAnswerShown=false;
     
     public void initilizeExam() {
@@ -138,8 +138,24 @@ public final static char CHOICE_A= 'A';
 	    ++questionNumber;		        	
     	
     }
+    
+    private int getCheckedAnswer() {
+    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
+    	int id = radioGroup.getCheckedRadioButtonId();
+    	int chosen=0;
+    	switch (id) {
+    		case  R.id.choiceAPractice : chosen=1; break; 
+	    	case  R.id.choiceBPractice : chosen=2; break; 
+	    	case  R.id.choiceCPractice : chosen=3; break; 
+	    	case  R.id.choiceDPractice : chosen=4; break; 
+	    	default : chosen=0; 
+    	}
+    	//if (chosen==0) return null;
+    	return chosen;
+    }
+    
     public  void onRadioButtonClicked(View view) { 	
-    	//String value = getCheckedAnswer();
+    	answerValue = getCheckedAnswer();
     	//Store user answer
         isAnswerShown=true;
         //nextQuestion();
@@ -154,27 +170,6 @@ public final static char CHOICE_A= 'A';
 		}
 		--questionNumber;    
     }
-    /*
-    private void parseExam() {
-    	exam = new SingleChoiceExam();
-    	String questionString = "none";
- 		String answerString = "none";
-    	try {
-      	  //make it configuable  here
-         	 InputStream question = getAssets().open("exams/exam1.txt");
-         	 InputStream answer = getAssets().open("exams/exp1.txt");
-
-  		    questionString = exam.readFromFile(question);
-  		    answerString = exam.readFromFile(answer);
-
-         } catch (FileNotFoundException e) {
-         	  System.err.println("File not found ");
-         } catch (IOException e) {
-           	System.err.println("Error pasing file a");
-         }
-         
-  	   exam.parseExam(questionString,answerString);
-    }*/
     
     private void refreshPage() {
     	
@@ -238,13 +233,21 @@ public final static char CHOICE_A= 'A';
     	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
     	List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
     	String answerNum=" ";
+    	int answerNo=0;
     	for(Answer answer : answerList ) {
     		if(answer.getScore() ==1) {
     			answerNum = ""+(char)(answer.getAnswerNumber()+'A'-1);
+    			answerNo = (int) answer.getAnswerNumber();
        			break;
     		}
     	}
-    	answerText.setText(Html.fromHtml("Correct Answer is "+answerNum+"<br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	if(answerValue == answerNo) {
+    		//choiceList.get(answerNo-1).setBackgroundColor(Color.GREEN);;
+        	answerText.setText(Html.fromHtml("<b><font color=\"green\">Correct Answer is "+answerNum+"</font><b> <br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	} else {
+    		//choiceList.get(answerNo-1).setBackgroundColor(Color.RED);;
+        	answerText.setText(Html.fromHtml("<b><font color=\"red\">Correct Answer is "+answerNum+"</font><b> <br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	}
     	//answerText.setTextColor(0xff);
     }
     private void setQuestionText(int questionNumber) {
@@ -262,6 +265,57 @@ public final static char CHOICE_A= 'A';
         	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
         	choiceList.get(i).setVisibility(View.VISIBLE); 
         }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.exam_mode_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        // Configure the search info and add any event listeners
+        
+       // MenuItem shareItem = menu.findItem(R.id.action_share);
+       // mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+       // mShareActionProvider.setShareIntent(getDefaultIntent());
+        
+     // When using the support library, the setOnActionExpandListener() method is
+        // static and accepts the MenuItem object as an argument
+        MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    //TODO: Need to remove unnecessary menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_back_to_main_menu:
+                backToMainMenu();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    private void backToMainMenu() {
+    	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+	    //startActivity(intent);
+    	this.finish();
+		System.out.println("returnToMainMenuButton!");
     }
     
     private void addListenerOnJumpToButton() {

@@ -653,7 +653,7 @@ public class ExamModeActivity extends Activity{
 				    intent.putExtra("examId", examId);
 				    intent.putExtra("courseId", courseId);
 				    intent.putExtra("moduleId", moduleId);
-
+				    ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("reviewAllButton!");
 				}
@@ -671,6 +671,7 @@ public class ExamModeActivity extends Activity{
 				    intent.putExtra("courseId", courseId);
 					intent.putExtra("moduleId", moduleId);
 				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
+				    ExamModeActivity.this.finish();
 				    startActivity(intent);
 				    System.out.println("reviewIncorrectButton!");
 
@@ -688,6 +689,7 @@ public class ExamModeActivity extends Activity{
 					intent.putExtra("examId", examId);
 					intent.putExtra("courseId", courseId);
 					intent.putExtra("moduleId", moduleId);
+					ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("retakeExamButton!");
 
@@ -703,6 +705,7 @@ public class ExamModeActivity extends Activity{
 					//dialog.dismiss();
 					Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
 				    //intent.putExtra(EXTRA_MESSAGE, message);
+					ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("returnToMainMenuButton!");
 
