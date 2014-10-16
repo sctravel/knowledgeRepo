@@ -15,7 +15,4 @@
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:showAsAction="never" />
-    <item android:id="@+id/action_back_to_main_menu"
-          android:title="Back to Main Menu"
-          android:showAsAction="never" />
 </menu>

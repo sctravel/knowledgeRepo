@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -43,6 +44,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView; 
 import android.widget.Toast;
@@ -73,7 +75,7 @@ public class ExamModeActivity extends Activity{
     //store the answer of the question which user already finished 
     @SuppressLint("UseSparseArrays")
 	private Map<Integer, String> scoreMap = new HashMap<Integer, String>(); 
-    List<TextView> choiceList = null;
+    List<RadioButton> choiceList = null;
     
     //A list of questions numbers that are marked for review
     private List<Integer> reviewList = new ArrayList<Integer>();
@@ -82,6 +84,7 @@ public class ExamModeActivity extends Activity{
     private List<Integer> inCorrectList = new ArrayList<Integer>();
     
     private long startTime= System.currentTimeMillis();
+    private long totalUsedTime = 0;
     private long pauseStartTime=0;
     private long totalPauseTime=0;
     
@@ -89,12 +92,14 @@ public class ExamModeActivity extends Activity{
     	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
         if(exam==null) throw new RuntimeException("Exam is null after initialization for id-"+examId);
         
+        attempt=DBTool.retriveNewAttempt(getApplicationContext(), courseId, moduleId, examId);
+        Log.d("Attemp", "Current attempt is: "+attempt);
     	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
     			DBTool.getDB(getApplicationContext()), courseId, moduleId, examId, attempt); 
     	
     	scoreMap = examStatus.getUserAnswerMap();
     	questionNumber = scoreMap.size();
-        totalPauseTime=examStatus.getUsedTime();
+    	totalUsedTime=examStatus.getUsedTime();
 
  		addListenerOnJumpToButton();
  		addListenerOnPauseButton();
@@ -103,7 +108,8 @@ public class ExamModeActivity extends Activity{
         addListenerOnReviewMarkedButton();
         startTime = System.currentTimeMillis();
         pauseStartTime=0;
-        
+        TextView titleView = (TextView) findViewById(R.id.examModeExamName);
+        titleView.setText(exam.getName());
 	    refreshPage();
     }
   //Review Mode can only see the questions marked for review
@@ -135,11 +141,11 @@ public class ExamModeActivity extends Activity{
 	        moduleId =extras.getString("moduleId");
 	        examId = extras.getString("examId");       
         }     
-        choiceList = new ArrayList<TextView>();
-        final TextView choiceA = (TextView) findViewById(R.id.choiceAExam);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceBExam);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceCExam);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceDExam);
+        choiceList = new ArrayList<RadioButton>();
+        final RadioButton choiceA = (RadioButton) findViewById(R.id.choiceAExam);
+        final RadioButton choiceB = (RadioButton) findViewById(R.id.choiceBExam);
+        final RadioButton choiceC = (RadioButton) findViewById(R.id.choiceCExam);
+        final RadioButton choiceD = (RadioButton) findViewById(R.id.choiceDExam);
         choiceList.add(choiceA);
         choiceList.add(choiceB);
         choiceList.add(choiceC);
@@ -191,20 +197,20 @@ public class ExamModeActivity extends Activity{
             case R.id.action_settings:
                 openSettings();
                 return true;
-            case R.id.action_enter_review_mode:
-                enterReviewMode();
-                return true;
-            case R.id.action_leave_review_mode:
-                leaveReviewMode();
-                return true;
-            case R.id.action_grade:
-                grade();
+            case R.id.action_back_to_main_menu:
+                backToMainMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
+    private void backToMainMenu() {
+    	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+	    //startActivity(intent);
+    	this.finish();
+		System.out.println("returnToMainMenuButton!");
+    }
     /** Defines a default (dummy) share intent to initialize the action provider.
      * However, as soon as the actual content to be used in the intent
      * is known or changes, you must update the share intent by again calling
@@ -281,9 +287,9 @@ public class ExamModeActivity extends Activity{
     
     private long getRemainTimeInMillis() {
     	long passedTime = System.currentTimeMillis() - startTime ;
-    	System.out.println("Total pause time is: "+totalPauseTime+"; Total pass time is: "+passedTime);
+    	System.out.println("Total used time is: "+totalUsedTime+"; Total pass time is: "+passedTime);
 
-    	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime) ;
+    	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime + totalUsedTime) ;
     }
     private void refreshPage() {
     	
@@ -360,13 +366,18 @@ public class ExamModeActivity extends Activity{
     	final WebView questionText = (WebView) findViewById(R.id.questionExam);
        
         
-        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText(),"text/html","utf-8");
+        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
+        questionText.setBackgroundColor(Color.TRANSPARENT);
         //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
-        
+        for(int i=0; i< choiceList.size(); ++i) {
+        	//Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	choiceList.get(i).setVisibility(View.INVISIBLE); 
+        }
         for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
         	Log.d("Choice","size of choiceList  is "+choiceList.size());
         	char c = (char) ('A'+i);
         	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
+        	choiceList.get(i).setVisibility(View.VISIBLE); 
         }
         //choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
         //choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
@@ -617,7 +628,7 @@ public class ExamModeActivity extends Activity{
 
   }
    
-   private void showResultDialog(String results) {
+   private void showResultDialog(String results, boolean isPassed) {
 	// custom dialog
 			final Dialog dialog = new Dialog(ExamModeActivity.this);
 			dialog.setContentView(R.layout.grade_dialog);
@@ -627,7 +638,7 @@ public class ExamModeActivity extends Activity{
 			//String results = grade();
 			// set the custom dialog components - text, image and button
 			TextView text = (TextView) dialog.findViewById(R.id.gradeTextExamEnd);
-			text.setText(results);
+			text.setText(Html.fromHtml(results));
 			ImageView image = (ImageView) dialog.findViewById(R.id.imageExamEnd);
 			image.setImageResource(R.drawable.ic_launcher);
 
@@ -736,18 +747,24 @@ public class ExamModeActivity extends Activity{
 		   ++count;
 	   }
 	   int totalScore = 100*correctList.size()/questionList.size() ;
+	   
+	   long usedTime = System.currentTimeMillis() - startTime - totalPauseTime + totalUsedTime;
+       System.out.println("Total used time is: "+totalUsedTime+"; Total pass time is: "+usedTime);
 
+	   //Insert the grade information of the course/module/exam/attempt into DB
+	   DBTool.recordGrade(getApplicationContext(), courseId, examId, moduleId, ""+attempt, true, ""+totalScore, ""+usedTime);
+	   
 	   if(totalScore > exam.getPassing() ) {
 		   isPassed = true;
-		   sb.append("Congratulations! You have passed the exam. \n");
+		   sb.append("<b><font color=\"green\">Congratulations! You have passed the exam. </font><b>");
 	   } else {
-		   sb.append("Sorry, you didn't pass the exam. \n");
+		   sb.append("<b><font color=\"red\">Sorry, you didn't pass the exam.</font><b> ");
 	   }
 	   
 	   
 	   sb.append("Your score is "+totalScore+", and the passing score is "+exam.getPassing()+". ");
 	   
-	   showResultDialog(sb.toString());
+	   showResultDialog(sb.toString(),isPassed);
 		
 	   return isPassed;
 	   //Toast.makeText(getApplicationContext(), "Your score is "+correctList.size()+" out of "+answerList.size(), Toast.LENGTH_LONG).show();
