@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,8 +38,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
-public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
+public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	/*
 	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 		InputStream in = entity.getContent();
@@ -55,6 +59,37 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		return out.toString();
 		}
 	*/
+	
+	private final ProgressBar progressbar;
+	
+	public CoursesDownloaderTask(ProgressBar progressbar){
+		
+		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
+		this.progressbar = progressbar; 
+	}
+	
+	@Override
+	protected void onProgressUpdate(Integer... progress) {
+		
+		Log.d("DownloadUsingRestfulAPI", "onProgressUpdate "+ progress[0]);
+		progressbar.setProgress(progress[0]);
+		
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		//textView.setText("Hello !!!");
+		Log.d("DownloadUsingRestfulAPI", "onPreExecute "+ progressbar.getId());
+		progressbar.setVisibility(View.VISIBLE);
+		super.onPreExecute();
+	}
+	
+	/*
+	@Override
+	protected void onPostExecute() {
+		progressbar.setVisibility(View.INVISIBLE);
+		//textView.setText(result);
+	}*/
 	
 	public boolean parseJSON(String fileName,Context context){
 		
@@ -172,17 +207,11 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
 		Context con = context[0];
-		if(DownloadUsingRestfulAPI(con)) 
-			if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
-				return true; 
-		return false;	
-	
-	}
-	
-	public static boolean DownloadUsingRestfulAPI(Context context) {
-		String filePath = context.getFilesDir().getPath().toString()  + "/CourseDB.json";
-		try {
+		
+		//if(DownloadUsingRestfulAPI(con)) 
 			
+		String filePath = context[0].getFilesDir().getPath().toString()  + "/CourseDB.json";
+		try {			
 		
 			//File f = new File(filePath);
 			//need to serialize to DB 
@@ -201,11 +230,38 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		  String line = "";
 		  
 		  int row=0;
-	
+		  
+		  URL url = new URL("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
+		  HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
+          connection.connect();
+          int fileLength = connection.getContentLength();
+          
+          //long total = 0;
+          
+          Log.d("DownloadUsingRestfulAPI", "fileLength: " + fileLength);
+          
+          
 		  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
 		  while ((line = rd.readLine()) != null) {	  
-			  out.write(line);
+			  out.write(line);	  
+			  // total+=line.length(); 		  			  
+			  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
+			  //int percentage = (int) ((total*100)/fileLength); 
 			  
+			  /*
+			  if (row==10000)		  
+				  publishProgress(50);
+			  else if(row == 2000)
+			  	  publishProgress(99);*/
+			  
+			  if(row<1000){
+				  publishProgress(row/10);
+				  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10);  
+			  }
+			  else
+				  publishProgress(100);
+			  
+			 			  
 			  row++;
 			
 		  }
@@ -220,9 +276,19 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		}
 		  
 		  Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
-		  return true; 
-	}
 
+		
+		if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
+			return true; 
+		else			
+		    return false;	
+	
+	}
+	
+	public static boolean DownloadUsingRestfulAPI(Context context) {
+		return true;
+		
+	}
 
 	
 }

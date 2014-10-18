@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -343,15 +344,19 @@ public class ModeSelectionActivity extends Activity {
 	private void loginPage() {
         setContentView(R.layout.login_page);
         final Button buttonLogin = (Button) findViewById(R.id.loginButton);
+        final ProgressBar mProgress = (ProgressBar) findViewById(R.id.progressDownloadBar);
+        
+        Log.d("loginPage", "construct progress bar:  "+ mProgress.getId());
+        
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
              	// download restful feeds and serialize to DB 
             	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
-            	new CoursesDownloaderTask().execute(getApplicationContext());
+            	new CoursesDownloaderTask(mProgress).execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
 
-            	selectCoursesPage();
+            	//selectCoursesPage();
             }
         });
         final Button buttonBack = (Button) findViewById(R.id.loginBackButton);
