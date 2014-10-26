@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -196,20 +197,20 @@ public class ExamModeActivity extends Activity{
             case R.id.action_settings:
                 openSettings();
                 return true;
-            case R.id.action_enter_review_mode:
-                enterReviewMode();
-                return true;
-            case R.id.action_leave_review_mode:
-                leaveReviewMode();
-                return true;
-            case R.id.action_grade:
-                grade();
+            case R.id.action_back_to_main_menu:
+                backToMainMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
+    private void backToMainMenu() {
+    	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+	    //startActivity(intent);
+    	this.finish();
+		System.out.println("returnToMainMenuButton!");
+    }
     /** Defines a default (dummy) share intent to initialize the action provider.
      * However, as soon as the actual content to be used in the intent
      * is known or changes, you must update the share intent by again calling
@@ -366,6 +367,7 @@ public class ExamModeActivity extends Activity{
        
         
         questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
+        questionText.setBackgroundColor(Color.TRANSPARENT);
         //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
         for(int i=0; i< choiceList.size(); ++i) {
         	//Log.d("Choice","size of choiceList  is "+choiceList.size());
@@ -626,7 +628,7 @@ public class ExamModeActivity extends Activity{
 
   }
    
-   private void showResultDialog(String results) {
+   private void showResultDialog(String results, boolean isPassed) {
 	// custom dialog
 			final Dialog dialog = new Dialog(ExamModeActivity.this);
 			dialog.setContentView(R.layout.grade_dialog);
@@ -636,7 +638,7 @@ public class ExamModeActivity extends Activity{
 			//String results = grade();
 			// set the custom dialog components - text, image and button
 			TextView text = (TextView) dialog.findViewById(R.id.gradeTextExamEnd);
-			text.setText(results);
+			text.setText(Html.fromHtml(results));
 			ImageView image = (ImageView) dialog.findViewById(R.id.imageExamEnd);
 			image.setImageResource(R.drawable.ic_launcher);
 
@@ -651,7 +653,7 @@ public class ExamModeActivity extends Activity{
 				    intent.putExtra("examId", examId);
 				    intent.putExtra("courseId", courseId);
 				    intent.putExtra("moduleId", moduleId);
-
+				    ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("reviewAllButton!");
 				}
@@ -669,6 +671,7 @@ public class ExamModeActivity extends Activity{
 				    intent.putExtra("courseId", courseId);
 					intent.putExtra("moduleId", moduleId);
 				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
+				    ExamModeActivity.this.finish();
 				    startActivity(intent);
 				    System.out.println("reviewIncorrectButton!");
 
@@ -686,6 +689,7 @@ public class ExamModeActivity extends Activity{
 					intent.putExtra("examId", examId);
 					intent.putExtra("courseId", courseId);
 					intent.putExtra("moduleId", moduleId);
+					ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("retakeExamButton!");
 
@@ -701,6 +705,7 @@ public class ExamModeActivity extends Activity{
 					//dialog.dismiss();
 					Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
 				    //intent.putExtra(EXTRA_MESSAGE, message);
+					ExamModeActivity.this.finish();
 				    startActivity(intent);
 					System.out.println("returnToMainMenuButton!");
 
@@ -754,15 +759,15 @@ public class ExamModeActivity extends Activity{
 	   
 	   if(totalScore > exam.getPassing() ) {
 		   isPassed = true;
-		   sb.append("Congratulations! You have passed the exam. \n");
+		   sb.append("<b><font color=\"green\">Congratulations! You have passed the exam. </font><b>");
 	   } else {
-		   sb.append("Sorry, you didn't pass the exam. \n");
+		   sb.append("<b><font color=\"red\">Sorry, you didn't pass the exam.</font><b> ");
 	   }
 	   
 	   
 	   sb.append("Your score is "+totalScore+", and the passing score is "+exam.getPassing()+". ");
 	   
-	   showResultDialog(sb.toString());
+	   showResultDialog(sb.toString(),isPassed);
 		
 	   return isPassed;
 	   //Toast.makeText(getApplicationContext(), "Your score is "+correctList.size()+" out of "+answerList.size(), Toast.LENGTH_LONG).show();

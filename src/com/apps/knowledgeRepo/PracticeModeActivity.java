@@ -9,10 +9,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.db.DBTool;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -24,136 +30,76 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class PracticeModeActivity extends Activity {
-/*	public final static String EXTRA_MESSAGE = "com.apps.knowledagerepo.MESSAGE";
-	public final static char CHOICE_A= 'A';
-	private ShareActionProvider mShareActionProvider;
-
+public final static char CHOICE_A= 'A';
+	
 	private int questionNumber = -1;
-    //SingleChoiceExam exam = null;
-    //private Map<Long, Long> scoreMap = new HashMap<Long, Long>(); //store the answer of the question which user already finished 
+    private Exam exam = null;
     
-    public void initilizePractice() {
-    	final TextView answerText = (TextView) findViewById(R.id.checkAnswer);
-        final Button buttonShowAnswer = (Button) findViewById(R.id.nextButtonPractice);
-        buttonShowAnswer.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	int chosen = 0;
-            	int id = getCheckedSingleChoiceId();
-            	switch (id) {
-            	    case  R.id.choiceAPractice : chosen=1; break; 
-            	    case  R.id.choiceBPractice : chosen=2; break; 
-            	    case  R.id.choiceCPractice : chosen=3; break; 
-            	    case  R.id.choiceDPractice : chosen=4; break; 
-            	    default : chosen=0; 
-            	}
-            
-            	System.out.println("chosen=="+chosen+";  You've chosen --- "+(char)(CHOICE_A+chosen-1));
-            	//System.out.println("answer is --"+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
-            	if(chosen==0) {
-            		answerText.setText("Please select an answer.");        
-            		answerText.setTextColor(Color.RED);
-            		System.out.println("Please select an answer.");
-            	} else if(  (char)(CHOICE_A+chosen-1) == exam.getAnswerList().get(questionNumber).getAnswer().charAt(0) ) {
-            		System.out.println("Congraturations! You are correct with answer - "+(char)(CHOICE_A+chosen-1));
-            		answerText.setText("Congraturations! You are correct with answer - "+(char)(CHOICE_A+chosen-1));
-            		answerText.setTextColor(Color.GREEN);
-            		
-            	} else {
-            		//System.out.println("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
-            		//answerText.setText("Sorry! You've chosen - "+(char)(CHOICE_A+chosen-1)+", but the correct answer is - "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0));
-            		answerText.setTextColor(Color.RED);
-            		
-            		
-            		//Toast.makeText(getApplicationContext(), "Sorry! Answer is "+exam.getAnswerList().get(questionNumber).getAnswer().charAt(0), Toast.LENGTH_LONG).show();
-
-            	}
-            }
-        });
-    }
+    private String examId;
+    private String courseId;
+    private String moduleId;
+    
+    private List<RadioButton> choiceList; 
+    private int answerValue=0;
+    private boolean isAnswerShown=false;
     
     public void initilizeExam() {
-    	//exam = new SingleChoiceExam();
- 		String questionString = "none";
- 		String answerString = "none";
+    	
+    	//final WebView questionText = (WebView) findViewById(R.id.questionPractice);
+        final RadioButton choiceA = (RadioButton) findViewById(R.id.choiceAPractice);
+        final RadioButton choiceB = (RadioButton) findViewById(R.id.choiceBPractice);
+        final RadioButton choiceC = (RadioButton) findViewById(R.id.choiceCPractice);
+        final RadioButton choiceD = (RadioButton) findViewById(R.id.choiceDPractice);
+        choiceList = new ArrayList<RadioButton>();
+        choiceList.add(choiceA);
+        choiceList.add(choiceB);
+        choiceList.add(choiceC);
+        choiceList.add(choiceD);
+
+        TextView titleView = (TextView) findViewById(R.id.practiceModeExamName);
+        titleView.setText(exam.getName());
+        
+ 		addListenerOnJumpToButton();
  		
-        final TextView questionText = (TextView) findViewById(R.id.questionPractice);
-    	final TextView answerText = (TextView) findViewById(R.id.checkAnswer);
-        final TextView choiceA = (TextView) findViewById(R.id.choiceAPractice);
-        final TextView choiceB = (TextView) findViewById(R.id.choiceBPractice);
-        final TextView choiceC = (TextView) findViewById(R.id.choiceCPractice);
-        final TextView choiceD = (TextView) findViewById(R.id.choiceDPractice);
-        
-        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
+        addListenerOnPrevAndNextButton();
+        //parseExam();
 
-        final Button buttonPrev = (Button) findViewById(R.id.previousButtonPractice);
-        buttonPrev.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	if(questionNumber<=0) return;
-                --questionNumber;
-                questionText.setText(exam.getQuestionList().get(questionNumber).getQuestion());
-                choiceA.setText(exam.getQuestionList().get(questionNumber).getChoices().get(0));
-                choiceB.setText(exam.getQuestionList().get(questionNumber).getChoices().get(1));
-                choiceC.setText(exam.getQuestionList().get(questionNumber).getChoices().get(2));
-                choiceD.setText(exam.getQuestionList().get(questionNumber).getChoices().get(3));
-                answerText.setText("");
-                radioGroup.clearCheck();
-            }
-        });
-        final Button buttonNext = (Button) findViewById(R.id.nextButtonPractice);
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	if(questionNumber >= exam.getCount()-1) return;
-                ++questionNumber;
-                questionText.setText(exam.getQuestionList().get(questionNumber).getQuestion());
-                choiceA.setText(exam.getQuestionList().get(questionNumber).getChoices().get(0));
-                choiceB.setText(exam.getQuestionList().get(questionNumber).getChoices().get(1));
-                choiceC.setText(exam.getQuestionList().get(questionNumber).getChoices().get(2));
-                choiceD.setText(exam.getQuestionList().get(questionNumber).getChoices().get(3));
-                answerText.setText("");
-                radioGroup.clearCheck();
-                // Perform action on click
-            }
-        });  
-        
-        try {
-       	 InputStream question = getAssets().open("exams/exam1.txt");
-       	 InputStream answer = getAssets().open("exams/exp1.txt");
-
-		    questionString = exam.readFromFile(question);
-		    answerString = exam.readFromFile(answer);
-
-       } catch (FileNotFoundException e) {
-       	System.err.println("File not found ");
-       } catch (IOException e) {
-       	System.err.println("Error pasing file a");
-       }
-       
-		exam.parseExam(questionString,answerString);
-		
-		++questionNumber;
-		questionText.setText(exam.getQuestionList().get(questionNumber).getQuestion());
-       choiceA.setText(exam.getQuestionList().get(questionNumber).getChoices().get(0));
-       choiceB.setText(exam.getQuestionList().get(questionNumber).getChoices().get(1));
-       choiceC.setText(exam.getQuestionList().get(questionNumber).getChoices().get(2));
-       choiceD.setText(exam.getQuestionList().get(questionNumber).getChoices().get(3));
+	    questionNumber=0;
+	    refreshPage();
     }
-    
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+        	
+        	examId = extras.getString("examId");
+        	courseId = extras.getString("courseId");
+        	moduleId = extras.getString("moduleId");
+        	
+        	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
+    	    //exam = (Exam) extras.getSerializable("exam");
+    	    
+        }
+        if(exam==null) throw new RuntimeException("Exam is null");
+
         setContentView(R.layout.practice_mode);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher, instead use:
@@ -162,16 +108,172 @@ public class PracticeModeActivity extends Activity {
         }
         
         initilizeExam();
-        initilizePractice();
     }
-   
+    private void addListenerOnPrevAndNextButton() {
+       	final Button buttonPrev = (Button) findViewById(R.id.previousButtonPractice);
+           buttonPrev.setOnClickListener(new View.OnClickListener() {
+        	   @Override
+               public void onClick(View v) {
+               	   prevQuestion();
+               	   isAnswerShown = false;
+                   refreshPage();
+               }
+           });
+           final Button buttonNext = (Button) findViewById(R.id.nextButtonPractice);
+           buttonNext.setOnClickListener(new View.OnClickListener() {
+        	   @Override
+               public void onClick(View v) {
+               	   nextQuestion();
+               	   isAnswerShown = false;
+               	   refreshPage();    
+               }
+           }); 
+    }
+    public void nextQuestion() {
+    	
+    	//The last Question
+		if(questionNumber >= exam.getQuestions().size()-1) {
+			return;
+		}
+	    ++questionNumber;		        	
+    	
+    }
+    
+    private int getCheckedAnswer() {
+    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
+    	int id = radioGroup.getCheckedRadioButtonId();
+    	int chosen=0;
+    	switch (id) {
+    		case  R.id.choiceAPractice : chosen=1; break; 
+	    	case  R.id.choiceBPractice : chosen=2; break; 
+	    	case  R.id.choiceCPractice : chosen=3; break; 
+	    	case  R.id.choiceDPractice : chosen=4; break; 
+	    	default : chosen=0; 
+    	}
+    	//if (chosen==0) return null;
+    	return chosen;
+    }
+    
+    public  void onRadioButtonClicked(View view) { 	
+    	answerValue = getCheckedAnswer();
+    	//Store user answer
+        isAnswerShown=true;
+        //nextQuestion();
+        refreshPage();
+    }
+    //Get the previous questionNumber
+    //Depends on the mode (isReviewMode)
+    public void prevQuestion() {
+ 
+    	if(questionNumber<=0) {
+			return;
+		}
+		--questionNumber;    
+    }
+    
+    private void refreshPage() {
+    	
+        final TextView qnumText = (TextView) findViewById(R.id.singleChoicePracticeNumber);
+        qnumText.setText((questionNumber+1)+"/"+exam.getQuestions().size() );
+        
+        final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextPractice);
+        goToNumber.setText("");
+    	setQuestionText(questionNumber);
+        final Button buttonNext = (Button) findViewById(R.id.nextButtonPractice);
+    	if( isAnswerShown ) {
+    		setAnswerText(questionNumber);
+            buttonNext.setEnabled(true);
+    	} else {
+        	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
+        	radioGroup.clearCheck();
+        	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
+        	answerText.setText("");
+    		buttonNext.setEnabled(false);
+    	}
+    	/*List<Answer> answerList= exam.getQuestions().get(questionNumber).getAnswers();
+    	
+    	
+    	//TODO make sure there's at least one correct answer
+    	for(Answer answer : answerList ) {
+    		if(answer.getScore() ==1) {
+    			String a = ""+(char)(answer.getAnswerNumber()+'A'-1);
+    			setRadioButtonChecked(a);
+    			break;
+    		}
+    	}*/
+    	//String answer = ;
+        
+        
+        
+    }
+    private void setRadioButtonChecked(String answer) {
+    	   
+    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
+    	radioGroup.setEnabled(true);
+
+    	radioGroup.clearCheck();
+    	if(answer==null || answer.isEmpty()) return;
+    	
+    	int checkedButtonId=0;
+    	switch (answer) {
+    		case "A" :  checkedButtonId=R.id.choiceAPractice ;break;
+    		case "B" :  checkedButtonId=R.id.choiceBPractice ;break;
+    		case "C" :  checkedButtonId=R.id.choiceCPractice ;break;
+    		case "D" :  checkedButtonId=R.id.choiceDPractice ;break;
+    		default  :  checkedButtonId=0;
+    	}
+    	if(checkedButtonId !=0 ) {
+    		radioGroup.check(checkedButtonId);
+    		//radioGroup.
+    	}
+    	radioGroup.setEnabled(false);
+    }
+    
+    private void setAnswerText( int  questionNumber) {
+    	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
+    	List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
+    	String answerNum=" ";
+    	int answerNo=0;
+    	for(Answer answer : answerList ) {
+    		if(answer.getScore() ==1) {
+    			answerNum = ""+(char)(answer.getAnswerNumber()+'A'-1);
+    			answerNo = (int) answer.getAnswerNumber();
+       			break;
+    		}
+    	}
+    	if(answerValue == answerNo) {
+    		//choiceList.get(answerNo-1).setBackgroundColor(Color.GREEN);;
+        	answerText.setText(Html.fromHtml("<b><font color=\"green\">Correct Answer is "+answerNum+"</font><b> <br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	} else {
+    		//choiceList.get(answerNo-1).setBackgroundColor(Color.RED);;
+        	answerText.setText(Html.fromHtml("<b><font color=\"red\">Correct Answer is "+answerNum+"</font><b> <br>"+exam.getQuestions().get(questionNumber).getExplanation() ));
+    	}
+    	//answerText.setTextColor(0xff);
+    }
+    private void setQuestionText(int questionNumber) {
+    	final WebView questionText = (WebView) findViewById(R.id.questionPractice);
+        
+        questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
+        questionText.setBackgroundColor(Color.TRANSPARENT);
+        for(int i=0; i< choiceList.size(); ++i) {
+        	//Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	choiceList.get(i).setVisibility(View.INVISIBLE); 
+        }
+        for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
+        	Log.d("Choice","size of choiceList  is "+choiceList.size());
+        	char c = (char) ('A'+i);
+        	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
+        	choiceList.get(i).setVisibility(View.VISIBLE); 
+        }
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.exam_mode_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Configure the search info and add any event listeners
         
        // MenuItem shareItem = menu.findItem(R.id.action_share);
@@ -195,49 +297,53 @@ public class PracticeModeActivity extends Activity {
         });
         return super.onCreateOptionsMenu(menu);
     }
+    
+    //TODO: Need to remove unnecessary menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_search:
-                openSearch();
-                return true;
-            case R.id.action_settings:
-                openSettings();
+            case R.id.action_back_to_main_menu:
+                backToMainMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
-    private int getCheckedSingleChoiceId() {
-    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
-    	int d = radioGroup.getCheckedRadioButtonId();
-    	
-    	return d;
-    }
-   
-   private Intent getDefaultIntent() {
-       Intent intent = new Intent(Intent.ACTION_SEND);
-       intent.setType("image/*");
-       return intent;
-   }
-   
-   @Override
-   public void onResume() {
-       super.onResume();  // Always call the superclass method first
-   } 
-   @Override
-   public void onPause() {
-       super.onPause();  // Always call the superclass method first
-   }
-   
-    private void openSearch(){
-    	
+    private void backToMainMenu() {
+    	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+	    //startActivity(intent);
+    	this.finish();
+		System.out.println("returnToMainMenuButton!");
     }
     
-    private void openSettings(){
-    	
-    }*/
+    private void addListenerOnJumpToButton() {
+ 	   final Button buttonJump = (Button) findViewById(R.id.jumpToButtonPractice);
+        buttonJump.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+               final EditText goToNumber = (EditText) findViewById(R.id.jumpToTextPractice);
+     		   int upperBound = exam.getQuestions().size();  
+
+         	   try{
+         		   int jumpToNumber = Integer.parseInt(goToNumber.getText().toString())-1;
+         		   if(jumpToNumber <0 || jumpToNumber >= upperBound) {
+         			   Toast.makeText(getApplicationContext(), "Question Number should between: 1 - "+upperBound+". ", Toast.LENGTH_LONG).show();
+         			   goToNumber.setText("");
+         			   return;
+         		   }
+ 	         	   questionNumber = jumpToNumber;
+ 	         	   isAnswerShown = false;
+ 	         	   refreshPage();
+         	   } catch (Exception e) {
+     			   Toast.makeText(getApplicationContext(), "Question Number should between: 1 - "+upperBound+". ", Toast.LENGTH_LONG).show();
+         		   //logger..warn("Jump to Error",e);
+         		   System.out.println("Jump to Error");
+         		   e.printStackTrace();
+         		   
+         	   }
+            }
+        });
+    }
     
 }

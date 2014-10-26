@@ -25,6 +25,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -50,6 +52,14 @@ public class ModeSelectionActivity extends Activity {
 	private String currentCourseId=null;
 	private String currentModuleId=null;
 	private String currentExamId=null;
+	
+	private  static final Map<Long, String> moduleIdNameMap = new HashMap<Long, String>(); 
+	static {
+		moduleIdNameMap.put( 0L, "Simulation Exams");
+		moduleIdNameMap.put(1L, "Open Book Exams");
+		moduleIdNameMap.put(2L, "Close Book Exams");
+		moduleIdNameMap.put(3L, "By Topic Exams");
+	};
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,9 +122,9 @@ public class ModeSelectionActivity extends Activity {
 		
 		ScrollView scrollView = new ScrollView(getApplicationContext());
 
-		LayoutParams lptv = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lptv = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
-		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
 		
 		LinearLayout linear = new LinearLayout(getApplicationContext());
@@ -160,12 +170,13 @@ public class ModeSelectionActivity extends Activity {
 		}
 		
 		Button back = new Button(getApplicationContext());
-		back.setLayoutParams(lptv);
-		lptv.topMargin=30;
-		lptv.bottomMargin=30;
+		LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		lpbc.topMargin=30;
+		lpbc.bottomMargin=30;
 		back.setText("Back");
 		back.setTextColor(Color.parseColor("black"));
-
+		lpbc.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+		back.setLayoutParams(lpbc);
 		back.setGravity(Gravity.BOTTOM);
 		linear.addView(back);
 		back.setOnClickListener(new View.OnClickListener() {
@@ -192,9 +203,9 @@ public class ModeSelectionActivity extends Activity {
 		tv.setTextColor(Color.parseColor("black"));
 		tv.setTextSize(20);
 		
-		LayoutParams lptv = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lptv = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
-		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		LinearLayout linear = new LinearLayout(getApplicationContext());
 		linear.setLayoutParams(lptv);
@@ -207,7 +218,9 @@ public class ModeSelectionActivity extends Activity {
 		
 		 for(final CourseModule courseModule : moduleList) {
 		    	Button bt = new Button(getApplicationContext());
-		    	bt.setText(courseModule.getModuleId()+"");
+		    	String moduleName = moduleIdNameMap.get(courseModule.getModuleId());
+		    	Log.d("DB","ModuleName: "+moduleName +" for moduleId-" +courseModule.getModuleId() );
+		    	bt.setText(moduleName!=null? moduleName : ""+courseModule.getModuleId() );
 				linear.addView(bt);
 				lpbt.topMargin=10;
 				lpbt.bottomMargin=10;
@@ -226,11 +239,15 @@ public class ModeSelectionActivity extends Activity {
 			Button back = new Button(getApplicationContext());
 			back.setText("Back");
 			back.setTextColor(Color.parseColor("black"));
-			
-			lptv.topMargin=30;
-			lptv.bottomMargin=30;
-			back.setLayoutParams(lptv);
+			LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+			back.setLayoutParams(lpbc);
+			lpbc.topMargin=30;
+			lpbc.bottomMargin=30;
+			lpbc.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+
+			back.setLayoutParams(lpbc);
 			back.setGravity(Gravity.BOTTOM);
+			
 			back.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	selectCoursesPage();
@@ -249,6 +266,13 @@ public class ModeSelectionActivity extends Activity {
 		ScrollView scrollView = new ScrollView(getApplicationContext());
 		
 		List<Exam> examList = courseModule.getExams();
+		Collections.sort(examList, new Comparator<Exam>(){
+
+			// Overriding the compare method to sort the age 
+			public int compare(Exam d, Exam d1){
+			   return d.getName().compareTo(d1.getName());
+			}
+		});
 		//setContentView(R.layout.course_selection);
 		
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
@@ -256,9 +280,9 @@ public class ModeSelectionActivity extends Activity {
 		tv.setTextColor(Color.parseColor("black"));
 		tv.setTextSize(20);
 		
-		LayoutParams lptv = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lptv = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
-		LayoutParams lpbt = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		LinearLayout linear = new LinearLayout(getApplicationContext());
 		linear.setLayoutParams(lptv);
@@ -291,10 +315,11 @@ public class ModeSelectionActivity extends Activity {
 		Button back = new Button(getApplicationContext());
 		back.setText("Back");
 		back.setTextColor(Color.parseColor("black"));
-		
-		lptv.topMargin=30;
-		lptv.bottomMargin=30;
-		back.setLayoutParams(lptv);
+		LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
+		lpbc.topMargin=30;
+		lpbc.bottomMargin=30;
+		lpbc.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+		back.setLayoutParams(lpbc);
 		back.setGravity(Gravity.BOTTOM);
 		back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -335,7 +360,8 @@ public class ModeSelectionActivity extends Activity {
         final Button quitAppButton = (Button) findViewById(R.id.quitAppButton);
         quitAppButton.setOnClickListener(new View.OnClickListener() {
           
-            public void onClick(View v) {    	
+            public void onClick(View v) { 
+            	finish();
             	System.exit(0);
 
             }
@@ -432,8 +458,12 @@ public class ModeSelectionActivity extends Activity {
     
     /** Called when the user clicks the Send button */
     public void beginExam(View view, Exam exam) {
-        Intent intent = new Intent(this, ExamModeActivity.class);
-        
+        Intent intent ;
+        if(Integer.parseInt(exam.getModuleId())%2 == 0 ) {
+        	intent = new Intent(this, ExamModeActivity.class);
+    	} else {
+        	intent = new Intent(this, PracticeModeActivity.class);
+    	}
         intent.putExtra("courseId", currentCourseId);
         intent.putExtra("moduleId", currentModuleId);
         intent.putExtra("examId", currentExamId);
