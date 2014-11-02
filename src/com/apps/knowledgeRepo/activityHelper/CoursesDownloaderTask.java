@@ -103,40 +103,104 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		           long courseType = (Long) course.get("courseType");
 		           String courseOrientation = (String) course.get("courseOrientation");
 	           
-		           JSONArray courseModules = (JSONArray)course.get("Modules"); 
-		           Iterator<JSONObject> modelIterator = courseModules.iterator();
-		           
-		           List<CourseModule> couseModuleObjs= new ArrayList<CourseModule>();
-		           		           	        	   
-		           while (modelIterator.hasNext()) {
+		           //course type equals to 3 indicate it's flash card course 
+		           if(courseType == 1){
+			           JSONArray courseModules = (JSONArray)course.get("Modules"); 
+			           Iterator<JSONObject> modelIterator = courseModules.iterator();
+			           
+			           List<CourseModule> couseModuleObjs= new ArrayList<CourseModule>();
+			           		           	        	   
+			           while (modelIterator.hasNext()) {
+			        	   
+			        	   CourseModule couseModuleObj= new CourseModule();
+			        	   
+			        	   JSONObject module= (JSONObject)modelIterator.next();   	   
+			        	   String moduleId = String.valueOf( module.get("module"));    
+			        	   String guide = String.valueOf( module.get("guide")); 
+			        	   JSONArray exams = (JSONArray)module.get("Exams");
+	        	            	   
+			        	   
+			        	 
+				        	   Iterator<JSONObject> examIterator = exams.iterator();
+			        	   
+				        	   List<Exam> examObjs = new ArrayList<Exam>(); 
+				        	   
+				        	   while (examIterator.hasNext()) {
+				        		   
+				        		   Exam examObj = new Exam(); 
+				        		   
+				        		   JSONObject exam= (JSONObject)examIterator.next();          		   
+				        		   String examid= String.valueOf((Long) exam.get("examid"));           		   
+				        		   String examName= (String) exam.get("name"); 
+				        		   
+				        		   String examContent = exam.toJSONString();
+				        		   
+				        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
+				        	   }
+			        	   }
+			           }
+		           else if(courseType == 3){
 		        	   
-		        	   CourseModule couseModuleObj= new CourseModule();
+			           storeCourseToDB(courseId,courseName, ""+courseType, courseOrientation,context);
 		        	   
-		        	   JSONObject module= (JSONObject)modelIterator.next();   	   
-		        	   String moduleId = String.valueOf( module.get("module"));    
-		        	   String guide = String.valueOf( module.get("guide")); 
-		        	   JSONArray exams = (JSONArray)module.get("Exams");
-        	            	   
-		        	   Iterator<JSONObject> examIterator = exams.iterator();
-	        	   
-		        	   List<Exam> examObjs = new ArrayList<Exam>(); 
-		        	   
-		        	   while (examIterator.hasNext()) {
-		        		   
-		        		   Exam examObj = new Exam(); 
-		        		   
-		        		   JSONObject exam= (JSONObject)examIterator.next();          		   
-		        		   String examid= String.valueOf((Long) exam.get("examid"));           		   
-		        		   String examName= (String) exam.get("name"); 
-		        		   
-		        		   String examContent = exam.toJSONString();
-		        		   
-		        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
-		        	   }
+		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
+			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
+			           		           
+			           while (bucketIterator.hasNext()) {
+			           
+			        	   JSONObject bucket= (JSONObject)bucketIterator.next(); 
+			        	      			        	   
+			        	   String bucketId = String.valueOf( bucket.get("id"));    
+			        	   String sequence = String.valueOf( bucket.get("sequence"));
+			        	   String type = String.valueOf( bucket.get("type"));
+			        	   String title = String.valueOf( bucket.get("title"));
+			        	   		        	   
+			        	   storeBucketToDB(courseId,bucketId, type,sequence,title,context);
+			        	   	        	   
+			           }
+			           
+			           
+		        	   JSONArray cards = (JSONArray)course.get("Cards"); 
+			           Iterator<JSONObject> cardIterator = cards.iterator(); 
+			           		           
+			           while (cardIterator.hasNext()) {
+			           
+			        	   JSONObject card= (JSONObject)cardIterator.next(); 
+			        	  		        	   			        	   
+			        	   String cardId = String.valueOf( card.get("fcId"));    
+			        	   String cardType = String.valueOf( card.get("fcType"));
+			        	   String frontText = String.valueOf( card.get("front"));
+			        	   String endText = String.valueOf( card.get("back"));
+			        	   		        	   
+			        	   storeCardToDB(courseId,cardId, cardType,frontText,endText,context);
+			        	   	        	   
+			           }
+			           
+			           
+		        	   JSONArray cardsBucketMapping = (JSONArray)course.get("BucketCards"); 
+			           Iterator<JSONObject> cardsBucketMappingIterator = cardsBucketMapping.iterator(); 
+			           		           
+			           while (cardsBucketMappingIterator.hasNext()) {
+			           
+			        	   JSONObject mapping= (JSONObject)cardsBucketMappingIterator.next(); 
+			        	  		        	   			        	   
+			        	   String cardId = String.valueOf( mapping.get("fcId"));    
+			        	   String bucketId = String.valueOf( mapping.get("bucketId"));
+			        	   		        	   
+			        	   storeMappingToDB(courseId,cardId,bucketId,context);
+			        	   	        	   
+			           }
+			           
+			           
+			           
+		        	  
+		   		        	   
 		           }
+			    }
+			    
 			           
 		          // storeToDB(courseId, courseName, courseContent, context);	           
-				 }	
+				 	
 			}
 			catch(Exception ex){			
 
@@ -159,6 +223,26 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		return; 
 	
 	}
+	
+	public void storeCourseToDB(String courseId, String courseName, String courseType, String courseOrientation,Context context){
+		 
+		 
+	 }
+	
+	public void storeCardToDB(String courseId,String cardId, String cardType,String frontText,String endText,Context context){
+		
+		
+	}
+	
+	public void storeBucketToDB(String  courseId,String bucketId, String  type, String  sequence,String  title,Context context){
+		
+	
+	}
+	
+	public void storeMappingToDB(String courseId,String cardId,String bucketId,Context context){
+		 
+		 
+	 }
 	
 	@Override
 	public Boolean doInBackground(Context... context) {

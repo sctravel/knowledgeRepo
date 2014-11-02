@@ -6,6 +6,7 @@ public class Card {
 	String name; 
 	String frontText;
 	String backText; 
+	CardType cardType; 
 	
 	public int getCardId() {
 		return cardId;
