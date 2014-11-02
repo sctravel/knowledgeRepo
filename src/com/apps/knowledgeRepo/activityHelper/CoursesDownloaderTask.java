@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,25 +38,45 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
-public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
+public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
+
+	private final ProgressBar progressbar;
+	
+	private final String serviceEndPoint= "https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";
+	
+	private final String localFileName=  "/CourseDB.json";
+	
+	public CoursesDownloaderTask(ProgressBar progressbar){
+		
+		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
+		this.progressbar = progressbar; 
+	}
+	
+	@Override
+	protected void onProgressUpdate(Integer... progress) {
+		
+		Log.d("DownloadUsingRestfulAPI", "onProgressUpdate "+ progress[0]);
+		progressbar.setProgress(progress[0]);
+		
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		//textView.setText("Hello !!!");
+		Log.d("DownloadUsingRestfulAPI", "onPreExecute "+ progressbar.getId());
+		progressbar.setVisibility(View.VISIBLE);
+		super.onPreExecute();
+	}
+	
 	/*
-	protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-		InputStream in = entity.getContent();
-
-		StringBuffer out = new StringBuffer();
-		int n = 1;
-		while (n>0) {
-		byte[] b = new byte[4096];
-		n =  in.read(b);
-
-		if (n>0) out.append(new String(b, 0, n));
-		}
-
-
-		return out.toString();
-		}
-	*/
+	@Override
+	protected void onPostExecute() {
+		progressbar.setVisibility(View.INVISIBLE);
+		//textView.setText(result);
+	}*/
 	
 	public boolean parseJSON(String fileName,Context context){
 		
@@ -80,10 +102,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		           String courseName = (String) course.get("courseName");
 		           long courseType = (Long) course.get("courseType");
 		           String courseOrientation = (String) course.get("courseOrientation");
-		           // String courseContent = course.toJSONString();
-		          // JSONObject test = (JSONObject) parser.parse(courseContent);
-		          // Log.d("Test Parse","Parse the courseContent succeed. Length--"+courseContent.length()+"Storing into DB--"+test.get("courseName"));
-		           
+	           
 		           JSONArray courseModules = (JSONArray)course.get("Modules"); 
 		           Iterator<JSONObject> modelIterator = courseModules.iterator();
 		           
@@ -140,59 +159,24 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		return; 
 	
 	}
-
-	
-
-/*		
-	private boolean DownloadUsingRestfulAPI(String URL){
-		
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpContext localContext = new BasicHttpContext();
-		HttpGet httpGet = new HttpGet(URL);
-		String text = null;
-		try {
-			HttpResponse response = httpClient.execute(httpGet, localContext);
-			HttpEntity entity = response.getEntity();
-	
-			text = getASCIIContentFromEntity(entity);			
-			String testInput="abced";			
-			CoursePackage page= null;	
-		// serialize to SQL Lite database 
-		} catch (Exception e) {
-			return false;
-		}
-		
-		return true; 
-				
-	}
-	*/
 	
 	@Override
 	public Boolean doInBackground(Context... context) {
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
 		Context con = context[0];
-		if(DownloadUsingRestfulAPI(con)) 
-			if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
-				return true; 
-		return false;	
-	
-	}
-	
-	public static boolean DownloadUsingRestfulAPI(Context context) {
-		String filePath = context.getFilesDir().getPath().toString()  + "/CourseDB.json";
-		try {
-			
 		
-			//File f = new File(filePath);
-			//need to serialize to DB 
+		//if(DownloadUsingRestfulAPI(con)) 
+			
+		String filePath = context[0].getFilesDir().getPath().toString()  + localFileName;
+		try {			
 			
 		  Log.d("DownloadUsingRestfulAPI", "start downloading from restful service: path: "+ filePath);
 	      BufferedWriter  out = new BufferedWriter(new FileWriter(filePath));
 		
 		  HttpClient client = new DefaultHttpClient();
 		
-		  HttpGet request = new HttpGet("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
+		  HttpGet request = new HttpGet(serviceEndPoint);
 		
 		  HttpResponse response = client.execute(request);
 		
@@ -201,14 +185,34 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		  String line = "";
 		  
 		  int row=0;
-	
+		  
+		  /*
+		  URL url = new URL("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
+		  HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
+          connection.connect();
+          int fileLength = connection.getContentLength();  
+          //long total = 0;
+          Log.d("DownloadUsingRestfulAPI", "fileLength: " + fileLength);*/
+          
+          
 		  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
 		  while ((line = rd.readLine()) != null) {	  
-			  out.write(line);
-			  
-			  row++;
-			
+			  out.write(line);	  
+			  // total+=line.length(); 		  			  
+			  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
+			  //int percentage = (int) ((total*100)/fileLength); 
+			  if(row<98000){
+				  publishProgress(row/1000);
+				  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10);  
+			  }
+			  else
+				  publishProgress(98);
+			 			 			  
+			  row++;			
 		  }
+		  		  
+		  publishProgress(100);
+		  
 		  Log.d("DownloadUsingRestfulAPI", "finish writing to the file from buffer, total rows: " + row);
 		  out.close();
 		}
@@ -220,9 +224,19 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Void, Boolean>{
 		}
 		  
 		  Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
-		  return true; 
-	}
 
+		
+		if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
+			return true; 
+		else			
+		    return false;	
+	
+	}
+	
+	public static boolean DownloadUsingRestfulAPI(Context context) {
+		return true;
+		
+	}
 
 	
 }

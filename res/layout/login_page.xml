@@ -3,7 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+<<<<<<< HEAD
           
+=======
+    
+
+
+    
+>>>>>>> 6e20ba1f1880d4d0bf61c30afc0ddf7672ec000c
     <TextView
 	        android:id="@+id/loginMainText"
 	        android:layout_width="wrap_content"
@@ -78,4 +85,13 @@
 		            android:layout_alignParentRight="true"
 		            android:text="Back" />
 	</RelativeLayout>
+	
+     <ProgressBar
+        android:id="@+id/progressDownloadBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="258dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="0.34" />
+      
 </LinearLayout>
