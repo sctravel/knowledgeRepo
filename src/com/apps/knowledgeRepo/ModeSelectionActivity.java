@@ -435,12 +435,13 @@ public class ModeSelectionActivity extends Activity {
             	//selectCoursesPage();
             }
         });
+        /*
         final Button buttonBack = (Button) findViewById(R.id.loginBackButton);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mainPage();
             }
-        });
+        });*/
         
 	}
 	

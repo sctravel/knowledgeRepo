@@ -223,7 +223,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			return false; 
 		}
 		  
-		  Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
+		Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
 
 		
 		if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
