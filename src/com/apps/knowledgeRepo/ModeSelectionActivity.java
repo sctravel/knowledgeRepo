@@ -2,8 +2,6 @@ package com.apps.knowledgeRepo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,13 +14,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -39,9 +40,7 @@ import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.CourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
-import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
-import com.apps.knowledgeRepo.utils.CourseUtil;
 
 public class ModeSelectionActivity extends Activity {
 	
@@ -131,6 +130,7 @@ public class ModeSelectionActivity extends Activity {
 		linear.setLayoutParams(lptv);
 		linear.setVerticalGravity(MODE_APPEND);
 		
+		//Set up the text view at the top
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
 		tv.setText("Please select a course: ");
 		tv.setTextColor(Color.parseColor("black"));
@@ -143,10 +143,13 @@ public class ModeSelectionActivity extends Activity {
 		//tv.setGravity(Gravity.CENTER);
 		//tv.setTextSize(10);
 	
+		//Adding ListView
+		List<String> courseNames = new ArrayList<String>();
 		for(Map.Entry<String, Course> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
 			final Course course = entry.getValue();
 			Button bt = new Button(getApplicationContext());
+			courseNames.add(course.getCourseName());
 			bt.setText(course.getCourseName());
 			linear.addView(bt);
 			lpbt.topMargin=10;
@@ -168,7 +171,40 @@ public class ModeSelectionActivity extends Activity {
 	            }
 	        });
 		}
-		
+		final ListView listView = new ListView(getApplicationContext());
+		Log.d("aa","courseNames: "+courseNames);
+		listView.setBackgroundColor(Color.BLUE);
+		listView.setLayoutParams(lpbt);
+		 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+	              android.R.layout.simple_list_item_1,courseNames);
+	    
+	    
+	            // Assign adapter to ListView
+	            listView.setAdapter(adapter); 
+	            
+	            // ListView Item Click Listener
+	            listView.setOnItemClickListener(new OnItemClickListener() {
+	 
+	                  @Override
+	                  public void onItemClick(AdapterView<?> parent, View view,
+	                     int position, long id) {
+	                    
+	                   // ListView Clicked item index
+	                   int itemPosition     = position;
+	                   
+	                   // ListView Clicked item value
+	                   String  itemValue    = (String) listView.getItemAtPosition(position);
+	                      
+	                    // Show Alert 
+	                    Toast.makeText(getApplicationContext(),
+	                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
+	                      .show();
+	                 
+	                  }
+	    
+	             }); 
+	    		
+	    listView.addHeaderView(scrollView);
 		Button back = new Button(getApplicationContext());
 		LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
 		lpbc.topMargin=30;
@@ -186,7 +222,7 @@ public class ModeSelectionActivity extends Activity {
         });
 		linear.setOrientation(LinearLayout.VERTICAL);
 		scrollView.addView(linear);
-        setContentView(scrollView);
+        setContentView(listView);
 
 	}
 	
@@ -357,6 +393,20 @@ public class ModeSelectionActivity extends Activity {
 
             }
         });
+        
+        final Button buttonPlayVideo = (Button) findViewById(R.id.playVideoButton);
+        buttonPlayVideo.setOnClickListener(new View.OnClickListener() {
+          
+            public void onClick(View v) {    	
+            	Intent intent = new Intent(ModeSelectionActivity.this, VideoPlayerActivity.class);
+                //EditText editText = (EditText) findViewById(R.id.edit_message);
+                //String message = editText.getText().toString();
+                //intent.putExtra(EXTRA_MESSAGE, message);
+                startActivity(intent);
+
+            }
+        });
+        
         final Button quitAppButton = (Button) findViewById(R.id.quitAppButton);
         quitAppButton.setOnClickListener(new View.OnClickListener() {
           
@@ -385,12 +435,13 @@ public class ModeSelectionActivity extends Activity {
             	//selectCoursesPage();
             }
         });
+        /*
         final Button buttonBack = (Button) findViewById(R.id.loginBackButton);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mainPage();
             }
-        });
+        });*/
         
 	}
 	

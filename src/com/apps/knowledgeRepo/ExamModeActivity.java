@@ -1,22 +1,16 @@
 package com.apps.knowledgeRepo;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.Question;
-import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
@@ -24,13 +18,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.util.Log;
@@ -41,7 +33,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
