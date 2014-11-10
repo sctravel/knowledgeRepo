@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
+import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -277,6 +278,42 @@ public class DBTool {
     	content=content.replaceAll( "!!pattern!!", "'") ;
 
     	return content;
+    	
+     }
+     
+     
+     //Course table: courseId,courseName
+     //Buckets table: id， sequence， type， title
+     // Cards table: fcId, fcType, front, back
+     // BucketCards table: fcId, bucketId
+     
+     public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
+    	 
+    	 String queryCourseSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 	 
+    	 String queryCourseBucketSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	   	 
+    	 String queryCourseBucketCardSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 
+    	   	 
+    	 if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+    	 
+    	 
+    	Log.d("DB","cid:"+cid);
+    	
+    	//get bucket ids
+    	ArrayList<String> buckets = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid});
+    	
+    	
+    	//get cards for each associated bucket id;    
+    	
+    	db.close();
+    	
+    	
+    	return null;
      }
      
 }
