@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.apps.knowledgeRepo.dataModel.Bucket;
+import com.apps.knowledgeRepo.dataModel.Card;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
@@ -282,38 +284,78 @@ public class DBTool {
      }
      
      
-     //Course table: courseId,courseName
-     //Buckets table: id， sequence， type， title
-     // Cards table: fcId, fcType, front, back
+     // Course table: courseId,courseName
+     // Buckets table: id， sequence， type， title, courseId(FK)
+     // Cards table: fcId, fcType, front, back, bucketId(FK) 
      // BucketCards table: fcId, bucketId
      
      public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
     	 
     	 String queryCourseSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
     	 	 
-    	 String queryCourseBucketSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 String queryCourseBucketSQL = "select Buckets.id, Buckets.sequence,Buckets.type, Buckets.title from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
+    	 		" where COURSE_ID= ?" ;
     	   	 
-    	 String queryCourseBucketCardSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 //String queryCourseBucketAttribitesSQL =  "select Buckets.sequence,Buckets.type, Buckets.title" +
+    	 //		" from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
+     	 //		" where Buckets.BUCKET_ID= ?" ;
+    	 
+    	 String queryCourseBucketCardSQL =  "select Card.fcID, Card.fcType, Card.front,Card.back " +
+     	 		" from Card join Buckets on Card.COURSE_ID = Buckets.COURSE_ID" +
+      	 		" where Buckets.BUCKET_ID= ?" ;
     	 
     	   	 
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
      		
      	}
-    	 
-    	 
+    	  	 
     	Log.d("DB","cid:"+cid);
     	
+    	FlashCardCourse course= new FlashCardCourse();
+    	
     	//get bucket ids
-    	ArrayList<String> buckets = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid});
+    	ArrayList<String> bucketStrs = DBTool.queryDB(context, db, queryCourseBucketSQL, new String[]{cid});
     	
+    	List<Bucket> buckets= CreateBucket(bucketStrs);
     	
-    	//get cards for each associated bucket id;    
+    	course.setBucket(buckets);
+    	
+    	for(Bucket bucket : buckets){
+    		
+    		ArrayList<String> cardIdStrs = DBTool.queryDB(context, db, queryCourseBucketCardSQL, new String[]{Long.toString(bucket.getBucketId())});
+    		
+    		List<Card> cards= CreateCard(cardIdStrs);
+    		
+    		bucket.setCardList(cards);
+    		   		
+    	}
+     	//get cards for each associated bucket id;    
     	
     	db.close();
     	
     	
-    	return null;
+    	return course;
      }
      
+
+
+
+	static List<Bucket> CreateBucket(List<String> bucketIds){
+		
+		List<Bucket> result = new ArrayList<Bucket>(); 
+		
+		return result; 
+	
+	}
+	
+	
+	static List<Card> CreateCard(List<String> bucketIds){
+		
+		List<Card> result = new ArrayList<Card>(); 
+		
+		return result; 
+	
+	}
+	
 }
