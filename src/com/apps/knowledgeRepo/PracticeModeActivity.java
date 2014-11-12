@@ -72,9 +72,9 @@ public final static char CHOICE_A= 'A';
         choiceList.add(choiceC);
         choiceList.add(choiceD);
 
-        TextView titleView = (TextView) findViewById(R.id.practiceModeExamName);
-        titleView.setText(exam.getName());
-        
+       /* TextView titleView = (TextView) findViewById(R.id.practiceModeExamName);
+        titleView.setText(exam.getName());*/
+        setTitle(exam.getName());
  		addListenerOnJumpToButton();
  		
         addListenerOnPrevAndNextButton();
