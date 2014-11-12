@@ -8,6 +8,16 @@ public class Card {
 	String backText; 
 	CardType cardType; 
 	
+	public CardType getCardType() {
+		return cardType;
+	}
+
+
+	public void setCardType(CardType cardType) {
+		this.cardType = cardType;
+	}
+
+
 	public int getCardId() {
 		return cardId;
 	}

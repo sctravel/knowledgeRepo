@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.apps.knowledgeRepo.dataModel.Bucket;
+import com.apps.knowledgeRepo.dataModel.Bucket.BucketType;
 import com.apps.knowledgeRepo.dataModel.Card;
+import com.apps.knowledgeRepo.dataModel.Card.CardType;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
@@ -74,7 +76,7 @@ public class DBTool {
     		 String row = "";
     		 for (int i =0; i < count; i++){
     			 String currentColumn = cursor.getString(i);
-    			 row = row +currentColumn;
+    			 row = row +"\t"+currentColumn;
     			 
     			 
     		 }
@@ -284,24 +286,24 @@ public class DBTool {
      }
      
      
-     // Course table: courseId,courseName
-     // Buckets table: id， sequence， type， title, courseId(FK)
-     // Cards table: fcId, fcType, front, back, bucketId(FK) 
-     // BucketCards table: fcId, bucketId
+     // Course table: COURSE_ID,COURSE_NAME
+     // Buckets table: BUCKET_ID， SEQUENCE， TYPE， TITLE, COURSE_ID(FK)
+     // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
+     // BucketCards table: FC_ID, BUCKET_ID
      
      public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
     	 
     	 String queryCourseSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
     	 	 
-    	 String queryCourseBucketSQL = "select Buckets.id, Buckets.sequence,Buckets.type, Buckets.title from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
+    	 String queryCourseBucketSQL = "select Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
     	 		" where COURSE_ID= ?" ;
     	   	 
     	 //String queryCourseBucketAttribitesSQL =  "select Buckets.sequence,Buckets.type, Buckets.title" +
     	 //		" from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
      	 //		" where Buckets.BUCKET_ID= ?" ;
     	 
-    	 String queryCourseBucketCardSQL =  "select Card.fcID, Card.fcType, Card.front,Card.back " +
-     	 		" from Card join Buckets on Card.COURSE_ID = Buckets.COURSE_ID" +
+    	 String queryCourseBucketCardSQL =  "select Card.FC_ID, Card.FC_TYPE, Card.FRONT,Card.BACK " +
+     	 		" from BucketCards join Cards on BucketCards.FC_ID = Cards.FC_ID" +
       	 		" where Buckets.BUCKET_ID= ?" ;
     	 
     	   	 
@@ -333,26 +335,58 @@ public class DBTool {
      	//get cards for each associated bucket id;    
     	
     	db.close();
-    	
-    	
+       	
     	return course;
      }
      
-
-
-
-	static List<Bucket> CreateBucket(List<String> bucketIds){
+	static List<Bucket> CreateBucket(List<String> bucketStrs){
 		
 		List<Bucket> result = new ArrayList<Bucket>(); 
+		// Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE
+		for(String bucketStr: bucketStrs){
+			
+			String[] resultStr = bucketStr.split("\t");
+			int bucketId= Integer.parseInt(resultStr[0]); 
+			int sequence= Integer.parseInt(resultStr[1]); 
+			BucketType type= BucketType.valueOf(resultStr[2]); 
+			String title = resultStr[3]; 
+						
+			Bucket bucket= new Bucket(); 
+			bucket.setBucketId(bucketId);
+			bucket.setSequence(sequence);
+			bucket.setType(type);
+			bucket.setTitle(title);
+			
+			result.add(bucket);
+		}
 		
-		return result; 
-	
+		return result; 	
 	}
-	
-	
-	static List<Card> CreateCard(List<String> bucketIds){
+		
+	static List<Card> CreateCard(List<String> cardStrs){
 		
 		List<Card> result = new ArrayList<Card>(); 
+		
+		
+		for(String cardStr: cardStrs){
+			
+			String[] resultStr = cardStr.split("\t");		
+		    
+			//Cards table: FC_ID, FC_TYPE, FRONT, BACK 			
+			Card card= new Card(); 
+			
+			int cardId= Integer.parseInt(resultStr[0]); 	
+			CardType type= CardType.valueOf(resultStr[1]); 
+			String front = resultStr[2];
+			String back = resultStr[3]; 
+			
+			card.setCardId(cardId);
+			card.setFrontText(front);
+			card.setBackText(back);
+			card.setCardType(type); 
+			
+			result.add(card);
+		}
 		
 		return result; 
 	
