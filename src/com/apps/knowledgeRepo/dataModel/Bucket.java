@@ -6,7 +6,7 @@ import java.util.List;
 public class Bucket {
 	
 	long bucketId;	
-	int number;	
+	int sequence;	
 	BucketType type;	
 	String title;	
 	List<Card> cardList; 
@@ -19,12 +19,12 @@ public class Bucket {
 		this.bucketId = bucketId;
 	}
 
-	public int getNumber() {
-		return number;
+	public int getSequence() {
+		return sequence;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
 

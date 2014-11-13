@@ -17,6 +17,7 @@ import com.apps.knowledgeRepo.dataModel.Answer;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.CourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.db.DBTool;
 
@@ -39,7 +40,16 @@ public class CourseUtil {
 	}
 	
 	
-	
+	public static FlashCardCourse initilizeFlashCardCourse(String courseId, Context context){
+		
+		SQLiteDatabase db = DBTool.getDB(context);
+		FlashCardCourse courseObj  = DBTool.queryFlashCardCourse(context, db,courseId);
+			
+
+					
+		return courseObj;
+			
+	}
 	
 	public static Exam initilizeExam( String courseId, String moduleId, String examId, Context context){
 		

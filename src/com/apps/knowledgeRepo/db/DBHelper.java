@@ -41,6 +41,28 @@ public final class DBHelper extends SQLiteOpenHelper {
 	            "'EXAM_CONTENT' TEXT, " +
 	            " PRIMARY KEY (COURSE_ID,MODULE_ID,EXAM_ID)  )";
 	    
+	    private static final String SQL_CREATE_BUCKETS =
+	    	    "CREATE TABLE BUCKETS (" + 
+	    	    " 'BUCKET_ID' varchar(256) ," +
+	    	    " 'SEQUENCE' int, " +
+	    	    " 'TITLE' varchar(256)," +
+	    	    " 'COURSE_ID' varchar(256)," + 
+	    	    " PRIMARY KEY (BUCKET_ID)  )";
+	    	    
+	    
+	  private static final String SQL_CREATE_CARDS = 
+	    		"CREATE TABLE CARDS (" +
+	            "'CARD_ID' varchar(256)," +
+	    		"'NAME' varchar(256), "+
+	    		"'FRONTTEXT' varchar(256), " +
+	    		"'BACKTEXT' varchar(256), " + 
+	    		"'TYPE' varchar(256)," +
+	    		" PRIMARY KEY (CARD_ID)  )";
+	    
+	      private static final String SQL_CREATE_BUCKETS_CARDS=
+	    	    "CREATE TABLE BUCKETS_CARDS ('COURSE_ID' varchar(256)," + 
+	            "'BUCKET_ID' varchar(256)," + 
+	            " PRIMARY KEY (COURSE_ID,BUCKET_ID)  )";
 	    
 	    
 	    public static final int DATABASE_VERSION = 1;
@@ -54,6 +76,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 	        db.execSQL(SQL_CREATE_EXAM);
 	        db.execSQL(SQL_CREATE_CEAQA);
 	        db.execSQL(SQL_CREATE_GRADE);
+	        db.execSQL(SQL_CREATE_CARDS);
+	        db.execSQL(SQL_CREATE_BUCKETS);  
+	        db.execSQL(SQL_CREATE_BUCKETS_CARDS);
 	    }
 	    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	        // This database is only a cache for online data, so its upgrade policy is
