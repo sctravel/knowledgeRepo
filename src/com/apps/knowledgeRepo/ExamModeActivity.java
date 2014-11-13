@@ -99,8 +99,9 @@ public class ExamModeActivity extends Activity{
         addListenerOnReviewMarkedButton();
         startTime = System.currentTimeMillis();
         pauseStartTime=0;
-        TextView titleView = (TextView) findViewById(R.id.examModeExamName);
-        titleView.setText(exam.getName());
+        setTitle(exam.getName());
+        //TextView titleView = (TextView) findViewById(R.id.examModeExamName);
+        //titleView.setText(exam.getName());
 	    refreshPage();
     }
   //Review Mode can only see the questions marked for review

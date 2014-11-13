@@ -3,6 +3,7 @@ package com.apps.knowledgeRepo;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
@@ -53,6 +54,9 @@ public class ModeSelectionActivity extends Activity {
 	private String currentExamId=null;
 	
 	private  static final Map<Long, String> moduleIdNameMap = new HashMap<Long, String>(); 
+	private  static final Map<String, String> courseNameToIdMap = new HashMap<String,String>();
+	private static final Map<String, Long> currentModuleNameToIdMap = new HashMap<String, Long>();
+
 	static {
 		moduleIdNameMap.put( 0L, "Simulation Exams");
 		moduleIdNameMap.put(1L, "Open Book Exams");
@@ -144,12 +148,15 @@ public class ModeSelectionActivity extends Activity {
 		//tv.setTextSize(10);
 	
 		//Adding ListView
-		List<String> courseNames = new ArrayList<String>();
+		//List<String> courseNames = new ArrayList<String>();
 		for(Map.Entry<String, Course> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
 			final Course course = entry.getValue();
+			
+			courseNameToIdMap.put( course.getCourseName(), courseId);
+			//courseNames.add(course.getCourseName());
+			/*
 			Button bt = new Button(getApplicationContext());
-			courseNames.add(course.getCourseName());
 			bt.setText(course.getCourseName());
 			linear.addView(bt);
 			lpbt.topMargin=10;
@@ -169,14 +176,14 @@ public class ModeSelectionActivity extends Activity {
 	            		selectExamsPage(course,course.getModules().get(0));
 	            	}
 	            }
-	        });
+	        });*/
 		}
 		final ListView listView = new ListView(getApplicationContext());
-		Log.d("aa","courseNames: "+courseNames);
-		listView.setBackgroundColor(Color.BLUE);
+		Log.d("aa","courseNames: "+courseNameToIdMap.keySet());
+		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
-		 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-	              android.R.layout.simple_list_item_1,courseNames);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+	              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(courseNameToIdMap.keySet()));
 	    
 	    
 	            // Assign adapter to ListView
@@ -189,22 +196,33 @@ public class ModeSelectionActivity extends Activity {
 	                  public void onItemClick(AdapterView<?> parent, View view,
 	                     int position, long id) {
 	                    
-	                   // ListView Clicked item index
-	                   int itemPosition     = position;
+		                   // ListView Clicked item index
+		                   int itemPosition     = position;
+		                   
+		                   // ListView Clicked item value
+		                   String  itemValue    = (String) listView.getItemAtPosition(position);
+		                   currentCourseId = courseNameToIdMap.get(itemValue);
+		                    // Show Alert 
+		                   Toast.makeText(getApplicationContext(),
+		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
+		                      .show();
+		                   Course course = courseMetaData.get(currentCourseId);
+		                   if(course.getModules().size()>1) {
+			            		selectCourseModulePage(course);
+			               } else {
+			            		//If there's only one module, skip the select Module page
+			            		currentModuleId=""+course.getModules().get(0).getModuleId();
+			            		selectExamsPage(course,course.getModules().get(0));
+			               }
 	                   
-	                   // ListView Clicked item value
-	                   String  itemValue    = (String) listView.getItemAtPosition(position);
-	                      
-	                    // Show Alert 
-	                    Toast.makeText(getApplicationContext(),
-	                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-	                      .show();
-	                 
 	                  }
 	    
 	             }); 
-	    		
-	    listView.addHeaderView(scrollView);
+	            
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    //listView.addHeaderView(scrollView);
 		Button back = new Button(getApplicationContext());
 		LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
 		lpbc.topMargin=30;
@@ -233,7 +251,7 @@ public class ModeSelectionActivity extends Activity {
 		ScrollView scrollView = new ScrollView(getApplicationContext());
 
 		List<CourseModule> moduleList = course.getModules();
-		
+		//RelativeLayout rl = findViewById() 
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
 		tv.setText("Exams in Course "+course.getCourseName());
 		tv.setTextColor(Color.parseColor("black"));
@@ -251,10 +269,12 @@ public class ModeSelectionActivity extends Activity {
 		lptv.bottomMargin=50;
 		tv.setLayoutParams(lptv);
 		tv.setGravity(Gravity.CENTER_VERTICAL);
-		
+		currentModuleNameToIdMap.clear();
 		 for(final CourseModule courseModule : moduleList) {
-		    	Button bt = new Button(getApplicationContext());
 		    	String moduleName = moduleIdNameMap.get(courseModule.getModuleId());
+		    	currentModuleNameToIdMap.put(moduleName, courseModule.getModuleId());
+		    	/*
+		    	Button bt = new Button(getApplicationContext());
 		    	Log.d("DB","ModuleName: "+moduleName +" for moduleId-" +courseModule.getModuleId() );
 		    	bt.setText(moduleName!=null? moduleName : ""+courseModule.getModuleId() );
 				linear.addView(bt);
@@ -269,10 +289,52 @@ public class ModeSelectionActivity extends Activity {
 		            	currentModuleId = ""+courseModule.getModuleId();
 		            	selectExamsPage(course,courseModule);
 		            }
-		        });
+		        });*/
 		    }
+		 
+		    final ListView listView = new ListView(getApplicationContext());
+			listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
+			listView.setLayoutParams(lpbt);
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+		              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(currentModuleNameToIdMap.keySet()));
+		    // Assign adapter to ListView
+		            listView.setAdapter(adapter); 
+		            
+		            // ListView Item Click Listener
+		            listView.setOnItemClickListener(new OnItemClickListener() {
+		 
+		                  @Override
+		                  public void onItemClick(AdapterView<?> parent, View view,
+		                     int position, long id) {
+		                    
+			                   // ListView Clicked item index
+			                   int itemPosition     = position;
+			                   
+			                   // ListView Clicked item value
+			                   String  itemValue    = (String) listView.getItemAtPosition(position);
+			                   currentModuleId = currentModuleNameToIdMap.get(itemValue).toString();
+			                    // Show Alert 
+			                   Toast.makeText(getApplicationContext(),
+			                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
+			                      .show();
+			                   Course course = courseMetaData.get(currentCourseId);
+			                   CourseModule currentModule=null;
+			                   for(CourseModule module : course.getModules()) {
+			                	   if(module.getModuleId() == Long.parseLong(currentModuleId)) {
+			                		   currentModule = module;
+			                		   break;
+			                	   }
+			                   }
+			                   selectExamsPage(course, currentModule);
+		                   
+		                  }
 		    
-			Button back = new Button(getApplicationContext());
+		             }); 
+		    ;
+		    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+		    listHeader.setClickable(false);
+		    listView.addHeaderView(listHeader);	
+		    Button back = new Button(getApplicationContext());
 			back.setText("Back");
 			back.setTextColor(Color.parseColor("black"));
 			LayoutParams lpbc = new LayoutParams((LayoutParams.WRAP_CONTENT), (LayoutParams.WRAP_CONTENT));
@@ -293,7 +355,7 @@ public class ModeSelectionActivity extends Activity {
 			linear.setOrientation(LinearLayout.VERTICAL);
 			
 			scrollView.addView(linear);
-	        setContentView(scrollView);
+	        setContentView(listView);
 	}
 	
 	//TODO: Need to have course information in courseModule
