@@ -169,8 +169,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	  		        	   			        	   
 			        	   String cardId = String.valueOf( card.get("fcId"));    
 			        	   String cardType = String.valueOf( card.get("fcType"));
-			        	   String frontText = String.valueOf( card.get("front"));
-			        	   String endText = String.valueOf( card.get("back"));
+			        	   String frontText = String.valueOf( card.get("front")).replaceAll("'", "\'");
+			        	   String endText = String.valueOf( card.get("back")).replaceAll("'", "\'");
 			        	   		        	   
 			        	   storeCardToDB(cardId, cardType,frontText,endText,context);
 			        	   	        	   
