@@ -48,6 +48,15 @@
             android:gravity="bottom"
             android:text="Download" />
      
+     
+         <Button
+            android:id="@+id/Flashcard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    	    android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="bottom"
+            android:text="Flashcard" />
+     
     <TextView
         android:id="@+id/playVideoText"
         android:layout_width="wrap_content"
