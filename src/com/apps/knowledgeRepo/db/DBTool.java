@@ -356,17 +356,17 @@ public class DBTool {
      
      public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
     	 
-    	 String queryCourseSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 String queryCourseSQL = "select COURSE_NAME from FLASHCARD_COURSES where COURSE_ID= ?" ;
     	 	 
-    	 String queryCourseBucketSQL = "select Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
-    	 		" where COURSE_ID= ?" ;
+    	 String queryCourseBucketSQL = "select Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE from FLASHCARD_COURSES join Buckets on FLASHCARD_COURSES.COURSE_ID = Buckets.COURSE_ID" +
+    	 		" where Buckets.COURSE_ID= ?" ;
     	   	 
     	 //String queryCourseBucketAttribitesSQL =  "select Buckets.sequence,Buckets.type, Buckets.title" +
     	 //		" from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
      	 //		" where Buckets.BUCKET_ID= ?" ;
     	 
-    	 String queryCourseBucketCardSQL =  "select Card.FC_ID, Card.FC_TYPE, Card.FRONT,Card.BACK " +
-     	 		" from BucketCards join Cards on BucketCards.FC_ID = Cards.FC_ID" +
+    	 String queryCourseBucketCardSQL =  "select Card.CARD_ID, Card.TYPE, Card.FRONTTEXT,Card.BACKTEXT " +
+     	 		" from BUCKETS_CARDS join Cards on BucketCards.Card_ID = Cards.Card_ID" +
       	 		" where Buckets.BUCKET_ID= ?" ;
     	 
     	   	 
