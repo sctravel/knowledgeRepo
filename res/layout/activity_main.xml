@@ -1,0 +1,23 @@
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewFlipper1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:clickable="true"
+    android:padding="30dip" >
+
+	<fragment
+	    android:id="@+id/fragment1"
+	    android:name="com.apps.knowledgeRepo.Fragment1"
+	    android:layout_width="match_parent"
+	    android:layout_height="235dp" />
+	
+	<fragment 
+	    android:id="@+id/fragment2"
+	    android:layout_width="match_parent"
+	    android:layout_height="235dp"
+	    android:name="com.apps.knowledgeRepo.Fragment2"/>
+
+
+</ViewFlipper>

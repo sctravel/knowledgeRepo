@@ -32,6 +32,7 @@ import com.apps.knowledgeRepo.dataModel.CourseModule;
 import com.apps.knowledgeRepo.dataModel.CoursePackage;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
 
 import android.content.Context;
@@ -141,7 +142,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           }
 		           else if(courseType == 3){
 		        	   
-			           storeCourseToDB(courseId,courseName, ""+courseType, courseOrientation,context);
+		          storeFlashcourseToDB(courseId,courseName,context);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
 			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
@@ -169,10 +170,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	  		        	   			        	   
 			        	   String cardId = String.valueOf( card.get("fcId"));    
 			        	   String cardType = String.valueOf( card.get("fcType"));
-			        	   String frontText = String.valueOf( card.get("front"));
-			        	   String endText = String.valueOf( card.get("back"));
+			        	   String frontText = String.valueOf( card.get("front")).replaceAll("'", "\'");
+			        	   String endText = String.valueOf( card.get("back")).replaceAll("'", "\'");
 			        	   		        	   
-			        	   storeCardToDB(courseId,cardId, cardType,frontText,endText,context);
+			        	   storeCardToDB(cardId, cardType,frontText,endText,context);
 			        	   	        	   
 			           }
 			           
@@ -187,18 +188,54 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	   String cardId = String.valueOf( mapping.get("fcId"));    
 			        	   String bucketId = String.valueOf( mapping.get("bucketId"));
 			        	   		        	   
-			        	   storeMappingToDB(courseId,cardId,bucketId,context);
+			        	   storeMappingToDB(cardId,bucketId,context);
 			        	   	        	   
 			           }
+        	   
+		           }
+		           else if(courseType == 4){
+		        	   
+		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
+		        	   		 
+		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
+		        	   
+		        	   
+		        	   JSONArray modulesLessons = (JSONArray)course.get("Modules");
+		        	   
+		        	   Iterator<JSONObject> modulesIterator = modulesLessons.iterator(); 	        	   	
+		        	   
+		        	   while (modulesIterator.hasNext()) {
+		        		   
+		        		   JSONObject videoModule = (JSONObject)modulesIterator.next(); 
+		        		   
+		        		   int sequenceModuleId = Integer.parseInt(String.valueOf(videoModule.get("sequence")));  
+		        		   
+		        		   String title = String.valueOf( videoModule.get("title"));  
+		        		   
+			        	   JSONArray videoLessons = (JSONArray)course.get("Lessons"); 
+				           Iterator<JSONObject> videoIterator = videoLessons.iterator();
+				           
+				           
+				           storeVideoModuleToDB(sequenceModuleId,title, courseId,context);
+				           
+				           		           
+				           while (videoIterator.hasNext()) {
+				           
+				        	   JSONObject video= (JSONObject)videoIterator.next(); 
+				        	  		        	   			        	   
+				        	   int sequence = Integer.parseInt(String.valueOf( video.get("sequence")));    
+				        	   String URL = String.valueOf( video.get("URL"));
+	                            //need local location colum as well
+				        	   storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
+				        	   	        	   
+				           }
+		        	   }
+		        	   
+		        	   
 			           
-			           
-			           
-		        	  
-		   		        	   
 		           }
 			    }
-			    
-			           
+			    		           
 		          // storeToDB(courseId, courseName, courseContent, context);	           
 				 	
 			}
@@ -213,6 +250,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	}
 	
 	
+	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
+		
+		
+		
+	}
+	
+	
 	public void storeToDB(String courseId, String courseName, String courseType, String courseOrientation, 
 			String moduleId, String guide, String examid,String examName, String examContent, Context context){
 		
@@ -224,24 +268,38 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	}
 	
-	public void storeCourseToDB(String courseId, String courseName, String courseType, String courseOrientation,Context context){
-		 
+	
+	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+	  
+	  }
+	
+	public void storeVideoCourseToDB(String courseId,String courseName,String courseOrientation, Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+		
+	}
+	
+	public void storeFlashcourseToDB(String courseId, String courseName, Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertFlashcardCourse(context, db, courseId, courseName);
 		 
 	 }
 	
-	public void storeCardToDB(String courseId,String cardId, String cardType,String frontText,String endText,Context context){
-		
+	public void storeCardToDB(String cardId, String cardType,String frontText,String endText,Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertCard(context, db, cardId, cardType, frontText, endText)   ;		
 		
 	}
 	
 	public void storeBucketToDB(String  courseId,String bucketId, String  type, String  sequence,String  title,Context context){
-		
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertBucket(context, db, courseId, bucketId, type, sequence, title);
 	
 	}
 	
-	public void storeMappingToDB(String courseId,String cardId,String bucketId,Context context){
-		 
-		 
+	public void storeMappingToDB(String cardId,String bucketId,Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
+		DBTool.insertBucketCard(context, db, cardId, bucketId); 
 	 }
 	
 	@Override

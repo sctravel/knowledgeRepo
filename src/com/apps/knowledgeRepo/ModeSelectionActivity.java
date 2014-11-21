@@ -455,6 +455,18 @@ public class ModeSelectionActivity extends Activity {
 
             }
         });
+
+        
+        final Button flashcard = (Button) findViewById(R.id.Flashcard);
+        flashcard.setOnClickListener(new View.OnClickListener() {
+          
+            public void onClick(View v) {    	
+            	 Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            	 startActivity(intent);
+
+            }
+        });
+        
         
         final Button buttonPlayVideo = (Button) findViewById(R.id.playVideoButton);
         buttonPlayVideo.setOnClickListener(new View.OnClickListener() {

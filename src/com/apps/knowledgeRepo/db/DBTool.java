@@ -164,9 +164,74 @@ public class DBTool {
     	 
     	 db.close();
      }
+    
      
+     public static void insertFlashcardCourse(Context context, SQLiteDatabase db, String Course_id, String Course_name){
+    		if( !db.isOpen()){
+        		db=DBTool.getDB(context);
+        		
+        	}
+    	    db.execSQL("delete from FLASHCARD_COURSES");	 
+    	 String sqlInsertFlashcardCourse = "insert into FLASHCARD_COURSES values (" 
+    	                                   + "'" + Course_id +  "'" + "," 
+    	                                   + "'" + Course_name + "'" +
+    			                            ")"; 
+    	 db.execSQL(sqlInsertFlashcardCourse);
+    	 db.close();
+     }
      
+     public static void insertCard(Context context, SQLiteDatabase db, String cardId, String cardType,String frontText,String endText){
+ 		if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+ 	   db.execSQL("delete from CARDS");
+ 	 String sqlInsertCards = "insert into CARDS values (" 
+ 		                       	      + "'"  + cardId + "'" + "," 
+ 		                       	      + "'"   + cardType + "'" + ","
+ 		                       	      + "'"   + frontText + "'" + ","
+ 		                       	      + "'"  + endText + "'" + 
+ 		                       	    
+ 			                            ")"; 
+ 	 db.execSQL(sqlInsertCards);
+ 	 db.close();
+  }
    
+     public static void insertBucket(Context context, SQLiteDatabase db, String  courseId, String bucketId, String  type, String  sequence,String  title){
+ 		if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+ 		 db.execSQL("delete from BUCKETS");
+ 	 String sqlInsertCards = "insert into BUCKETS values (" 
+ 			                     + "'"   + bucketId + "'" + "," 
+ 			                     + "'"   + sequence + "'" +","
+ 			                     + "'"   + type +  "'" + ","
+ 			                     + "'"   + title + "'" + ","
+ 			                     + "'"   + courseId + "'" +
+ 			                            ")"; 
+ 	 db.execSQL(sqlInsertCards);
+ 	 db.close();
+  }
+   
+     public static void insertBucketCard(Context context, SQLiteDatabase db, String cardId, String bucketId){
+  		if( !db.isOpen()){
+      		db=DBTool.getDB(context);
+      		
+      	}
+		 db.execSQL("delete from BUCKETS_CARDS");
+
+  	 String insertBucketCard = "insert into BUCKETS_CARDS values (" 
+  			                        + "'" + cardId +  "'" + "," 
+  			                        + "'" + bucketId+  "'" + 
+  			                            
+  			                            ")"; 
+  	 db.execSQL(insertBucketCard);
+  	 db.close();
+   }
+     
+     
+     
      
      public static void insertExam(Context context,SQLiteDatabase db, String courseId, String courseName, 
     		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String examContent){
@@ -292,20 +357,19 @@ public class DBTool {
      // Buckets table: 
      // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
      // BucketCards table: FC_ID, BUCKET_ID
-     
      public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
     	 
-    	 String queryCourseSQL = "select COURSE_NAME from Course where COURSE_ID= ?" ;
+    	 String queryCourseSQL = "select COURSE_NAME from FLASHCARD_COURSES where COURSE_ID= ?" ;
     	 	 
-    	 String queryCourseBucketSQL = "select Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
-    	 		" where COURSE_ID= ?" ;
+    	 String queryCourseBucketSQL = "select Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE from FLASHCARD_COURSES join Buckets on FLASHCARD_COURSES.COURSE_ID = Buckets.COURSE_ID" +
+    	 		" where Buckets.COURSE_ID= ?" ;
     	   	 
     	 //String queryCourseBucketAttribitesSQL =  "select Buckets.sequence,Buckets.type, Buckets.title" +
     	 //		" from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
      	 //		" where Buckets.BUCKET_ID= ?" ;
     	 
-    	 String queryCourseBucketCardSQL =  "select Card.FC_ID, Card.FC_TYPE, Card.FRONT,Card.BACK " +
-     	 		" from BucketCards join Cards on BucketCards.FC_ID = Cards.FC_ID" +
+    	 String queryCourseBucketCardSQL =  "select Card.CARD_ID, Card.TYPE, Card.FRONTTEXT,Card.BACKTEXT " +
+     	 		" from BUCKETS_CARDS join Cards on BucketCards.Card_ID = Cards.Card_ID" +
       	 		" where Buckets.BUCKET_ID= ?" ;
     	 
     	   	 
