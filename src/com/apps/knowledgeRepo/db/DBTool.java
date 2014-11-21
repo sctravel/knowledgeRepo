@@ -245,7 +245,8 @@ public class DBTool {
     	 ArrayList<String> result = DBTool.queryDB(context, db, queryMaxAttempt, new String[]{cId,moduleId,examId});
     	 
     	 if( result!=null && !result.isEmpty() ) {
-			 attempt = Integer.parseInt(result.get(0))+1;
+    		 Log.d("res", result.get(0));
+			 attempt = Integer.parseInt(result.get(0).trim())+1;
     	 }
     	 
     	 return attempt;
@@ -281,13 +282,14 @@ public class DBTool {
     	String content = examContent.get(0);
     	content=content.replaceAll( "!!pattern!!", "'") ;
 
+    	
     	return content;
     	
      }
-     
+      
      
      // Course table: COURSE_ID,COURSE_NAME
-     // Buckets table: BUCKET_ID， SEQUENCE， TYPE， TITLE, COURSE_ID(FK)
+     // Buckets table: 
      // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
      // BucketCards table: FC_ID, BUCKET_ID
      
