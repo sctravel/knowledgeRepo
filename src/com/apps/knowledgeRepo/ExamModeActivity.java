@@ -39,6 +39,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView; 
 import android.widget.Toast;
+import android.support.v7.app.ActionBar;
+
+import android.support.v7.app.ActionBarActivity;  
+
 
 public class ExamModeActivity extends Activity{
 
@@ -122,7 +126,7 @@ public class ExamModeActivity extends Activity{
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher, instead use:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-           getActionBar().setDisplayHomeAsUpEnabled(true);
+           //getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         
         Bundle extras = getIntent().getExtras();

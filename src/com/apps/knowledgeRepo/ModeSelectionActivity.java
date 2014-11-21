@@ -103,7 +103,7 @@ public class ModeSelectionActivity extends Activity {
    		setContentView(R.layout.mode_selection);
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
-		getActionBar().setDisplayHomeAsUpEnabled(true);		   
+		//getActionBar().setDisplayHomeAsUpEnabled(true);		   
 		
 		//Initialize course and go to course selection page
 		examMetaDataList = DBTool.getExamMeataDataList(getApplicationContext());
