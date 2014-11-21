@@ -3,6 +3,11 @@ package com.apps.knowledgeRepo;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.AnimationFactory.FlipDirection;
+import com.apps.knowledgeRepo.dataModel.Exam;
+import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
+import com.apps.knowledgeRepo.db.DBHelper;
+import com.apps.knowledgeRepo.utils.CourseUtil;
+
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +23,11 @@ public class MainActivity extends FragmentActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+         String courseId ="1";
+        
+		FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse(courseId, getBaseContext());
+		
+	  
 		setContentView(R.layout.activity_main);
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
 	   
