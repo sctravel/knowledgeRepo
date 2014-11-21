@@ -32,6 +32,7 @@ import com.apps.knowledgeRepo.dataModel.CourseModule;
 import com.apps.knowledgeRepo.dataModel.CoursePackage;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
 
 import android.content.Context;
@@ -198,25 +199,43 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   		 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
 		        	   
-		        	   JSONArray videoLessons = (JSONArray)course.get("Lessons"); 
-			           Iterator<JSONObject> videoIterator = videoLessons.iterator(); 
-			           		           
-			           while (videoIterator.hasNext()) {
-			           
-			        	   JSONObject video= (JSONObject)videoIterator.next(); 
-			        	  		        	   			        	   
-			        	   int sequence = Integer.parseInt(String.valueOf( video.get("sequence")));    
-			        	   String URL = String.valueOf( video.get("URL"));
-                            //need local location colum as well
-			        	   storeVideoToDB(sequence,URL, courseId,context);
-			        	   	        	   
-			           }
+		        	   
+		        	   JSONArray modulesLessons = (JSONArray)course.get("Modules");
+		        	   
+		        	   Iterator<JSONObject> modulesIterator = modulesLessons.iterator(); 	        	   	
+		        	   
+		        	   while (modulesIterator.hasNext()) {
+		        		   
+		        		   JSONObject videoModule = (JSONObject)modulesIterator.next(); 
+		        		   
+		        		   int sequenceModuleId = Integer.parseInt(String.valueOf(videoModule.get("sequence")));  
+		        		   
+		        		   String title = String.valueOf( videoModule.get("title"));  
+		        		   
+			        	   JSONArray videoLessons = (JSONArray)course.get("Lessons"); 
+				           Iterator<JSONObject> videoIterator = videoLessons.iterator();
+				           
+				           
+				           storeVideoModuleToDB(sequenceModuleId,title, courseId,context);
+				           
+				           		           
+				           while (videoIterator.hasNext()) {
+				           
+				        	   JSONObject video= (JSONObject)videoIterator.next(); 
+				        	  		        	   			        	   
+				        	   int sequence = Integer.parseInt(String.valueOf( video.get("sequence")));    
+				        	   String URL = String.valueOf( video.get("URL"));
+	                            //need local location colum as well
+				        	   storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
+				        	   	        	   
+				           }
+		        	   }
+		        	   
 		        	   
 			           
 		           }
 			    }
-			    
-			           
+			    		           
 		          // storeToDB(courseId, courseName, courseContent, context);	           
 				 	
 			}
@@ -228,6 +247,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			
 			Log.d("JSON parser", "finished parsing JSON");
 			return true; 
+	}
+	
+	
+	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
+		
+		
+		
 	}
 	
 	
@@ -243,13 +269,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	}
 	
 	
-	public void storeVideoToDB(int sequence,String URL, String courseId, Context context){
-		  
+	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, Context context){
+		SQLiteDatabase db = DBTool.getDB(context);
 	  
 	  }
 	
 	public void storeVideoCourseToDB(String courseId,String courseName,String courseOrientation, Context context){
-		
+		SQLiteDatabase db = DBTool.getDB(context);
 		
 	}
 	

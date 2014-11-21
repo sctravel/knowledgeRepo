@@ -4,14 +4,14 @@ import java.util.List;
 
 public class VideoCourse extends Course{
 		
-	List<VideoLesson> videos;
+	List<VideoModule> modules;
 
-	public List<VideoLesson> getVideos() {
-		return videos;
+	public List<VideoModule> getVideos() {
+		return modules;
 	}
 
-	public void setVideos(List<VideoLesson> videos) {
-		this.videos = videos;
+	public void setVideos(List<VideoModule> videmodulesos) {
+		this.modules = modules;
 	} 
 	
 	
