@@ -113,7 +113,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         super.onSaveInstanceState(outState);
 	    outState.putInt("pos", vidView.getCurrentPosition()); // save it here
 	    vidView.pause();
-	}
+	} 
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
