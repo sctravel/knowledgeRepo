@@ -164,6 +164,56 @@ public class DBTool {
     	 
     	 db.close();
      }
+     
+     
+     public static void insertVideoModule(Context context, SQLiteDatabase db, int SequenceModule_id, String Course_id, String title){
+ 		if( !db.isOpen()){
+    		db=DBTool.getDB(context);
+    		
+    	}
+ 			db.execSQL("delete from VIDEO_COURSES_MODULES");	 
+	    	String sqlInsertVideoCourseModules = "insert into VIDEO_COURSES_MODULES values (" 
+	                                   + "'" + SequenceModule_id +  "'" + "," 
+	                                   + "'" + title + "'" +","
+	                                   + "'" + Course_id + "'" +
+			                            ")"; 
+			 db.execSQL(sqlInsertVideoCourseModules);
+			 db.close();
+     }
+
+     public static void insertVideo(Context context, SQLiteDatabase db, int SequenceModule_id, int sequence, String URL, String courseId){
+    	 
+    	 if( !db.isOpen()){
+     		db=DBTool.getDB(context);
+     		
+     	}
+  			db.execSQL("delete from VIDEO");	 
+ 	    	String sqlInsertVideoCourseModules = "insert into VIDEO values (" 
+ 	                                   + "'" + sequence +  "'" + "," 
+ 	                                   + "'" + URL + "'" +","
+ 	                                   + "'" + SequenceModule_id + "'" 
+ 	                                   + "'" + courseId + "'" +
+ 			                            ")"; 
+ 			 db.execSQL(sqlInsertVideoCourseModules);
+ 			 db.close();
+ 
+     
+     }
+     
+     public static void insertVideoCourse(Context context, SQLiteDatabase db, String Course_id, String Course_name, String Course_Orientation){
+ 		if( !db.isOpen()){
+    		db=DBTool.getDB(context);
+    		
+    	}
+ 			db.execSQL("delete from VIDEO_COURSES");	 
+	    	String sqlInsertVideoCourse = "insert into VIDEO_COURSES values (" 
+	                                   + "'" + Course_id +  "'" + "," 
+	                                   + "'" + Course_name + "'" +","
+	                                   + "'" + Course_Orientation + "'" +
+			                            ")"; 
+			 db.execSQL(sqlInsertVideoCourse);
+			 db.close();
+     }
     
      
      public static void insertFlashcardCourse(Context context, SQLiteDatabase db, String Course_id, String Course_name){

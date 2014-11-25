@@ -106,6 +106,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	           
 		           //course type equals to 3 indicate it's flash card course 
 		           if(courseType == 1){
+		        	   
+		        	   Log.d("loop", "parse course Type 1 (examCourse)");
+		        	   
 			           JSONArray courseModules = (JSONArray)course.get("Modules"); 
 			           Iterator<JSONObject> modelIterator = courseModules.iterator();
 			           
@@ -142,7 +145,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           }
 		           else if(courseType == 3){
 		        	   
-		          storeFlashcourseToDB(courseId,courseName,context);
+		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
+		        	   
+		        	   storeFlashcourseToDB(courseId,courseName,context);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
 			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
@@ -195,6 +200,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		           }
 		           else if(courseType == 4){
 		        	   
+		        	   
+		        	   Log.d("loop", "parse courseType 4");
 		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 		        	   		 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
@@ -212,7 +219,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        		   
 		        		   String title = String.valueOf( videoModule.get("title"));  
 		        		   
-			        	   JSONArray videoLessons = (JSONArray)course.get("Lessons"); 
+			        	   JSONArray videoLessons = (JSONArray)videoModule.get("Lessons"); 
 				           Iterator<JSONObject> videoIterator = videoLessons.iterator();
 				           
 				           
@@ -230,9 +237,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        	   	        	   
 				           }
 		        	   }
-		        	   
-		        	   
-			           
+		        	   			           
 		           }
 			    }
 			    		           
@@ -252,7 +257,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
 		
+		SQLiteDatabase db = DBTool.getDB(context);
 		
+		DBTool.insertVideoModule(context, db, sequenceModuleId, courseId, title);
 		
 	}
 	
@@ -271,11 +278,15 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
+		// storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
+		DBTool.insertVideo(context, db,sequenceModuleId,sequence,URL, courseId );
 	  
 	  }
 	
 	public void storeVideoCourseToDB(String courseId,String courseName,String courseOrientation, Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
+		
+		DBTool.insertVideoCourse(context, db, courseId, courseName, courseOrientation);
 		
 	}
 	
@@ -344,8 +355,12 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
 			  //int percentage = (int) ((total*100)/fileLength); 
 			  if(row<98000){
-				  publishProgress(row/1000);
-				  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10);  
+				  if(row%1000==0)
+					  {
+					  publishProgress(row/1000);
+					  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10); 
+					  }
+				  		 
 			  }
 			  else
 				  publishProgress(98);
