@@ -93,7 +93,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
 			    @SuppressWarnings("unchecked")
 				Iterator<JSONObject> iterator = listOfCourses.iterator();
-			   
+			    SQLiteDatabase db = DBTool.getDB(context);
 			    while (iterator.hasNext()) {
 			    	Log.d("loop", "looping");
 			      // Course courseObj= new Course();
@@ -147,7 +147,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   
 		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
 		        	   
-		        	   storeFlashcourseToDB(courseId,courseName,context);
+		        	   storeFlashcourseToDB(courseId,courseName,db);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
 			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
@@ -160,8 +160,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	   String sequence = String.valueOf( bucket.get("sequence"));
 			        	   String type = String.valueOf( bucket.get("type"));
 			        	   String title = String.valueOf( bucket.get("title"));
-			        	   		        	   
-			        	   storeBucketToDB(courseId,bucketId, type,sequence,title,context);
+			        	   //Log.d("loop", "storeBucketToDB");
+	        	   
+			        	   storeBucketToDB(courseId,bucketId, type,sequence,title,db);
 			        	   	        	   
 			           }
 			           
@@ -177,8 +178,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	   String cardType = String.valueOf( card.get("fcType"));
 			        	   String frontText = String.valueOf( card.get("front")).replaceAll("'", "''");
 			        	   String endText = String.valueOf( card.get("back")).replaceAll("'", "''");
-			        	   		        	   
-			        	   storeCardToDB(cardId, cardType,frontText,endText,context);
+			        	   //Log.d("loop", "storeCardToDB");
+
+			        	   storeCardToDB(cardId, cardType,frontText,endText,db);
 			        	   	        	   
 			           }
 			           
@@ -192,17 +194,22 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	  		        	   			        	   
 			        	   String cardId = String.valueOf( mapping.get("fcId"));    
 			        	   String bucketId = String.valueOf( mapping.get("bucketId"));
-			        	   		        	   
-			        	   storeMappingToDB(cardId,bucketId,context);
+			        	   //Log.d("loop", "storeMappingToDB");
+	        	   
+			        	   storeMappingToDB(cardId,bucketId,db);
 			        	   	        	   
 			           }
         	   
 		           }
-		           else if(courseType == 4){
+		         else if(courseType == 4){
 		        	   
+
+		       	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
+
 		        	   
 		        	   Log.d("loop", "parse courseType 4");
 		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
+
 		        	   		 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
 		        	   
@@ -237,12 +244,14 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        	   	        	   
 				           }
 		        	   }
+		        	            
+		           }
+
 		        	   			           
 		           }
-			    }
-			    		           
-		          // storeToDB(courseId, courseName, courseContent, context);	           
-				 	
+
+			    db.close();	           
+		          // storeToDB(courseId, courseName, courseContent, context);	           	 	
 			}
 			catch(Exception ex){			
 
@@ -290,27 +299,22 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 	}
 	
-	public void storeFlashcourseToDB(String courseId, String courseName, Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertFlashcardCourse(context, db, courseId, courseName);
-		 
+	public void storeFlashcourseToDB(String courseId, String courseName, SQLiteDatabase db){
+		DBTool.insertFlashcardCourse(db, courseId, courseName);
 	 }
 	
-	public void storeCardToDB(String cardId, String cardType,String frontText,String endText,Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertCard(context, db, cardId, cardType, frontText, endText)   ;		
+	public void storeCardToDB(String cardId, String cardType,String frontText,String endText, SQLiteDatabase db){
+		DBTool.insertCard(db, cardId, cardType, frontText, endText)   ;		
 		
 	}
 	
-	public void storeBucketToDB(String  courseId,String bucketId, String  type, String  sequence,String  title,Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertBucket(context, db, courseId, bucketId, type, sequence, title);
+	public void storeBucketToDB(String  courseId,String bucketId, String  type, String  sequence,String  title,SQLiteDatabase db){
+		DBTool.insertBucket(db, courseId, bucketId, type, sequence, title);
 	
 	}
 	
-	public void storeMappingToDB(String cardId,String bucketId,Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertBucketCard(context, db, cardId, bucketId); 
+	public void storeMappingToDB(String cardId,String bucketId,SQLiteDatabase db){
+		DBTool.insertBucketCard( db, cardId, bucketId); 
 	 }
 	
 	@Override

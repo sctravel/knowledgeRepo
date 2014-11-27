@@ -12,7 +12,7 @@ public class VideoCourse extends Course{
 			String courseOrientation) {
 		super(courseId, courseName, courseType, courseOrientation);
 		this.modules = new ArrayList<VideoModule>();
-}
+	}
 	
 	public VideoCourse(String courseId, String courseName, long courseType,
 			String courseOrientation, List<VideoModule> modules) {

@@ -25,7 +25,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
          String courseId ="1";
         
-		FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse(courseId, getBaseContext());
+	FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
 		
 	  
 		setContentView(R.layout.activity_main);

@@ -37,6 +37,7 @@ import java.util.HashMap;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
+import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
@@ -115,6 +116,19 @@ public class ModeSelectionActivity extends Activity {
             	loginPage();
             }
         });
+    	
+    	
+        final Button flashcard = (Button) findViewById(R.id.Flashcard);
+                flashcard.setOnClickListener(new View.OnClickListener() {
+                 
+                   public void onClick(View v) {    	
+                   	 Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                  	 startActivity(intent);
+        
+                   }
+                });
+    	
+    	
 	}
 	
 	private void extractCourseInfoFromExamMetaData() {
@@ -197,14 +211,18 @@ public class ModeSelectionActivity extends Activity {
 		                   Toast.makeText(getApplicationContext(),
 		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
 		                      .show();
-		                   TextCourse course = courseMetaData.get(currentCourseId);
-		                   if(course.getModules().size()>1) {
-			            		selectCourseModulePage(course);
-			               } else {
-			            		//If there's only one module, skip the select Module page
-			            		currentModuleId=""+course.getModules().get(0).getModuleId();
-			            		selectExamsPage(course,course.getModules().get(0));
-			               }
+		                   Course course = courseMetaData.get(currentCourseId);
+		                   long courseType = course.getCourseType();
+		                   if(courseType==1) {
+		                	/*   TextCourse textCourse = DBTool;//(TextCourse) course;
+			                   if(course.getModules().size()>1) {
+				            		selectCourseModulePage(course);
+				               } else {
+				            		//If there's only one module, skip the select Module page
+				            		currentModuleId=""+course.getModules().get(0).getModuleId();
+				            		selectExamsPage(course,course.getModules().get(0));
+				               }*/
+		                   }
 	                   
 	                  }
 	    
