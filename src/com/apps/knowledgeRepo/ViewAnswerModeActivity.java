@@ -96,7 +96,7 @@ public class ViewAnswerModeActivity extends Activity{
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher, instead use:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-           getActionBar().setDisplayHomeAsUpEnabled(true);
+           //getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         
         initilizeExam();
