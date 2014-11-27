@@ -115,6 +115,20 @@ public class ModeSelectionActivity extends Activity {
             	loginPage();
             }
         });
+    	
+    	
+    	
+        final Button flashcard = (Button) findViewById(R.id.Flashcard);
+                flashcard.setOnClickListener(new View.OnClickListener() {
+                 
+                   public void onClick(View v) {    	
+                   	 Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                  	 startActivity(intent);
+        
+                   }
+                });
+    	
+    	
 	}
 	
 	private void extractCourseInfoFromExamMetaData() {

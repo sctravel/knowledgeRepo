@@ -193,9 +193,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           }
         	   
 		           }
-		           else if(courseType == 4){
+		        /*   else if(courseType == 4){
 		        	   
-		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
+		        //	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 		        	   		 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
 		        	   
@@ -233,7 +233,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   
 		        	   
 			           
-		           }
+		           }*/
 			    }
 			    		           
 		          // storeToDB(courseId, courseName, courseContent, context);	           
