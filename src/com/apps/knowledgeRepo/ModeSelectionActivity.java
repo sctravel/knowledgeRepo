@@ -37,8 +37,8 @@ import java.util.HashMap;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
-import com.apps.knowledgeRepo.dataModel.Course;
-import com.apps.knowledgeRepo.dataModel.CourseModule;
+import com.apps.knowledgeRepo.dataModel.TextCourse;
+import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.db.DBTool;
@@ -46,7 +46,7 @@ import com.apps.knowledgeRepo.db.DBTool;
 public class ModeSelectionActivity extends Activity {
 	
 	// Map< courseId, Map<moduleId, List<examId> >
-	private Map<String,Course> courseMetaData = new HashMap<String, Course>();
+	private Map<String,TextCourse> courseMetaData = new HashMap<String, TextCourse>();
 	private List<ExamMetaData> examMetaDataList = new ArrayList<ExamMetaData>();
 	
 	private String currentCourseId=null;
@@ -129,21 +129,21 @@ public class ModeSelectionActivity extends Activity {
 
 			
 			//Get course Info
-			Course course = null;
+			TextCourse course = null;
 			course = courseMetaData.get(courseId);
 			if(course == null) {
-				course = new Course(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
+				course = new TextCourse(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
 			}
-			CourseModule module= null;
+			TextCourseModule module= null;
 			//Get module info
-			for(CourseModule m : course.getModules()) {
+			for(TextCourseModule m : course.getModules()) {
 				if(m.getModuleId() == Long.parseLong(moduleId)) {
 					module = m;
 					break;
 				}
 			}
 			if(module == null) {
-				module = new CourseModule(Long.parseLong(emd.getModuleId()), emd.getGuide());
+				module = new TextCourseModule(Long.parseLong(emd.getModuleId()), emd.getGuide());
 				course.getModules().add(module);
 			}
 			
@@ -164,9 +164,9 @@ public class ModeSelectionActivity extends Activity {
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
 		
-		for(Map.Entry<String, Course> entry : courseMetaData.entrySet()) {
+		for(Map.Entry<String, TextCourse> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
-			final Course course = entry.getValue();
+			final TextCourse course = entry.getValue();
 			
 			courseNameToIdMap.put( course.getCourseName(), courseId);
 		}
@@ -197,7 +197,7 @@ public class ModeSelectionActivity extends Activity {
 		                   Toast.makeText(getApplicationContext(),
 		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
 		                      .show();
-		                   Course course = courseMetaData.get(currentCourseId);
+		                   TextCourse course = courseMetaData.get(currentCourseId);
 		                   if(course.getModules().size()>1) {
 			            		selectCourseModulePage(course);
 			               } else {
@@ -231,7 +231,7 @@ public class ModeSelectionActivity extends Activity {
             }
         });
 	}
-	private void selectCourseModulePage(final Course course) {
+	private void selectCourseModulePage(final TextCourse course) {
 		Log.d("CourseInfo",course.getCourseId()+" "+course.getCourseName()+" "+
 					course.getCourseType() );//+"  number of modules:"+course.getModules().size());
 		
@@ -240,13 +240,13 @@ public class ModeSelectionActivity extends Activity {
 		
 		currentPage = MODULE_PAGE;
 
-		List<CourseModule> moduleList = course.getModules();
+		List<TextCourseModule> moduleList = course.getModules();
 		
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		
 		currentModuleNameToIdMap.clear();
-		 for(final CourseModule courseModule : moduleList) {
+		 for(final TextCourseModule courseModule : moduleList) {
 		    	String moduleName = moduleIdNameMap.get(courseModule.getModuleId());
 		    	currentModuleNameToIdMap.put(moduleName, courseModule.getModuleId());
 		    
@@ -277,9 +277,9 @@ public class ModeSelectionActivity extends Activity {
 			                   Toast.makeText(getApplicationContext(),
 			                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
 			                      .show();
-			                   Course course = courseMetaData.get(currentCourseId);
-			                   CourseModule currentModule=null;
-			                   for(CourseModule module : course.getModules()) {
+			                   TextCourse course = courseMetaData.get(currentCourseId);
+			                   TextCourseModule currentModule=null;
+			                   for(TextCourseModule module : course.getModules()) {
 			                	   if(module.getModuleId() == Long.parseLong(currentModuleId)) {
 			                		   currentModule = module;
 			                		   break;
@@ -306,7 +306,7 @@ public class ModeSelectionActivity extends Activity {
 	}
 	
 	//TODO: Need to have course information in courseModule
-	private void selectExamsPage(final Course course, CourseModule courseModule) {
+	private void selectExamsPage(final TextCourse course, TextCourseModule courseModule) {
 		
 		currentPage = EXAM_PAGE; 
 		

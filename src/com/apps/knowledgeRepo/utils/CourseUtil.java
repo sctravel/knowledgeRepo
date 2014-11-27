@@ -14,8 +14,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.apps.knowledgeRepo.dataModel.Answer;
-import com.apps.knowledgeRepo.dataModel.Course;
-import com.apps.knowledgeRepo.dataModel.CourseModule;
+import com.apps.knowledgeRepo.dataModel.TextCourse;
+import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.Question;

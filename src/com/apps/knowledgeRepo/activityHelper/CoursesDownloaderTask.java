@@ -27,8 +27,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.apps.knowledgeRepo.dataModel.Answer;
-import com.apps.knowledgeRepo.dataModel.Course;
-import com.apps.knowledgeRepo.dataModel.CourseModule;
+import com.apps.knowledgeRepo.dataModel.TextCourse;
+import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.CoursePackage;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
@@ -112,11 +112,11 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           JSONArray courseModules = (JSONArray)course.get("Modules"); 
 			           Iterator<JSONObject> modelIterator = courseModules.iterator();
 			           
-			           List<CourseModule> couseModuleObjs= new ArrayList<CourseModule>();
+			           List<TextCourseModule> couseModuleObjs= new ArrayList<TextCourseModule>();
 			           		           	        	   
 			           while (modelIterator.hasNext()) {
 			        	   
-			        	   CourseModule couseModuleObj= new CourseModule();
+			        	   TextCourseModule couseModuleObj= new TextCourseModule();
 			        	   
 			        	   JSONObject module= (JSONObject)modelIterator.next();   	   
 			        	   String moduleId = String.valueOf( module.get("module"));    

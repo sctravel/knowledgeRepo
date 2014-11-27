@@ -4,9 +4,9 @@ import java.util.List;
 
 public class VideoModule {
 	
-	  int sequence;
-	  String title;  
-	  List<VideoLesson> lessons;
+	int sequence;
+	String title;  
+	List<VideoLesson> lessons;
 	  
 	  
 	public int getSequence() {
@@ -27,10 +27,5 @@ public class VideoModule {
 	public void setLessons(List<VideoLesson> lessons) {
 		this.lessons = lessons;
 	} 
-	  
-	  
-	  
-	  
-	  
 
 }

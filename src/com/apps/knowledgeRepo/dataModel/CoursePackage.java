@@ -4,6 +4,6 @@ import java.util.List;
 
 public class CoursePackage {
 	
-	List<Course> courses; 
+	List<TextCourse> courses; 
 
 }
