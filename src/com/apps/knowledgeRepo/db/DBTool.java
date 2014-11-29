@@ -224,7 +224,7 @@ public class DBTool {
     	String sqlInsertVideoCourseModules = "insert into " + TableNames.VIDEO_SEQUENCE +" values ( " + 
  	        " '" + sequence +  "'" + ","  +
  	        " '" + URL + "'" +"," +
- 	        " '" + SequenceModule_id + "'" +
+ 	        " '" + SequenceModule_id + "'" +","+
  	        " '" + courseId + "'" +
  			" ) "; 
  	    db.execSQL(sqlInsertVideoCourseModules);
