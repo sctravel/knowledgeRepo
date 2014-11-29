@@ -147,7 +147,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   
 		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
 		        	   
-		        	   storeFlashcourseToDB(courseId,courseName,db);
+		        	   storeFlashcourseToDB(courseId,courseName,courseOrientation, db);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
 			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
@@ -202,20 +202,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
         	   
 		           }
 		         else if(courseType == 4){
-		        	   
-
-		       	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
-
-		        	   
 		        	   Log.d("loop", "parse courseType 4");
 		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 
-		        	   		 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
-		        	   
-		        	   
+		        	   		        	   
 		        	   JSONArray modulesLessons = (JSONArray)course.get("Modules");
-		        	   
+		        	 
 		        	   Iterator<JSONObject> modulesIterator = modulesLessons.iterator(); 	        	   	
 		        	   
 		        	   while (modulesIterator.hasNext()) {
@@ -299,8 +292,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 	}
 	
-	public void storeFlashcourseToDB(String courseId, String courseName, SQLiteDatabase db){
-		DBTool.insertFlashcardCourse(db, courseId, courseName);
+	public void storeFlashcourseToDB(String courseId, String courseName, String courseOrientation, SQLiteDatabase db){
+		DBTool.insertFlashcardCourse(db, courseId, courseName, courseOrientation);
 	 }
 	
 	public void storeCardToDB(String cardId, String cardType,String frontText,String endText, SQLiteDatabase db){

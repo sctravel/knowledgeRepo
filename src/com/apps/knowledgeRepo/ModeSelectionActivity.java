@@ -48,7 +48,7 @@ public class ModeSelectionActivity extends Activity {
 	
 	// Map< courseId, Map<moduleId, List<examId> >
 	private Map<String,TextCourse> courseMetaData = new HashMap<String, TextCourse>();
-	private List<ExamMetaData> examMetaDataList = new ArrayList<ExamMetaData>();
+	private List<Course> courseList = new ArrayList<Course>();
 	
 	private String currentCourseId=null;
 	private String currentModuleId=null;
@@ -65,7 +65,7 @@ public class ModeSelectionActivity extends Activity {
 	// 3 - examPage
 	private int currentPage = COURSE_PAGE;
 	private  static final Map<Long, String> moduleIdNameMap = new HashMap<Long, String>(); 
-	private  static final Map<String, String> courseNameToIdMap = new HashMap<String,String>();
+	private  static final Map<String, Course> courseNameToCourseMap = new HashMap<String,Course>();
 	private  static final Map<String, Exam> examNameToExamMap = new HashMap<String,Exam>();
 	private static final Map<String, Long> currentModuleNameToIdMap = new HashMap<String, Long>();
 
@@ -107,8 +107,8 @@ public class ModeSelectionActivity extends Activity {
 		//getActionBar().setDisplayHomeAsUpEnabled(true);		   
 		
 		//Initialize course and go to course selection page
-		examMetaDataList = DBTool.getExamMeataDataList(getApplicationContext());
-		extractCourseInfoFromExamMetaData();
+		courseList = DBTool.getCourseMetaData(getApplicationContext());
+		//extractCourseInfoFromExamMetaData();
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +131,7 @@ public class ModeSelectionActivity extends Activity {
     	
 	}
 	
+    /*
 	private void extractCourseInfoFromExamMetaData() {
 		
 		Log.d("extractCourseInfoFromExamMetaData", "ExamMetaDataList size: "+examMetaDataList.size());
@@ -167,7 +168,7 @@ public class ModeSelectionActivity extends Activity {
 			
 			courseMetaData.put(courseId, course);
 		}
-	}
+	}*/
 	
 	private void selectCoursesPage(){
 		
@@ -178,19 +179,22 @@ public class ModeSelectionActivity extends Activity {
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
 		
+		for(Course course : courseList) {
+			courseNameToCourseMap.put( course.getCourseName(), course);
+		}/*
 		for(Map.Entry<String, TextCourse> entry : courseMetaData.entrySet()) {
 			final String courseId = entry.getKey();
 			final TextCourse course = entry.getValue();
 			
 			courseNameToIdMap.put( course.getCourseName(), courseId);
-		}
+		}*/
 		
 		final ListView listView = new ListView(getApplicationContext());
-		Log.d("aa","courseNames: "+courseNameToIdMap.keySet());
+		Log.d("aa","courseNames: "+courseNameToCourseMap.keySet());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-	              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(courseNameToIdMap.keySet()));    
+	              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(courseNameToCourseMap.keySet()));    
 	            // Assign adapter to ListView
 	            listView.setAdapter(adapter); 
 	            
@@ -206,12 +210,13 @@ public class ModeSelectionActivity extends Activity {
 		                   
 		                   // ListView Clicked item value
 		                   String  itemValue    = (String) listView.getItemAtPosition(position);
-		                   currentCourseId = courseNameToIdMap.get(itemValue);
+		                   Course course = courseNameToCourseMap.get(itemValue);
+		                   currentCourseId = course.getCourseId();
 		                    // Show Alert 
 		                   Toast.makeText(getApplicationContext(),
 		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
 		                      .show();
-		                   Course course = courseMetaData.get(currentCourseId);
+		                   // = courseList.get(currentCourseId);
 		                   long courseType = course.getCourseType();
 		                   if(courseType==1) {
 		                	/*   TextCourse textCourse = DBTool;//(TextCourse) course;

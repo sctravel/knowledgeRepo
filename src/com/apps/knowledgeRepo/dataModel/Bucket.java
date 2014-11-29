@@ -56,7 +56,7 @@ public class Bucket {
 
 	public enum BucketType { 
 	
-		Chapeter, KeyConcept, ByColoumn
+		Chapter, KeyConcept, ByColoumn
 	}
 	
 

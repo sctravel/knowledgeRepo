@@ -5,6 +5,9 @@ public class Constants {
 	public static final String REPLACE_PATTERN = "%PATTERN%";
 	public static final String EXAM  = "exam";
 	
+	public static final long TEXT_COURSE_TYPE = 1;
+	public static final long FLASH_CARD_COURSE_TYPE = 3;
+	public static final long VIDEO_COURSE_TYPE = 4;
 	/* Module 
 	 * 0 "Simulation"
 	 * 1 "OpenBook"
