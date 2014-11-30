@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.apps.knowledgeRepo.dataModel.Bucket;
-import com.apps.knowledgeRepo.dataModel.Bucket.BucketType;
+
 import com.apps.knowledgeRepo.dataModel.Card;
 import com.apps.knowledgeRepo.dataModel.Card.CardType;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
@@ -421,7 +421,7 @@ public class DBTool {
     	 //		" from Course join Buckets on Course.COURSE_ID = Buckets.COURSE_ID" +
      	 //		" where Buckets.BUCKET_ID= ?" ;
     	 
-    	 String queryCourseBucketCardSQL =  "select Card.CARD_ID, Card.TYPE, Card.FRONTTEXT,Card.BACKTEXT " +
+    	 String queryCourseBucketCardSQL =  "select Cards.CARD_ID, Cards.TYPE, Cards.FRONTTEXT,Cards	.BACKTEXT " +
      	 		" from BUCKETS_CARDS join Cards on BucketCards.Card_ID = Cards.Card_ID" +
       	 		" where Buckets.BUCKET_ID= ?" ;
     	 
@@ -467,13 +467,14 @@ public class DBTool {
 			
 			int bucketId= Integer.parseInt(bucketStr.get(0)); 
 			int sequence= Integer.parseInt(bucketStr.get(1)); 
-			BucketType type= BucketType.valueOf(bucketStr.get(2)); 
+			Log.d("buckettype", bucketStr.get(2));
+			String type= bucketStr.get(2); 
 			String title = bucketStr.get(3); 
 						
 			Bucket bucket= new Bucket(); 
 			bucket.setBucketId(bucketId);
 			bucket.setSequence(sequence);
-			bucket.setType(type);
+			bucket.setBucketType(type);
 			bucket.setTitle(title);
 			
 			result.add(bucket);

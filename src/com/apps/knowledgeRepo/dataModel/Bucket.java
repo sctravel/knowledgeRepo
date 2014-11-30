@@ -7,7 +7,14 @@ public class Bucket {
 	
 	long bucketId;	
 	int sequence;	
-	BucketType type;	
+	String BucketType;	
+	public String getBucketType() {
+		return BucketType;
+	}
+	public void setBucketType(String bucketType) {
+		BucketType = bucketType;
+	}
+
 	String title;	
 	List<Card> cardList; 
 	
@@ -28,14 +35,9 @@ public class Bucket {
 	}
 
 
-	public BucketType getType() {
-		return type;
-	}
+	
 
 
-	public void setType(BucketType type) {
-		this.type = type;
-	}
 
 	public String getTitle() {
 		return title;
@@ -54,10 +56,6 @@ public class Bucket {
 		this.cardList = cardList;
 	}
 
-	public enum BucketType { 
-	
-		Chapeter, KeyConcept, ByColoumn
-	}
 	
 
 }
