@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
 import com.apps.knowledgeRepo.dataModel.Course;
@@ -193,45 +194,39 @@ public class ModeSelectionActivity extends Activity {
 		Log.d("aa","courseNames: "+courseNameToCourseMap.keySet());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-	              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(courseNameToCourseMap.keySet()));    
-	            // Assign adapter to ListView
-	            listView.setAdapter(adapter); 
+		ArrayAdapter<Course> adapter = new CourseSelectionArrayAdapter(getApplicationContext(),
+	        R.layout.course_list_item, courseList);    
+	    // Assign adapter to ListView
+	    listView.setAdapter(adapter); 
 	            
-	            // ListView Item Click Listener
-	            listView.setOnItemClickListener(new OnItemClickListener() {
-	 
-	                  @Override
-	                  public void onItemClick(AdapterView<?> parent, View view,
-	                     int position, long id) {
-	                    
-		                   // ListView Clicked item index
-		                   int itemPosition = position;
+	    // ListView Item Click Listener
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            // ListView Clicked item index
+                int itemPosition = position;
 		                   
 		                   // ListView Clicked item value
-		                   String  itemValue    = (String) listView.getItemAtPosition(position);
-		                   Course course = courseNameToCourseMap.get(itemValue);
-		                   currentCourseId = course.getCourseId();
+		        Course  course    = (Course) listView.getItemAtPosition(position);
+		        currentCourseId = course.getCourseId();
 		                    // Show Alert 
-		                   Toast.makeText(getApplicationContext(),
-		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-		                      .show();
+		        Toast.makeText(getApplicationContext(),"Position :"+itemPosition+"  ListItem : " +course.getCourseName() , Toast.LENGTH_LONG)
+		             .show();
 		                   // = courseList.get(currentCourseId);
-		                   long courseType = course.getCourseType();
-		                   if(courseType==1) {
-		                	/*   TextCourse textCourse = DBTool;//(TextCourse) course;
-			                   if(course.getModules().size()>1) {
+		        long courseType = course.getCourseType();
+		        if(courseType==1) {
+		        /*   TextCourse textCourse = DBTool;//(TextCourse) course;
+			        if(course.getModules().size()>1) {
 				            		selectCourseModulePage(course);
 				               } else {
 				            		//If there's only one module, skip the select Module page
 				            		currentModuleId=""+course.getModules().get(0).getModuleId();
 				            		selectExamsPage(course,course.getModules().get(0));
 				               }*/
-		                   }
+		         }
 	                   
-	                  }
-	    
-	             }); 
+	        }
+	    }); 
 	            
 	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
 	    listHeader.setClickable(false);
