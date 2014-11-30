@@ -3,17 +3,17 @@ package com.apps.knowledgeRepo.dataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseModule {
+public class TextCourseModule {
 	
 	long moduleId; 
 	String guide;
 	
 	List<Exam> exams;
 	
-	public CourseModule(){
+	public TextCourseModule(){
 		this.exams = new ArrayList<Exam>();
 	}
-	public CourseModule(long moduleId, String guide){
+	public TextCourseModule(long moduleId, String guide){
 		this.moduleId = moduleId;
 		this.guide = guide;
 		this.exams = new ArrayList<Exam>();

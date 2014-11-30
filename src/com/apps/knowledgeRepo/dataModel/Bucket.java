@@ -34,11 +34,6 @@ public class Bucket {
 		this.sequence = sequence;
 	}
 
-
-	
-
-
-
 	public String getTitle() {
 		return title;
 	}
@@ -54,6 +49,12 @@ public class Bucket {
 
 	public void setCardList(List<Card> cardList) {
 		this.cardList = cardList;
+	}
+
+
+	public enum BucketType { 
+	
+		Chapter, KeyConcept, ByColoumn
 	}
 
 	
