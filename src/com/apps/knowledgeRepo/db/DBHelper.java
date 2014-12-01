@@ -58,10 +58,10 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    
 	private static final String SQL_CREATE_CARDS = 
 	    " CREATE TABLE " + TableNames.FLASH_CARD_CARDS + " ( " +
-	    " 'CARD_ID' int," +
+	    " 'CARD_ID' varchar(256)," +
+	    " 'TYPE' varchar(256)," +
 	    " 'FRONTTEXT' varchar(256), " +
 	    " 'BACKTEXT' varchar(256), " + 
-	    " 'TYPE' varchar(256)," +
 	    " PRIMARY KEY (CARD_ID)  )";
 	    
 	private static final String SQL_CREATE_BUCKETS_CARDS=
