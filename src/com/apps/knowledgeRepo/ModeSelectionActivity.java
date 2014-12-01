@@ -102,13 +102,9 @@ public class ModeSelectionActivity extends Activity {
         super.onCreate(savedInstanceState);
 
    		setContentView(R.layout.mode_selection);
-		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		// If your minSdkVersion is 11 or higher, instead use:
-		//getActionBar().setDisplayHomeAsUpEnabled(true);		   
 		
-		//Initialize course and go to course selection page
 		courseList = DBTool.getCourseMetaData(getApplicationContext());
-		//extractCourseInfoFromExamMetaData();
+
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
@@ -118,10 +114,7 @@ public class ModeSelectionActivity extends Activity {
         });
     	
     	
-<<<<<<< HEAD
-    	
-       
-=======
+
         final Button flashcard = (Button) findViewById(R.id.Flashcard);
                 flashcard.setOnClickListener(new View.OnClickListener() {
                  
@@ -131,7 +124,7 @@ public class ModeSelectionActivity extends Activity {
         
                    }
                 });
->>>>>>> 6df520b798db889267b094e9d645073c4920413e
+
     	
     	
 	}

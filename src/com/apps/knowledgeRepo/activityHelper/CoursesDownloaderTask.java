@@ -34,6 +34,7 @@ import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.Question;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
+import com.apps.knowledgeRepo.om.TableNames;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -147,6 +148,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   
 		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
 		        	   
+		        	   cleanDB(context, db, TableNames.FLASH_CARD_CARDS);
+		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS);
+		        	   cleanDB(context, db, TableNames.COURSES_METADATA);
+		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING);
 		        	   storeFlashcourseToDB(courseId,courseName,courseOrientation, db);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
@@ -161,7 +166,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	   String type = String.valueOf( bucket.get("type"));
 			        	   String title = String.valueOf( bucket.get("title"));
 			        	   //Log.d("loop", "storeBucketToDB");
-	        	   
+	        	        
 			        	   storeBucketToDB(courseId,bucketId, type,sequence,title,db);
 			        	   	        	   
 			           }
@@ -201,7 +206,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           }
         	   
 		           }
-<<<<<<< HEAD
+
 	/*	         else if(courseType == 4){
 		        	   
 
@@ -251,13 +256,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		        	   
 			           
 		           }*/
-=======
+
 		        	            
 		           }
->>>>>>> 6df520b798db889267b094e9d645073c4920413e
+
 
 		        	   			           
-		           }
+		           
 
 			    db.close();	           
 		          // storeToDB(courseId, courseName, courseContent, context);	           	 	
@@ -308,6 +313,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 	}*/
 	
+	public void cleanDB(Context context, SQLiteDatabase db,  String tableName){
+		
+		DBTool.cleanDB(context, db, tableName);
+	}
 	public void storeFlashcourseToDB(String courseId, String courseName, String courseOrientation, SQLiteDatabase db){
 		DBTool.insertFlashcardCourse(db, courseId, courseName, courseOrientation);
 	 }

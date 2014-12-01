@@ -160,7 +160,15 @@ public class DBTool {
     	Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
     	return examStatus;
      }
-     
+     public static void cleanDB(Context context,SQLiteDatabase db, String table){
+    	 
+    	 if( !db.isOpen()){
+          	db=DBTool.getDB(context);	
+         }
+    	 
+    	 String delete = "delete from " + table;
+    	 db.execSQL(delete);
+     }
      
     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String module_id,String exam_id, String att, String qnum, String ans, String time){
     	if( !db.isOpen()){
@@ -436,10 +444,10 @@ public class DBTool {
      	 //		" where Buckets.BUCKET_ID= ?" ;
     	 
 
-    	 String queryCourseBucketCardSQL =  "select Card.CARD_ID, Card.TYPE, Card.FRONTTEXT,Card.BACKTEXT " +
-     	 		" from " + TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING + "mapping " +
-    			"join " + TableNames.FLASH_CARD_CARDS +" Cards on mapping.Card_ID = Cards.Card_ID" +
-      	 		" where mapping.BUCKET_ID= ?" ;
+    	 String queryCourseBucketCardSQL =  "select Cards.CARD_ID, Cards.TYPE, Cards.FRONTTEXT, Cards.BACKTEXT " +
+     	 		" from " + TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING  + " " + 
+    			"join " + TableNames.FLASH_CARD_CARDS +" Cards on FLASH_CARD_BUCKETS_CARDS_MAPPING.Card_ID = Cards.Card_ID" +
+      	 		" where FLASH_CARD_BUCKETS_CARDS_MAPPING.BUCKET_ID= ?" ;
 
     	 
     	   	 
