@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="3dip"
         android:contentDescription="TODO"
-        android:src="@drawable/icon_book" />
+        android:src="@drawable/icon_exam" />
 
     <TextView
         android:id="@+id/courseListItemTextLine"
