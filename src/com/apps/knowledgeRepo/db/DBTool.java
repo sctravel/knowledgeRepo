@@ -521,14 +521,24 @@ public class DBTool {
 			Card card= new Card(); 
 			
 			int cardId= Integer.parseInt(cardStr.get(0)); 	
-			CardType type= CardType.valueOf(cardStr.get(1)); 
+			CardType cardType = null;
+		
+			if(Integer.valueOf(cardStr.get(1))==0 ){
+				
+				cardType= CardType.Math;
+			}else if (Integer.valueOf(cardStr.get(1))==1){
+				cardType= CardType.Normal;
+			}
+			
+			
+		
 			String front = cardStr.get(2);
 			String back = cardStr.get(3); 
 			
 			card.setCardId(cardId);
 			card.setFrontText(front);
 			card.setBackText(back);
-			card.setCardType(type); 
+			card.setCardType(cardType); 
 			
 			result.add(card);
 		}

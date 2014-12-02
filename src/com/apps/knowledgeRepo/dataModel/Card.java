@@ -65,7 +65,16 @@ public class Card {
 	
 	public enum CardType { 
 		
-		Math, Normal 
+		Math(0), Normal(1);
+		
+		  private int CardType;
+
+	        private CardType(int CardType) {
+	                this.CardType = CardType;
+	        }
+
+
+	
 	}
 		
 
