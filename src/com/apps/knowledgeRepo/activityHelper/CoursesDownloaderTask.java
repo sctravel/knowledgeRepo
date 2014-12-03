@@ -207,15 +207,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
         	   
 		           }
 
-	/*	         else if(courseType == 4){
-		        	   
 
-		       	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 
-		        	   
-=======
 		         else if(courseType == 4){
->>>>>>> 6df520b798db889267b094e9d645073c4920413e
+
 		        	   Log.d("loop", "parse courseType 4");
 		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 
@@ -251,11 +246,11 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        	   	        	   
 				           }
 		        	   }
-<<<<<<< HEAD
+
 		        	   
 		        	   
 			           
-		           }*/
+		           }
 
 		        	            
 		           }
@@ -277,14 +272,14 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			return true; 
 	}
 	
-	/*
+	
 	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
 		
 		DBTool.insertVideoModule(context, db, sequenceModuleId, courseId, title);
 		
-	}*/
+	}
 	
 	
 	public void storeToDB(String courseId, String courseName, String courseType, String courseOrientation, 
@@ -298,7 +293,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	}
 	
-	/*
+	
 	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
 		// storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
@@ -311,7 +306,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		DBTool.insertVideoCourse(context, db, courseId, courseName, courseOrientation);
 		
-	}*/
+	}
 	
 	public void cleanDB(Context context, SQLiteDatabase db,  String tableName){
 		
