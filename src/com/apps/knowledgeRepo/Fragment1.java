@@ -33,7 +33,7 @@ public class Fragment1 extends Fragment{
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					 FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
+					 FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
 						List<Bucket> buckets = flashcard_course.getBucket();
 					
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);

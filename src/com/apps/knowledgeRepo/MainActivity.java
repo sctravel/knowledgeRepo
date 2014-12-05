@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity {
          String courseId ="1";
         
 	
-        FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
+        FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
 		List<Bucket> buckets = flashcard_course.getBucket();
 		Bucket test_bucket = buckets.get(0);
 	     

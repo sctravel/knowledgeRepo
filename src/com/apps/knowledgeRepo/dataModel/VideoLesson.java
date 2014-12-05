@@ -1,13 +1,28 @@
 package com.apps.knowledgeRepo.dataModel;
 
-public class VideoLesson {
+import java.io.Serializable;
+
+public class VideoLesson implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	int sequence;
 	
 	String URL;
 	
 	String localPath;
 
+	public VideoLesson() {}
+	public VideoLesson(int sequence, String URL) {
+		this.sequence = sequence;
+		this.URL = URL;
+	}
+	public VideoLesson(int sequence, String URL, String localPath) {
+		this.sequence = sequence;
+		this.URL = URL;
+		this.localPath = localPath;
+	}
+	
 	public int getSequence() {
 		return sequence;
 	}

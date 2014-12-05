@@ -3,6 +3,9 @@ package com.apps.knowledgeRepo;
 import java.io.IOException;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
+import com.apps.knowledgeRepo.om.Constants;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,7 +38,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
     WifiLock wifiLock = null; //commented out for VideoView now
     int lastOrientation = 0;
 
-    
+    VideoModule module = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +48,15 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
             WindowManager.LayoutParams.FLAG_FULLSCREEN,  
              WindowManager.LayoutParams.FLAG_FULLSCREEN);
    		setContentView(R.layout.video_player);
-   		
+   		        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+        	 module = (VideoModule) extras.get(Constants.VIDEO_MODULE_NAME);	    
+        }
+        if(module==null) throw new RuntimeException("VideoModule is null!");
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
-   		String vidAddress = "http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
+   		String vidAddress = module.getLessons().get(0).getURL(); //"http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
    		Uri vidUri = Uri.parse(vidAddress);
    		vidView = (VideoView)findViewById(R.id.CourseVideoView);
    		/*wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))

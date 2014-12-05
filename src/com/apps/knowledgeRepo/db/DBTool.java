@@ -3,9 +3,9 @@ package com.apps.knowledgeRepo.db;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.apps.knowledgeRepo.dataModel.Bucket;
-
 import com.apps.knowledgeRepo.dataModel.Card;
 import com.apps.knowledgeRepo.dataModel.Card.CardType;
 import com.apps.knowledgeRepo.dataModel.Course;
@@ -13,6 +13,9 @@ import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
+import com.apps.knowledgeRepo.dataModel.VideoCourse;
+import com.apps.knowledgeRepo.dataModel.VideoLesson;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.om.TableNames;
 
@@ -94,26 +97,23 @@ public class DBTool {
      }
      
      public static List<ArrayList<String> >queryDB(Context context,SQLiteDatabase db, String sql, String[] selectionArgs ){
-    		if( !db.isOpen()){
-        		db=DBTool.getDB(context);
-        		
-        	}
-    List<ArrayList<String>> result =new ArrayList<ArrayList<String>>();
+    	if( !db.isOpen()){
+        	db=DBTool.getDB(context);	
+        }
+    	List<ArrayList<String>> result =new ArrayList<ArrayList<String>>();
     		
-    	 Cursor cursor = db.rawQuery(sql, selectionArgs);
+    	Cursor cursor = db.rawQuery(sql, selectionArgs);
     
-    	 while(cursor.moveToNext()){
-    		 int count = cursor.getColumnCount();
-    		 ArrayList<String> row = new ArrayList<String>();
-    		 for (int i =0; i < count; i++){
-    			 String currentColumn = cursor.getString(i);
-    			  row.add(currentColumn); 
-    
-    			 
-    		 }
-    		 result.add(row);           } 
+    	while(cursor.moveToNext()){
+    		int count = cursor.getColumnCount();
+    		ArrayList<String> row = new ArrayList<String>();
+    		for (int i =0; i < count; i++){
+    			String currentColumn = cursor.getString(i);
+    			row.add(currentColumn); 
+    		}
+    		result.add(row);          } 
     	
-    	 //db.close();
+    	//db.close();
     
 		return result;
      }   
@@ -210,7 +210,6 @@ public class DBTool {
      public static void insertVideoModule(Context context, SQLiteDatabase db, int SequenceModule_id, String Course_id, String title){
  		if( !db.isOpen()){
     		db=DBTool.getDB(context);
-    		
     	}
 	    	
  		String sqlInsertVideoCourseModules = 
@@ -425,12 +424,43 @@ public class DBTool {
     	
      }
       
+     public static Course queryVideoCourse(Context context, SQLiteDatabase db, Course courseMeta) {
+    	 String courseId = courseMeta.getCourseId();
+    	 VideoCourse course= new VideoCourse(courseMeta.getCourseId(), courseMeta.getCourseName(),
+    			 courseMeta.getCourseType(), courseMeta.getCourseOrientation());
+    	 
+    	 //Get all the modules
+    	 String selectAllModules = " select sequence_module_id, title from " + TableNames.VIDEO_COURSES_MODULES + 
+    			 " where course_id = ? ";
+    	 List<ArrayList<String>> allModules = DBTool.queryDB(context, db, selectAllModules, new String[]{courseId});
+    	 for(ArrayList<String> list : allModules) {
+    		 VideoModule module = new VideoModule(Integer.parseInt(list.get(0)), list.get(1)); 
+    		 course.getVideoModules().add(module);
+    	 }
+    	 
+    	 String selectAllLessons = " select sequence_module_id, sequence, url from " + TableNames.VIDEO_SEQUENCE + 
+    			 " where course_id = ?  and sequence_module_id = ?  ";
+    	 
+    	 //add all the lessons to the corresponding Module
+    	 for(VideoModule module : course.getVideoModules()) {
+	    	 int moduleSequenceId = module.getModuleSequenceId();
+	    	 List<ArrayList<String>> allLessons = DBTool.queryDB(context, db, selectAllLessons, new String[]{courseId, ""+moduleSequenceId});
+	    	 for(ArrayList<String> list : allLessons) {
+	    		 int sequence = Integer.parseInt(list.get(1));
+	    		 String url = list.get(2);
+	    		 VideoLesson vl = new VideoLesson(sequence, url);
+	    		 module.getLessons().add(vl);
+	    	 }
+    	 }
+    	 
+    	 return course;
+     }
      
      // Course table: COURSE_ID,COURSE_NAME
      // Buckets table: 
      // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
      // BucketCards table: FC_ID, BUCKET_ID
-     public static FlashCardCourse queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
+     public static Course queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
     	 
     	 String queryCourseSQL = "select COURSE_NAME from " + TableNames.COURSES_METADATA +" where COURSE_ID= ?" ;
     	 	 
