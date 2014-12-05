@@ -1,24 +1,23 @@
 package com.apps.knowledgeRepo.dataModel;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Bucket {
+public class FlashCardBucket implements Serializable {
 	
 	long bucketId;	
 	int sequence;	
 	String BucketType;	
+	String title;	
+	List<FlashCardCard> cardList; 
+	
 	public String getBucketType() {
 		return BucketType;
 	}
 	public void setBucketType(String bucketType) {
 		BucketType = bucketType;
 	}
-
-	String title;	
-	List<Card> cardList; 
-	
-	
 	public long getBucketId() {
 		return bucketId;
 	}
@@ -42,20 +41,20 @@ public class Bucket {
 		this.title = title;
 	}
 
-	public List<Card> getCardList() {
+	public List<FlashCardCard> getCardList() {
 		return cardList;
 	}
 
 
-	public void setCardList(List<Card> cardList) {
+	public void setCardList(List<FlashCardCard> cardList) {
 		this.cardList = cardList;
 	}
 
-
+	/*
 	public enum BucketType { 
 	
 		Chapter, KeyConcept, ByColoumn
-	}
+	}*/
 
 	
 

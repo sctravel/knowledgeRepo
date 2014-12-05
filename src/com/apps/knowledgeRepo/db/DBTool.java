@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.apps.knowledgeRepo.dataModel.Bucket;
-import com.apps.knowledgeRepo.dataModel.Card;
-import com.apps.knowledgeRepo.dataModel.Card.CardType;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
+import com.apps.knowledgeRepo.dataModel.FlashCardCard;
+import com.apps.knowledgeRepo.dataModel.FlashCardCard.CardType;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
@@ -460,10 +460,8 @@ public class DBTool {
      // Buckets table: 
      // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
      // BucketCards table: FC_ID, BUCKET_ID
-     public static Course queryFlashCardCourse(Context context,SQLiteDatabase db, String cid){
+     public static Course queryFlashCardCourse(Context context,SQLiteDatabase db, Course courseMeta){
     	 
-    	 String queryCourseSQL = "select COURSE_NAME from " + TableNames.COURSES_METADATA +" where COURSE_ID= ?" ;
-    	 	 
     	 String queryCourseBucketSQL = "select fcb.BUCKET_ID, fcb.SEQUENCE,fcb.TYPE, fcb.TITLE " +
     	 		"from " + TableNames.COURSES_METADATA + " fcc " +
     	 		" join " + TableNames.FLASH_CARD_BUCKETS + " fcb on fcc.COURSE_ID = fcb.COURSE_ID" +
@@ -483,25 +481,26 @@ public class DBTool {
     	   	 
     	 if( !db.isOpen()){
      		db=DBTool.getDB(context);
-     		
-     	}
+     	 }
+    	 String courseId = courseMeta.getCourseId();
     	  	 
-    	Log.d("DB","cid:"+cid);
+    	Log.d("DB","cid:"+courseMeta);
     	
-    	FlashCardCourse course= new FlashCardCourse();
+    	FlashCardCourse course= new FlashCardCourse(courseMeta.getCourseId(), courseMeta.getCourseName(), 
+    			courseMeta.getCourseType(), courseMeta.getCourseOrientation());
     	
     	//get bucket ids
-    	List<ArrayList<String>> bucketStrs = DBTool.queryDB(context, db, queryCourseBucketSQL, new String[]{cid});
+    	List<ArrayList<String>> bucketStrs = DBTool.queryDB(context, db, queryCourseBucketSQL, new String[]{courseId});
     	
-    	List<Bucket> buckets= CreateBucket(bucketStrs);
+    	List<FlashCardBucket> buckets= CreateBucket(bucketStrs);
     	
     	course.setBucket(buckets);
     	
-    	for(Bucket bucket : buckets){
+    	for(FlashCardBucket bucket : buckets){
     		
     		List<ArrayList<String>> cardIdStrs = DBTool.queryDB(context, db, queryCourseBucketCardSQL, new String[]{Long.toString(bucket.getBucketId())});
     		
-    		List<Card> cards= CreateCard(cardIdStrs);
+    		List<FlashCardCard> cards= CreateCard(cardIdStrs);
     		
     		bucket.setCardList(cards);
     		   		
@@ -513,9 +512,9 @@ public class DBTool {
     	return course;
      }
      
-	static List<Bucket> CreateBucket(List<ArrayList<String>> bucketStrs){
+	static List<FlashCardBucket> CreateBucket(List<ArrayList<String>> bucketStrs){
 		
-		List<Bucket> result = new ArrayList<Bucket>(); 
+		List<FlashCardBucket> result = new ArrayList<FlashCardBucket>(); 
 		// Buckets.BUCKET_ID, Buckets.SEQUENCE,Buckets.TYPE, Buckets.TITLE
 		for(List<String> bucketStr: bucketStrs){
 			
@@ -526,7 +525,7 @@ public class DBTool {
 			String type= bucketStr.get(2); 
 			String title = bucketStr.get(3); 
 						
-			Bucket bucket= new Bucket(); 
+			FlashCardBucket bucket= new FlashCardBucket(); 
 			bucket.setBucketId(bucketId);
 			bucket.setSequence(sequence);
 			bucket.setBucketType(type);
@@ -538,9 +537,9 @@ public class DBTool {
 		return result; 	
 	}
 		
-	static List<Card> CreateCard(List<ArrayList<String>> cardIdStrs){
+	static List<FlashCardCard> CreateCard(List<ArrayList<String>> cardIdStrs){
 		
-		List<Card> result = new ArrayList<Card>(); 
+		List<FlashCardCard> result = new ArrayList<FlashCardCard>(); 
 		
 		
 		for(List<String> cardStr: cardIdStrs){
@@ -548,7 +547,7 @@ public class DBTool {
 					
 		    
 			//Cards table: FC_ID, FC_TYPE, FRONT, BACK 			
-			Card card= new Card(); 
+			FlashCardCard card= new FlashCardCard(); 
 			
 			int cardId= Integer.parseInt(cardStr.get(0)); 	
 			CardType cardType = null;

@@ -38,8 +38,11 @@ import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
+import com.apps.knowledgeRepo.activityHelper.FlashCardBucketArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.VideoModuleArrayAdapter;
 import com.apps.knowledgeRepo.dataModel.Course;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
+import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
@@ -59,7 +62,7 @@ public class ModeSelectionActivity extends Activity {
 	private String currentCourseId=null;
 	private String currentTextModuleId=null;
 	private String currentTextExamId=null;
-	private String currentBucketId=null;
+	private long currentBucketId = 0;
 	private String currentVideoModuleId=null;
 	private String currentVideoLessonId=null;
 	private int currentModuleSequenceId = 0;
@@ -183,7 +186,8 @@ public class ModeSelectionActivity extends Activity {
 		         } else if(courseType==Constants.FINAL_EXAM_TYPE) {
 		        	 
 		         } else if(courseType==Constants.FLASH_CARD_COURSE_TYPE) {
-		        	 
+		        	 currentCourse = CourseUtil.initilizeFlashCardCourse(courseMeta, getApplicationContext());
+		        	 selectFlashCardBucketPage( (FlashCardCourse) currentCourse );
 		         } else if(courseType==Constants.VIDEO_COURSE_TYPE) { // Video
 		        	 currentCourse = CourseUtil.initilizeVideoCourse(courseMeta, getApplicationContext());
 		        	 selectVideoModulePage( (VideoCourse) currentCourse );
@@ -222,7 +226,48 @@ public class ModeSelectionActivity extends Activity {
             }
         });
 	}
-	
+	private void selectFlashCardBucketPage( final FlashCardCourse course ) {
+		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(course.getCourseName());
+		
+		currentPage = FLASH_CARD_BUCKET_PAGE;
+		
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+			
+		final ListView listView = new ListView(getApplicationContext());
+		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
+		listView.setLayoutParams(lpbt);
+		ArrayAdapter<FlashCardBucket> adapter = new FlashCardBucketArrayAdapter(getApplicationContext(),
+	        R.layout.course_list_item, course.getBucket());    
+	    // Assign adapter to ListView
+	    listView.setAdapter(adapter); 
+	            
+	    // ListView Item Click Listener
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            // ListView Clicked item index
+                int itemPosition = position;
+		        // ListView Clicked item value
+                FlashCardBucket  bucket    = (FlashCardBucket) listView.getItemAtPosition(position);
+		        currentBucketId = bucket.getBucketId();
+		        
+		        beginFlashCardBucket( view, bucket ); 
+	                  
+	        }
+	    }); 
+	            
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
+        setContentView(listView);
+        
+        addSignInButton();
+        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
+        pageText.setText("Video Course Module:");
+	}
 	private void selectVideoModulePage(final VideoCourse course) {
 		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
 		pageName.setText(course.getCourseName());
@@ -490,7 +535,16 @@ public class ModeSelectionActivity extends Activity {
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
-    
+    public void  beginFlashCardBucket(View view, FlashCardBucket bucket ){
+    	Intent intent ;
+        intent = new Intent(this, MainActivity.class);
+    	
+        intent.putExtra(Constants.FLASH_CARD_BUCKET_NAME, bucket);
+        intent.putExtra(Constants.COURSE_ID_NAME, currentCourseId);
+
+        
+        startActivity(intent);
+    }
     public void beginVideoModule(View view, VideoModule module) {
     	Intent intent ;
         intent = new Intent(this, VideoPlayerActivity.class);

@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.AnimationFactory.FlipDirection;
-import com.apps.knowledgeRepo.dataModel.Bucket;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBHelper;
+import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.support.v4.app.Fragment;
@@ -26,27 +28,30 @@ import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 public class MainActivity extends FragmentActivity {
-
+	String courseId = null;
+	FlashCardBucket bucket= null;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-         String courseId ="1";
-        
-	
-        FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
-		List<Bucket> buckets = flashcard_course.getBucket();
-		Bucket test_bucket = buckets.get(0);
+                  
+         Bundle extras = getIntent().getExtras();
+         if (extras != null) {
+         	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
+         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
+         }
+         if(bucket==null) throw new RuntimeException("FlashCardBucket is null!");
+	    
 	     
-		test_bucket.getCardList().get(0);
 		setContentView(R.layout.activity_main);
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
 	   
 		WebView tv1 = (WebView) this.findViewById(R.id.test1);
 
-		tv1.loadData(buckets.get(0).getCardList().get(0).getFrontText(),"text/html","utf-8");
+		tv1.loadData(bucket.getCardList().get(0).getFrontText(),"text/html","utf-8");
 		
 		
 		WebView tv2 =  (WebView)this.findViewById(R.id.test2);
-		tv2.loadData(buckets.get(0).getCardList().get(0).getBackText(),"text/html","utf-8");
+		tv2.loadData(bucket.getCardList().get(0).getBackText(),"text/html","utf-8");
 		  
 		  
 		 DBHelper dbHelper = new DBHelper(getBaseContext());

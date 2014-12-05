@@ -48,10 +48,10 @@ public class CourseUtil {
 		
 	}
 	
-	public static Course initilizeFlashCardCourse(String courseId, Context context){
+	public static Course initilizeFlashCardCourse(Course courseMeta, Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
-		Course courseObj  = DBTool.queryFlashCardCourse(context, db,courseId);
+		Course courseObj  = DBTool.queryFlashCardCourse(context, db, courseMeta);
 			
 
 					
