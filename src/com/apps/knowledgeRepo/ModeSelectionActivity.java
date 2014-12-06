@@ -550,6 +550,7 @@ public class ModeSelectionActivity extends Activity {
         intent = new Intent(this, VideoPlayerActivity.class);
     	
         intent.putExtra(Constants.VIDEO_MODULE_NAME, module);
+        intent.putExtra(Constants.COURSE_ID_NAME, currentCourseId);
         
         startActivity(intent);
     }
