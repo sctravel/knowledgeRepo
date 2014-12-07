@@ -26,21 +26,45 @@ import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 public class MainActivity extends FragmentActivity {
-
+       FlashCardCourse flashcard_course;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
          String courseId ="1";
         
 	
-        FlashCardCourse flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
+       flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
 		List<Bucket> buckets = flashcard_course.getBucket();
 		Bucket test_bucket = buckets.get(0);
 	     
 		test_bucket.getCardList().get(0);
 		setContentView(R.layout.activity_main);
+		
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
-	   
+		
+		
+       	View fragment1 = this.findViewById(R.id.fragment1);
+		  
+	  Button button = (Button)fragment1.findViewById(R.id.button1);
+	  button.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+					List<Bucket> buckets = flashcard_course.getBucket();
+			
+					FragmentActivity test =MainActivity.this;
+					Fragmentest.getFragmentManager();
+			
+		//		Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				
+				tv1.loadData(buckets.get(0).getCardList().get(1).getFrontText(),"text/html","utf-8");
+			//	 View view = (View)tv2.getView();
+		//		 WebView tv =  (WebView)view.findViewById(R.id.test2);
+		//			tv.loadData(buckets.get(0).getCardList().get(1).getBackText(),"text/html","utf-8");
+			}
+       });
 		WebView tv1 = (WebView) this.findViewById(R.id.test1);
+     
 
 		tv1.loadData(buckets.get(0).getCardList().get(0).getFrontText(),"text/html","utf-8");
 		
