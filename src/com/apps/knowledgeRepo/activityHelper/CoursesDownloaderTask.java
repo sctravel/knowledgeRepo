@@ -26,12 +26,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
-import com.apps.knowledgeRepo.dataModel.CoursePackage;
 import com.apps.knowledgeRepo.dataModel.Exam;
-import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.dataModel.ExamQuestion;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.TableNames;

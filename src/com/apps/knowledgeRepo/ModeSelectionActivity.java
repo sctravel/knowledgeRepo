@@ -120,25 +120,14 @@ public class ModeSelectionActivity extends Activity {
         super.onCreate(savedInstanceState);
 
    		setContentView(R.layout.mode_selection);
-		
-		
+			
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	loginPage();
             }
-        });
-    	
-        final Button flashcard = (Button) findViewById(R.id.Flashcard);
-         flashcard.setOnClickListener(new View.OnClickListener() {
-                 
-            public void onClick(View v) {    	
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
-        
-            }
-          });  	
+        });	
 	}
 
 	private void selectCoursesPage(){
@@ -175,7 +164,7 @@ public class ModeSelectionActivity extends Activity {
 		        long courseType = courseMeta.getCourseType();
 		        
 		        if(courseType==Constants.TEXT_COURSE_TYPE) {
-		        /*   TextCourse textCourse = DBTool;//(TextCourse) course;
+		          /* TextCourse textCourse = DBTool;//(TextCourse) course;
 			        if(course.getModules().size()>1) {
 				            		selectCourseModulePage(course);
 				               } else {
@@ -205,17 +194,7 @@ public class ModeSelectionActivity extends Activity {
         addSignInButton();
         TextView pageText = (TextView) findViewById(R.id.courseListPageName);
         pageText.setText("Course Menu:");
-        //pageText.setTextSize(20);
-        //pageText.setTextColor(0);
-        final Button flashcard = (Button) findViewById(R.id.Flashcard);
-        flashcard.setOnClickListener(new View.OnClickListener() {
-         
-           public void onClick(View v) {    	
-           	 Intent intent = new Intent(getBaseContext(), MainActivity.class);
-          	 startActivity(intent);
-
-           }
-        });
+        
 	}
 	
 	private void addSignInButton() {
@@ -275,9 +254,7 @@ public class ModeSelectionActivity extends Activity {
 		currentPage = VIDEO_MODULE_PAGE;
 		
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
-		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-		
-		
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;	
 		
 		final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
@@ -295,10 +272,8 @@ public class ModeSelectionActivity extends Activity {
                 int itemPosition = position;
 		        // ListView Clicked item value
                 VideoModule  videoModule    = (VideoModule) listView.getItemAtPosition(position);
-		        currentModuleSequenceId = videoModule.getModuleSequenceId();
-		        
+		        currentModuleSequenceId = videoModule.getModuleSequenceId();	        
 		        beginVideoModule( view, videoModule ); 
-	                  
 	        }
 	    }); 
 	            
@@ -495,9 +470,7 @@ public class ModeSelectionActivity extends Activity {
         });*/
         
 	}
-	
-	
-    
+
     
    private Intent getDefaultIntent() {
        Intent intent = new Intent(Intent.ACTION_SEND);
@@ -507,8 +480,7 @@ public class ModeSelectionActivity extends Activity {
    
     private void openSearch(){
     	
-    }
-    
+    }   
     private void openSettings(){
     	
     }
@@ -558,13 +530,6 @@ public class ModeSelectionActivity extends Activity {
         
         startActivity(intent);
     }
-    /*
-    public void beginFlashCard(View view) {
-    	
-    }
-    public void beginVideoCourse(View view) {
-    }
-    */
     
     @Override
     public void onBackPressed() {

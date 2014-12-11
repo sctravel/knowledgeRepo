@@ -3,7 +3,7 @@ package com.apps.knowledgeRepo.dataModel;
 import java.io.Serializable;
 import java.util.List;
 
-public class Question implements Serializable {
+public class ExamQuestion implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,13 +15,13 @@ public class Question implements Serializable {
 	
 	String explanation;
 	
-	List<Answer> answers;
+	List<ExamAnswer> answers;
 	
-	public List<Answer> getAnswers() {
+	public List<ExamAnswer> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(List<Answer> answers) {
+	public void setAnswers(List<ExamAnswer> answers) {
 		this.answers = answers;
 	}
 
