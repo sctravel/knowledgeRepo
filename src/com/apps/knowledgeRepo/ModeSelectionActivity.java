@@ -538,9 +538,13 @@ public class ModeSelectionActivity extends Activity {
     public void  beginFlashCardBucket(View view, FlashCardBucket bucket ){
     	Intent intent ;
         intent = new Intent(this, MainActivity.class);
-    	
+    	/*query current card num 
+    	 * 
+    	 * 
+    	 * */
         intent.putExtra(Constants.FLASH_CARD_BUCKET_NAME, bucket);
         intent.putExtra(Constants.COURSE_ID_NAME, currentCourseId);
+        intent.putExtra("currCardNum", 2);
 
         
         startActivity(intent);
