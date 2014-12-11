@@ -1,19 +1,37 @@
 package com.apps.knowledgeRepo.dataModel;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class VideoModule {
+public class VideoModule implements Serializable{
 	
-	int sequence;
+	private static final long serialVersionUID = 1L;
+	
+	//TODO it is 
+	int moduleSequenceId;
 	String title;  
 	List<VideoLesson> lessons;
-	  
-	  
-	public int getSequence() {
-		return sequence;
+	
+	public VideoModule(){}
+	
+	public VideoModule(int moduleSequenceId, String title) {
+		this.moduleSequenceId = moduleSequenceId;
+		this.title = title;
+		this.lessons = new ArrayList<VideoLesson>();
 	}
-	public void setSequence(int sequence) {
-		this.sequence = sequence;
+	
+	public VideoModule(int moduleSequenceId, String title, List<VideoLesson> lessons) {
+		this.moduleSequenceId = moduleSequenceId;
+		this.title = title;
+		this.lessons = lessons;
+	}
+	  
+	public int getModuleSequenceId() {
+		return moduleSequenceId;
+	}
+	public void setModuleSequenceId(int moduleSequenceId) {
+		this.moduleSequenceId = moduleSequenceId;
 	}
 	public String getTitle() {
 		return title;

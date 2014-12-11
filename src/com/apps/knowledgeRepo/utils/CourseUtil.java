@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
@@ -39,11 +40,18 @@ public class CourseUtil {
 		return examContent;
 	}
 	
+	public static Course initilizeVideoCourse(Course courseMeta, Context context) {
+		SQLiteDatabase db = DBTool.getDB(context);
+		
+		Course videoCourse = DBTool.queryVideoCourse(context, db, courseMeta);
+		return videoCourse;
+		
+	}
 	
-	public static FlashCardCourse initilizeFlashCardCourse(String courseId, Context context){
+	public static Course initilizeFlashCardCourse(Course courseMeta, Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
-		FlashCardCourse courseObj  = DBTool.queryFlashCardCourse(context, db,courseId);
+		Course courseObj  = DBTool.queryFlashCardCourse(context, db, courseMeta);
 			
 
 					

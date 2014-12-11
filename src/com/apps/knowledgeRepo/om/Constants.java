@@ -6,6 +6,7 @@ public class Constants {
 	public static final String EXAM  = "exam";
 	
 	public static final long TEXT_COURSE_TYPE = 1;
+	public static final long FINAL_EXAM_TYPE = 2;
 	public static final long FLASH_CARD_COURSE_TYPE = 3;
 	public static final long VIDEO_COURSE_TYPE = 4;
 	/* Module 
@@ -14,5 +15,10 @@ public class Constants {
 	 * 2 "CloseBook"
 	 * 3 "By Topic"
 	 */
+	
+	public static final String VIDEO_MODULE_NAME = "videoModule"; 
+	public static final String FLASH_CARD_BUCKET_NAME = "flashCardBucket"; 
+	public static final String COURSE_ID_NAME = "courseId"; 
+
 	
 }

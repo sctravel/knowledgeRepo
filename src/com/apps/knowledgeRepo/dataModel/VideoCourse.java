@@ -21,11 +21,11 @@ public class VideoCourse extends Course{
 	}
 
 
-	public List<VideoModule> getVideos() {
+	public List<VideoModule> getVideoModules() {
 		return modules;
 	}
 
-	public void setVideos(List<VideoModule> videoModules) {
+	public void setVideoModules(List<VideoModule> videoModules) {
 		this.modules = videoModules;
 	} 
 	

@@ -5,15 +5,18 @@ import java.util.List;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.AnimationFactory.FlipDirection;
-import com.apps.knowledgeRepo.dataModel.Bucket;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBHelper;
+import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,55 +29,51 @@ import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 public class MainActivity extends FragmentActivity {
+
        FlashCardCourse flashcard_course;
+       FlashCardBucket  bucket;
+       String courseId ;
+       int currCardNum = 0;
+       
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-         String courseId ="1";
+	                  
+         Bundle extras = getIntent().getExtras();
+         if (extras != null) {
+        	  bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
+         	  courseId = extras.getString(Constants.COURSE_ID_NAME);
+         	  currCardNum = extras.getInt("currCardNum");
+         }
+         if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
+     	
+       
         
-	
-       flashcard_course= CourseUtil.initilizeFlashCardCourse("iFC_04", getBaseContext());
-		List<Bucket> buckets = flashcard_course.getBucket();
-		Bucket test_bucket = buckets.get(0);
 	     
-		test_bucket.getCardList().get(0);
 		setContentView(R.layout.activity_main);
 		
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
 		
 		
-       	View fragment1 = this.findViewById(R.id.fragment1);
+       	WebView test1 = (WebView)this.findViewById(R.id.fragment1).findViewById(R.id.test1);
+    	WebView test2 = (WebView)this.findViewById(R.id.fragment2).findViewById(R.id.test2);
 		  
-	  Button button = (Button)fragment1.findViewById(R.id.button1);
-	  button.setOnClickListener(new View.OnClickListener(){
+	  Button button = (Button)test1.findViewById(R.id.button1);
+	  Button buttonPrev = (Button)test1.findViewById(R.id.button2);
+	  
+	 test1.loadData(bucket.getCardList().get(currCardNum).getFrontText(), "text/html","utf-8");
+	 test2.loadData(bucket.getCardList().get(currCardNum).getBackText(), "text/html","utf-8");
+	 
+	
+/*
+	 button.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-					List<Bucket> buckets = flashcard_course.getBucket();
-			
-					FragmentActivity test =MainActivity.this;
-					Fragmentest.getFragmentManager();
-			
-		//		Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 				
-				tv1.loadData(buckets.get(0).getCardList().get(1).getFrontText(),"text/html","utf-8");
-			//	 View view = (View)tv2.getView();
-		//		 WebView tv =  (WebView)view.findViewById(R.id.test2);
-		//			tv.loadData(buckets.get(0).getCardList().get(1).getBackText(),"text/html","utf-8");
 			}
        });
-		WebView tv1 = (WebView) this.findViewById(R.id.test1);
-     
-
-		tv1.loadData(buckets.get(0).getCardList().get(0).getFrontText(),"text/html","utf-8");
-		
-		
-		WebView tv2 =  (WebView)this.findViewById(R.id.test2);
-		tv2.loadData(buckets.get(0).getCardList().get(0).getBackText(),"text/html","utf-8");
-		  
-		  
-		 DBHelper dbHelper = new DBHelper(getBaseContext());
-		 SQLiteDatabase db = dbHelper.getWritableDatabase();	
+		*/
 		
 		viewAnimator1.setOnClickListener(new OnClickListener(){
 			@Override

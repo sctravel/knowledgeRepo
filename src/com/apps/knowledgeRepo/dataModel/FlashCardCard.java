@@ -1,6 +1,8 @@
 package com.apps.knowledgeRepo.dataModel;
 
-public class Card {
+import java.io.Serializable;
+
+public class FlashCardCard implements Serializable {
 	
 	int cardId; 	
 	String name; 
@@ -57,7 +59,7 @@ public class Card {
 		this.backText = backText;
 	}
 	
-	public Card(){
+	public FlashCardCard(){
 		
 			
 	}

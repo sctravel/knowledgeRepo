@@ -1,8 +1,12 @@
 package com.apps.knowledgeRepo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
+import com.apps.knowledgeRepo.om.Constants;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,9 +21,12 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 // android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
@@ -35,6 +42,10 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
     WifiLock wifiLock = null; //commented out for VideoView now
     int lastOrientation = 0;
 
+    VideoModule module = null;
+    
+    int currentSequenceNumber = 0;
+    
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,51 +56,68 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
             WindowManager.LayoutParams.FLAG_FULLSCREEN,  
              WindowManager.LayoutParams.FLAG_FULLSCREEN);
    		setContentView(R.layout.video_player);
-   		
+   		        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+        	 module = (VideoModule) extras.get(Constants.VIDEO_MODULE_NAME);	    
+        }
+        if(module==null) throw new RuntimeException("VideoModule is null!");
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
-   		String vidAddress = "http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
-   		Uri vidUri = Uri.parse(vidAddress);
-   		vidView = (VideoView)findViewById(R.id.CourseVideoView);
+        initializeVideoPlayer();
+        playVideo(currentSequenceNumber);
+        
+   		Button next = (Button) findViewById(R.id.nextVideoButton);
+   		next.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(currentSequenceNumber<module.getLessons().size()-1) {
+					++currentSequenceNumber;
+				} else {
+					currentSequenceNumber=0;
+				}
+				playVideo(currentSequenceNumber);
+			}
+		});
+   		Button prev = (Button) findViewById(R.id.prevVideoButton);
+   		prev.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(currentSequenceNumber>0 ) {
+					--currentSequenceNumber;
+				} else {
+					currentSequenceNumber=module.getLessons().size()-1;
+				}
+				playVideo(currentSequenceNumber);
+			}
+		});
+       
+	}
+	public void initializeVideoPlayer() {
+		vidView = (VideoView)findViewById(R.id.CourseVideoView);
    		/*wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
    			    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 
    		wifiLock.acquire();*/
-   		vidView.setVideoURI(vidUri);
    		dm = new DisplayMetrics(); 
    		this.getWindowManager().getDefaultDisplay().getMetrics(dm); 
-   		int height = dm.heightPixels; int width = dm.widthPixels; 
+   		int height = dm.heightPixels; 
+   		int width = dm.widthPixels; 
    		vidView.setMinimumWidth(width); 
    		vidView.setMinimumHeight(height);
    		MediaController vidControl = new MediaController(this);
    		vidControl.setAnchorView(vidView);
    		vidView.setMediaController(vidControl);
    		vidView.requestFocus();
+	}
+	public void playVideo(int currentSequenceNumber) {
+		TextView title = (TextView) findViewById(R.id.videoTitle);
+		title.setText( (currentSequenceNumber+1) +"/"+ module.getLessons().size() + "in module: "+module.getTitle()); 
+		
+		String vidAddress = module.getLessons().get(currentSequenceNumber).getURL(); //"http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
+   		Uri vidUri = Uri.parse(vidAddress);
+   		vidView.setVideoURI(vidUri);
    		vidView.start();
-   		//vidView.seekTo(mPos);
-   		/*
-   		mMediaPlayer = new MediaPlayer();
-   		//mMediaPlayer.set .setAudioStreamType(AudioManager .STREAM_MUSIC);
-   		mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-   	    
-   		try {
-   			mMediaPlayer.setDataSource(vidAddress);
-            mMediaPlayer.setOnPreparedListener(this);
-            mMediaPlayer.prepareAsync(); // prepare async to not block main thread
-            mMediaPlayer.start();
-		} catch ( IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch ( SecurityException e ) {
-			e.printStackTrace();
-		} catch ( IllegalStateException e ) {
-			e.printStackTrace();
-		} catch ( IOException e ) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-   		*/
-	
-       
 	}
 	/*To move the MediaController over the video, 
 	 * you can place an empty anchor view 88 pixels above the bottom line of the VideoView.

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class FlashCardCourse extends Course {
 	
-	private List<Bucket> buckets;
+	private List<FlashCardBucket> buckets;
 
 	public FlashCardCourse() {
 	}
@@ -15,11 +15,11 @@ public class FlashCardCourse extends Course {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public List<Bucket> getBucket() {
+	public List<FlashCardBucket> getBucket() {
 		return buckets;
 	}
 
-	public void setBucket(List<Bucket> buckets) {
+	public void setBucket(List<FlashCardBucket> buckets) {
 		this.buckets = buckets;
 	} 
 

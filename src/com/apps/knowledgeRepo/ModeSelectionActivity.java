@@ -38,12 +38,20 @@ import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
+import com.apps.knowledgeRepo.activityHelper.FlashCardBucketArrayAdapter;
+import com.apps.knowledgeRepo.activityHelper.VideoModuleArrayAdapter;
 import com.apps.knowledgeRepo.dataModel.Course;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
+import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
+import com.apps.knowledgeRepo.dataModel.VideoCourse;
+import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
+import com.apps.knowledgeRepo.om.Constants;
+import com.apps.knowledgeRepo.utils.CourseUtil;
 
 public class ModeSelectionActivity extends Activity {
 	
@@ -52,13 +60,23 @@ public class ModeSelectionActivity extends Activity {
 	private List<Course> courseList = new ArrayList<Course>();
 	
 	private String currentCourseId=null;
-	private String currentModuleId=null;
-	private String currentExamId=null;
+	private String currentTextModuleId=null;
+	private String currentTextExamId=null;
+	private long currentBucketId = 0;
+	private String currentVideoModuleId=null;
+	private String currentVideoLessonId=null;
+	private int currentModuleSequenceId = 0;
 	
+	private Course currentCourse = null;
 	private final static int LOGIN_PAGE = 0;
 	private final static int COURSE_PAGE = 1;
-	private final static int MODULE_PAGE = 2;
-	private final static int EXAM_PAGE = 3;
+	private final static int TEXT_MODULE_PAGE = 2;
+	private final static int TEXT_EXAM_PAGE = 3;
+	private final static int FLASH_CARD_BUCKET_PAGE = 4;
+	private final static int VIDEO_MODULE_PAGE = 5;
+	private final static int VIDEO_LESSON_PAGE = 6;
+	
+	
 
 	// 0 - loginPage
 	// 1 - MainPage (Course Page)
@@ -66,7 +84,6 @@ public class ModeSelectionActivity extends Activity {
 	// 3 - examPage
 	private int currentPage = COURSE_PAGE;
 	private  static final Map<Long, String> moduleIdNameMap = new HashMap<Long, String>(); 
-	private  static final Map<String, Course> courseNameToCourseMap = new HashMap<String,Course>();
 	private  static final Map<String, Exam> examNameToExamMap = new HashMap<String,Exam>();
 	private static final Map<String, Long> currentModuleNameToIdMap = new HashMap<String, Long>();
 
@@ -104,8 +121,7 @@ public class ModeSelectionActivity extends Activity {
 
    		setContentView(R.layout.mode_selection);
 		
-		courseList = DBTool.getCourseMetaData(getApplicationContext());
-
+		
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
@@ -114,82 +130,29 @@ public class ModeSelectionActivity extends Activity {
             }
         });
     	
-    	
-
         final Button flashcard = (Button) findViewById(R.id.Flashcard);
-                flashcard.setOnClickListener(new View.OnClickListener() {
+         flashcard.setOnClickListener(new View.OnClickListener() {
                  
-                   public void onClick(View v) {    	
-                   	 Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                  	 startActivity(intent);
+            public void onClick(View v) {    	
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(intent);
         
-                   }
-                });
-
-    	
-    	
+            }
+          });  	
 	}
-	
-    /*
-	private void extractCourseInfoFromExamMetaData() {
-		
-		Log.d("extractCourseInfoFromExamMetaData", "ExamMetaDataList size: "+examMetaDataList.size());
-		
-		for(ExamMetaData emd : examMetaDataList) {
-			String courseId = emd.getCourseId();
-			String moduleId = emd.getModuleId();
-			String examId = emd.getExamId();
-			String examName = emd.getExamName();
 
-			
-			//Get course Info
-			TextCourse course = null;
-			course = courseMetaData.get(courseId);
-			if(course == null) {
-				course = new TextCourse(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
-			}
-			TextCourseModule module= null;
-			//Get module info
-			for(TextCourseModule m : course.getModules()) {
-				if(m.getModuleId() == Long.parseLong(moduleId)) {
-					module = m;
-					break;
-				}
-			}
-			if(module == null) {
-				module = new TextCourseModule(Long.parseLong(emd.getModuleId()), emd.getGuide());
-				course.getModules().add(module);
-			}
-			
-			module.getExams().add(new Exam(courseId,moduleId, Long.parseLong(examId),examName));
-			//new Course(emd.getCourseId(),emd.getCourseName(),emd.getCourseType(),emd.getCourseOrientation());
-			//Exam exam = new Exam(Long.parseLong(examId));		
-			
-			courseMetaData.put(courseId, course);
-		}
-	}*/
-	
 	private void selectCoursesPage(){
-		
+		//refresh the course list every time we go to Course Page
+		courseList = DBTool.getCourseMetaData(getApplicationContext());
+
 		currentPage = COURSE_PAGE;
-		//ScrollView scrollView = new ScrollView(getApplicationContext());
-		//LayoutParams lptv = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
-		//lptv.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
+		 
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
 		
-		for(Course course : courseList) {
-			courseNameToCourseMap.put( course.getCourseName(), course);
-		}/*
-		for(Map.Entry<String, TextCourse> entry : courseMetaData.entrySet()) {
-			final String courseId = entry.getKey();
-			final TextCourse course = entry.getValue();
-			
-			courseNameToIdMap.put( course.getCourseName(), courseId);
-		}*/
+		
 		
 		final ListView listView = new ListView(getApplicationContext());
-		Log.d("aa","courseNames: "+courseNameToCourseMap.keySet());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
 		ArrayAdapter<Course> adapter = new CourseSelectionArrayAdapter(getApplicationContext(),
@@ -203,16 +166,15 @@ public class ModeSelectionActivity extends Activity {
 	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	            // ListView Clicked item index
                 int itemPosition = position;
-		                   
-		                   // ListView Clicked item value
-		        Course  course    = (Course) listView.getItemAtPosition(position);
-		        currentCourseId = course.getCourseId();
-		                    // Show Alert 
-		        Toast.makeText(getApplicationContext(),"Position :"+itemPosition+"  ListItem : " +course.getCourseName() , Toast.LENGTH_LONG)
+		        // ListView Clicked item value
+		        Course  courseMeta    = (Course) listView.getItemAtPosition(position);
+		        currentCourseId = courseMeta.getCourseId();
+		        Toast.makeText(getApplicationContext(),"Position :"+itemPosition+"  ListItem : " +courseMeta.getCourseName() , Toast.LENGTH_LONG)
 		             .show();
-		                   // = courseList.get(currentCourseId);
-		        long courseType = course.getCourseType();
-		        if(courseType==1) {
+		        
+		        long courseType = courseMeta.getCourseType();
+		        
+		        if(courseType==Constants.TEXT_COURSE_TYPE) {
 		        /*   TextCourse textCourse = DBTool;//(TextCourse) course;
 			        if(course.getModules().size()>1) {
 				            		selectCourseModulePage(course);
@@ -221,6 +183,14 @@ public class ModeSelectionActivity extends Activity {
 				            		currentModuleId=""+course.getModules().get(0).getModuleId();
 				            		selectExamsPage(course,course.getModules().get(0));
 				               }*/
+		         } else if(courseType==Constants.FINAL_EXAM_TYPE) {
+		        	 
+		         } else if(courseType==Constants.FLASH_CARD_COURSE_TYPE) {
+		        	 currentCourse = CourseUtil.initilizeFlashCardCourse(courseMeta, getApplicationContext());
+		        	 selectFlashCardBucketPage( (FlashCardCourse) currentCourse );
+		         } else if(courseType==Constants.VIDEO_COURSE_TYPE) { // Video
+		        	 currentCourse = CourseUtil.initilizeVideoCourse(courseMeta, getApplicationContext());
+		        	 selectVideoModulePage( (VideoCourse) currentCourse );
 		         }
 	                   
 	        }
@@ -256,6 +226,95 @@ public class ModeSelectionActivity extends Activity {
             }
         });
 	}
+	private void selectFlashCardBucketPage( final FlashCardCourse course ) {
+		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(course.getCourseName());
+		
+		currentPage = FLASH_CARD_BUCKET_PAGE;
+		
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+			
+		final ListView listView = new ListView(getApplicationContext());
+		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
+		listView.setLayoutParams(lpbt);
+		ArrayAdapter<FlashCardBucket> adapter = new FlashCardBucketArrayAdapter(getApplicationContext(),
+	        R.layout.course_list_item, course.getBucket());    
+	    // Assign adapter to ListView
+	    listView.setAdapter(adapter); 
+	            
+	    // ListView Item Click Listener
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            // ListView Clicked item index
+                int itemPosition = position;
+		        // ListView Clicked item value
+                FlashCardBucket  bucket    = (FlashCardBucket) listView.getItemAtPosition(position);
+		        currentBucketId = bucket.getBucketId();
+		        
+		        beginFlashCardBucket( view, bucket ); 
+	                  
+	        }
+	    }); 
+	            
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
+        setContentView(listView);
+        
+        addSignInButton();
+        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
+        pageText.setText("Video Course Module:");
+	}
+	private void selectVideoModulePage(final VideoCourse course) {
+		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(course.getCourseName());
+		
+		currentPage = VIDEO_MODULE_PAGE;
+		
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+		
+		
+		
+		final ListView listView = new ListView(getApplicationContext());
+		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
+		listView.setLayoutParams(lpbt);
+		ArrayAdapter<VideoModule> adapter = new VideoModuleArrayAdapter(getApplicationContext(),
+	        R.layout.course_list_item, course.getVideoModules());    
+	    // Assign adapter to ListView
+	    listView.setAdapter(adapter); 
+	            
+	    // ListView Item Click Listener
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            // ListView Clicked item index
+                int itemPosition = position;
+		        // ListView Clicked item value
+                VideoModule  videoModule    = (VideoModule) listView.getItemAtPosition(position);
+		        currentModuleSequenceId = videoModule.getModuleSequenceId();
+		        
+		        beginVideoModule( view, videoModule ); 
+	                  
+	        }
+	    }); 
+	            
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
+        setContentView(listView);
+        
+        addSignInButton();
+        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
+        pageText.setText("Video Course Module:");
+	}
+	
+	
+	
 	private void selectCourseModulePage(final TextCourse course) {
 		Log.d("CourseInfo",course.getCourseId()+" "+course.getCourseName()+" "+
 					course.getCourseType() );//+"  number of modules:"+course.getModules().size());
@@ -263,7 +322,7 @@ public class ModeSelectionActivity extends Activity {
 		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
 		pageName.setText(course.getCourseName());
 		
-		currentPage = MODULE_PAGE;
+		currentPage = TEXT_MODULE_PAGE;
 
 		List<TextCourseModule> moduleList = course.getModules();
 		
@@ -297,7 +356,7 @@ public class ModeSelectionActivity extends Activity {
 			                   
 			                   // ListView Clicked item value
 			                   String  itemValue    = (String) listView.getItemAtPosition(position);
-			                   currentModuleId = currentModuleNameToIdMap.get(itemValue).toString();
+			                   currentTextModuleId = currentModuleNameToIdMap.get(itemValue).toString();
 			                    // Show Alert 
 			                   Toast.makeText(getApplicationContext(),
 			                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
@@ -305,7 +364,7 @@ public class ModeSelectionActivity extends Activity {
 			                   TextCourse course = courseMetaData.get(currentCourseId);
 			                   TextCourseModule currentModule=null;
 			                   for(TextCourseModule module : course.getModules()) {
-			                	   if(module.getModuleId() == Long.parseLong(currentModuleId)) {
+			                	   if(module.getModuleId() == Long.parseLong(currentTextModuleId)) {
 			                		   currentModule = module;
 			                		   break;
 			                	   }
@@ -333,7 +392,7 @@ public class ModeSelectionActivity extends Activity {
 	//TODO: Need to have course information in courseModule
 	private void selectExamsPage(final TextCourse course, TextCourseModule courseModule) {
 		
-		currentPage = EXAM_PAGE; 
+		currentPage = TEXT_EXAM_PAGE; 
 		
 		//ScrollView scrollView = new ScrollView(getApplicationContext());
 		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
@@ -383,7 +442,7 @@ public class ModeSelectionActivity extends Activity {
 		                   // ListView Clicked item value
 		                   String  itemValue    = (String) listView.getItemAtPosition(position);
 		                   Exam currentExam = examNameToExamMap.get(itemValue);
-		                   currentExamId = ""+currentExam.getExamId();
+		                   currentTextExamId = ""+currentExam.getExamId();
 		                    // Show Alert 
 		                   Toast.makeText(getApplicationContext(),
 		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
@@ -465,8 +524,8 @@ public class ModeSelectionActivity extends Activity {
         	intent = new Intent(this, PracticeModeActivity.class);
     	}
         intent.putExtra("courseId", currentCourseId);
-        intent.putExtra("moduleId", currentModuleId);
-        intent.putExtra("examId", currentExamId);
+        intent.putExtra("moduleId", currentTextModuleId);
+        intent.putExtra("examId", currentTextExamId);
         startActivity(intent);
     }
     public void beginPractice(View view, String courseId, String courseModuleId, String examId) {
@@ -474,6 +533,25 @@ public class ModeSelectionActivity extends Activity {
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+    public void  beginFlashCardBucket(View view, FlashCardBucket bucket ){
+    	Intent intent ;
+        intent = new Intent(this, MainActivity.class);
+    	
+        intent.putExtra(Constants.FLASH_CARD_BUCKET_NAME, bucket);
+        intent.putExtra(Constants.COURSE_ID_NAME, currentCourseId);
+
+        
+        startActivity(intent);
+    }
+    public void beginVideoModule(View view, VideoModule module) {
+    	Intent intent ;
+        intent = new Intent(this, VideoPlayerActivity.class);
+    	
+        intent.putExtra(Constants.VIDEO_MODULE_NAME, module);
+        intent.putExtra(Constants.COURSE_ID_NAME, currentCourseId);
+        
         startActivity(intent);
     }
     /*
