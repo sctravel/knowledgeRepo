@@ -2,6 +2,8 @@ package com.apps.knowledgeRepo;
 
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
@@ -10,6 +12,8 @@ import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -46,6 +50,7 @@ public class Fragment1 extends Fragment{
 	     
 		   Button button = (Button)fragment1.findViewById(R.id.button1);
 		   Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
+		   Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
 		   
 		   next = currCardNum + 1;
 		   prev = currCardNum - 1;
@@ -70,8 +75,39 @@ public class Fragment1 extends Fragment{
 					}	
 				}
 	         });
+	       
+	       final Handler handler = new Handler();
 
-		   
+	       final Timer timer = new Timer(true);
+	      
+	       buttonAuto.setOnClickListener(new View.OnClickListener(){
+	           
+				@Override
+				public void onClick(View v) {
+					  TimerTask task = new TimerTask(){  
+				           public void run() {  
+				            
+				        	   WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+								Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+								
+								tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+								 View view = (View)tv2.getView();
+								 WebView tv =  (WebView)view.findViewById(R.id.test2);
+									tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
+				        	   next = next +1;
+				        	   prev = next -1;
+				        	   
+				        }  
+				     };  
+				     
+				     timer.schedule(task,1000, 1000); 
+					
+				}
+				
+	       
+	       }); 
+	       
+	     
 		   
 	       button.setOnClickListener(new View.OnClickListener(){
           
