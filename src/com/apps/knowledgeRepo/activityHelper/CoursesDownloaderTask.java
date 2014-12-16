@@ -158,7 +158,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        		   
 				        		   String examContent = exam.toJSONString();
 				        		   
+				        		   Log.d("loop", "parse course Type 1 (examCourse) begin stroe to DB");
 				        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
+				        		   Log.d("loop", "parse course Type 1 (examCourse) end stroe to DB");
 				        	   }
 			        	   }
 			           }
@@ -299,7 +301,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		SQLiteDatabase db = DBTool.getDB(context);
 		DBTool.insertExam(context, db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
-		Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
+		Log.d("storeToDB InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
 		
 		return; 
 	
@@ -310,6 +312,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		SQLiteDatabase db = DBTool.getDB(context);
 		// storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
 		DBTool.insertVideo(context, db,sequenceModuleId,sequence,URL, courseId );
+		Log.d("storeVideoToDB InDB", "COuseId---"+courseId+ "sequenceModuleId" + sequenceModuleId +   "URL: "+URL);
 	  
 	  }
 	
@@ -317,6 +320,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		SQLiteDatabase db = DBTool.getDB(context);
 		
 		DBTool.insertVideoCourse(context, db, courseId, courseName, courseOrientation);
+		
+		Log.d("insertVideoCourse InDB", "COuseId---"+courseId+ "CourseName:"+courseName +"courseOrientation" + courseOrientation );
 		
 	}
 	
