@@ -31,7 +31,8 @@ public class Fragment1 extends Fragment{
 	int currCardNum = 0;
 	int next =  0;
 	int prev = 0;
-	
+	TimerTask task;
+    Timer timer;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		
@@ -51,6 +52,7 @@ public class Fragment1 extends Fragment{
 		   Button button = (Button)fragment1.findViewById(R.id.button1);
 		   Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
 		   Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
+		   Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
 		   
 		   next = currCardNum + 1;
 		   prev = currCardNum - 1;
@@ -76,37 +78,72 @@ public class Fragment1 extends Fragment{
 				}
 	         });
 	       
-	       final Handler handler = new Handler();
+	     
 
-	       final Timer timer = new Timer(true);
+	     
 	      
+	       final Handler handler = new Handler() { 
+	            public void handleMessage(Message msg) { 
+	            	 WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+						Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+						
+						tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+						 View view = (View)tv2.getView();
+						 WebView tv =  (WebView)view.findViewById(R.id.test2);
+							tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
+		        	   next = next +1;
+		        	   prev = next -1;
+	                super.handleMessage(msg); 
+	            } 
+	        }; 
+	       
 	       buttonAuto.setOnClickListener(new View.OnClickListener(){
 	           
 				@Override
 				public void onClick(View v) {
-					  TimerTask task = new TimerTask(){  
+					if(timer == null) {
+						
+						timer = new Timer(true);
+					}
+					if(task == null ){
+					   task = new TimerTask(){  
 				           public void run() {  
-				            
-				        	   WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-								Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
-								
-								tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
-								 View view = (View)tv2.getView();
-								 WebView tv =  (WebView)view.findViewById(R.id.test2);
-									tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-				        	   next = next +1;
-				        	   prev = next -1;
-				        	   
+				        	   Message m = new Message(); 
+			                    handler.sendMessage(m); 
+
 				        }  
+					       
 				     };  
 				     
 				     timer.schedule(task,1000, 1000); 
 					
-				}
+				}}
 				
 	       
 	       }); 
 	       
+	       buttonStop.setOnClickListener(new View.OnClickListener(){
+	           
+				@Override
+				public void onClick(View v) {
+			   
+					if(task!=null){
+				    	 
+				    	 task.cancel();
+				     }
+					
+					if(timer!=null){
+			    	 
+			    	 timer.cancel();
+			    	 
+			     }
+			      task = null;
+			      timer = null;
+			     
+					
+				}
+
+	       }); 
 	     
 		   
 	       button.setOnClickListener(new View.OnClickListener(){
