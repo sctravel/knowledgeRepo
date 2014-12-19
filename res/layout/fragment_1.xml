@@ -5,11 +5,24 @@
     android:orientation="vertical"
     android:background="@drawable/background" 
    >
-   <RelativeLayout 
+
+   <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="1"
         android:orientation="horizontal" >
+
+     <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:layout_gravity="right"
+        android:background="@drawable/icon_next"
+        android:text="" />
+
+
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
@@ -19,16 +32,29 @@
       	android:layout_gravity="left"
         android:background="@drawable/icon_prev"
         android:text="" />
-    <Button
-        android:id="@+id/button1"
+    
+     <Button
+        android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:gravity="right"
-        android:layout_gravity="right"
-        android:background="@drawable/icon_next"
-        android:text="" />
-   </RelativeLayout>
+        android:layout_toLeftOf="@id/button1"
+        android:text="Stop" />
+
+     <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/button2"
+        android:text="AutoPlay" />
+    
+    
+    
+    </RelativeLayout>
+    
+    
+    
+   
+   
     <WebView 
        android:id="@+id/test1"
        android:layout_width="wrap_content"
