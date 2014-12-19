@@ -118,8 +118,7 @@ public class ModeSelectionActivity extends Activity {
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-   		setContentView(R.layout.mode_selection);
+   		//setContentView(R.layout.mode_selection);
 			
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);

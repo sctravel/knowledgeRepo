@@ -30,10 +30,10 @@ import android.widget.ViewAnimator;
 
 public class MainActivity extends FragmentActivity {
 
-       FlashCardCourse flashcard_course;
-       FlashCardBucket  bucket;
-       String courseId ;
-       int currCardNum = 0;
+    FlashCardCourse flashcard_course;
+    FlashCardBucket  bucket;
+    String courseId ;
+    int currCardNum = 0;
        
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,7 +46,7 @@ public class MainActivity extends FragmentActivity {
          }
          if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
      	
-       
+        
         
 	     
 		setContentView(R.layout.activity_main);
@@ -57,11 +57,11 @@ public class MainActivity extends FragmentActivity {
        	WebView test1 = (WebView)this.findViewById(R.id.fragment1).findViewById(R.id.test1);
     	WebView test2 = (WebView)this.findViewById(R.id.fragment2).findViewById(R.id.test2);
 		  
-	  Button button = (Button)test1.findViewById(R.id.button1);
-	  Button buttonPrev = (Button)test1.findViewById(R.id.button2);
+	    Button button = (Button)test1.findViewById(R.id.button1);
+	    Button buttonPrev = (Button)test1.findViewById(R.id.button2);
 	  
-	 test1.loadData(bucket.getCardList().get(currCardNum).getFrontText(), "text/html","utf-8");
-	 test2.loadData(bucket.getCardList().get(currCardNum).getBackText(), "text/html","utf-8");
+	    test1.loadData(bucket.getCardList().get(currCardNum).getFrontText(), "text/html","utf-8");
+	    test2.loadData(bucket.getCardList().get(currCardNum).getBackText(), "text/html","utf-8");
 	 
 	
 /*
