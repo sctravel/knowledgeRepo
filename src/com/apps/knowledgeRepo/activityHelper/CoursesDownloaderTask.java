@@ -16,11 +16,13 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONTokener;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,6 +37,8 @@ import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.TableNames;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -48,12 +52,20 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	private final String serviceEndPoint= "https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";
 	
+	
+	private final String serviceEndPointMetaData="https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";//mock
+	
+	private final String serviceEndPointCourseData="https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014&courseid=";//mock
+	
 	private final String localFileName=  "/CourseDB.json";
+	
+	
+	private final List<String> localFileNames = new ArrayList<String>();
 	
 	public CoursesDownloaderTask(ProgressBar progressbar){
 		
 		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
-		this.progressbar = progressbar; 
+		this.progressbar = progressbar;
 	}
 	
 	@Override
@@ -88,17 +100,23 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				Log.d("JSON parser", "start parsing JSON, file Name: "+ fileName);
 				Object obj = parser.parse(new FileReader(fileName));
 			
-			    JSONObject jsonObject = (JSONObject) obj;  
+			    //JSONObject jsonObject = (JSONObject) obj; 
+				JSONObject course = (JSONObject) obj; 
+				
+				
+			    /*
 			    Log.d("preloop", "prelooping");
 			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
-			    @SuppressWarnings("unchecked")
+		
 				Iterator<JSONObject> iterator = listOfCourses.iterator();
-			    SQLiteDatabase db = DBTool.getDB(context);
-			    while (iterator.hasNext()) {
+		
+			    while (iterator.hasNext()) {*/
+				
+				
 			    	Log.d("loop", "looping");
 			      // Course courseObj= new Course();
-			    	
-				   JSONObject course= (JSONObject)iterator.next();
+				    SQLiteDatabase db = DBTool.getDB(context);
+				   //JSONObject course= (JSONObject)iterator.next();
 		           String courseId = (String) course.get("courseid");
 		           String courseName = (String) course.get("courseName");
 		           long courseType = (Long) course.get("courseType");
@@ -139,7 +157,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        		   
 				        		   String examContent = exam.toJSONString();
 				        		   
+				        		   Log.d("loop", "parse course Type 1 (examCourse) begin stroe to DB");
 				        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
+				        		   Log.d("loop", "parse course Type 1 (examCourse) end stroe to DB");
 				        	   }
 			        	   }
 			           }
@@ -251,13 +271,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			           
 		           }
 
-		        	            
-		           }
-
-
-		        	   			           
-		           
-
+		        	           
 			    db.close();	           
 		          // storeToDB(courseId, courseName, courseContent, context);	           	 	
 			}
@@ -271,7 +285,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			return true; 
 	}
 	
-	
+	    
 	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
 		
 		SQLiteDatabase db = DBTool.getDB(context);
@@ -286,7 +300,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		SQLiteDatabase db = DBTool.getDB(context);
 		DBTool.insertExam(context, db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
-		Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
+		Log.d("storeToDB InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
 		
 		return; 
 	
@@ -297,6 +311,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		SQLiteDatabase db = DBTool.getDB(context);
 		// storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
 		DBTool.insertVideo(context, db,sequenceModuleId,sequence,URL, courseId );
+		Log.d("storeVideoToDB InDB", "COuseId---"+courseId+ "sequenceModuleId" + sequenceModuleId +   "URL: "+URL);
 	  
 	  }
 	
@@ -304,6 +319,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		SQLiteDatabase db = DBTool.getDB(context);
 		
 		DBTool.insertVideoCourse(context, db, courseId, courseName, courseOrientation);
+		
+		Log.d("insertVideoCourse InDB", "COuseId---"+courseId+ "CourseName:"+courseName +"courseOrientation" + courseOrientation );
 		
 	}
 	
@@ -329,65 +346,122 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		DBTool.insertBucketCard( db, cardId, bucketId); 
 	 }
 	
+
+
+	
 	@Override
 	public Boolean doInBackground(Context... context) {
 		// TODO Auto-generated method stub
 		//return DownloadUsingRestfulAPI(urls[0]);	
 		Context con = context[0];
 		
-		//if(DownloadUsingRestfulAPI(con)) 
+		//if(DownloadUsingRestfulAPI(con)) 		
+		//first call the get meta file list:
+		
+		
+		HttpClient clientMeta = new DefaultHttpClient();
+		
+		HttpGet requestMeta = new HttpGet(serviceEndPointMetaData);
+		
+		try {
+			HttpResponse responseMeta = clientMeta.execute(requestMeta);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(responseMeta.getEntity().getContent(), "UTF-8"));
+			String jsonStr = "";
+			String str="";
+			while((str=reader.readLine())!=null){
+				jsonStr+=str;	
+			}
 			
-		String filePath = context[0].getFilesDir().getPath().toString()  + localFileName;
+			Log.d("DownloadUsingRestfulAPI", "getting meta data jsonStr "+ jsonStr);
+			
+		    JSONParser parser = new JSONParser();
+			Object obj = parser.parse(jsonStr);
+			JSONObject jsonobj = (JSONObject) obj; 
+			
+		    JSONArray courses = (JSONArray)(jsonobj.get("Courses"));
+		    
+		    Iterator<JSONObject> iterator = courses.iterator();
+		    
+	 
+		  
+		    while (iterator.hasNext()) {
+		     	
+		    	   JSONObject course= (JSONObject)iterator.next();
+		           String courseId = (String) course.get("courseid");
+		           
+		           Log.d("DownloadUsingRestfulAPI", "getting meta data courseId name: "+ courseId);
+		      
+		           localFileNames.add(courseId); 
+		    }
+				
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		try {			
 			
-		  Log.d("DownloadUsingRestfulAPI", "start downloading from restful service: path: "+ filePath);
-	      BufferedWriter  out = new BufferedWriter(new FileWriter(filePath));
-		
-		  HttpClient client = new DefaultHttpClient();
-		
-		  HttpGet request = new HttpGet(serviceEndPoint);
-		
-		  HttpResponse response = client.execute(request);
-		
-		  BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
-		
-		  String line = "";
-		  
-		  int row=0;
-		  
-		  /*
-		  URL url = new URL("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
-		  HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
-          connection.connect();
-          int fileLength = connection.getContentLength();  
-          //long total = 0;
-          Log.d("DownloadUsingRestfulAPI", "fileLength: " + fileLength);*/
-          
-          
-		  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
-		  while ((line = rd.readLine()) != null) {	  
-			  out.write(line);	  
-			  // total+=line.length(); 		  			  
-			  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
-			  //int percentage = (int) ((total*100)/fileLength); 
-			  if(row<98000){
-				  if(row%1000==0)
-					  {
-					  publishProgress(row/1000);
-					  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10); 
-					  }
-				  		 
+			
+		 for(String localName: localFileNames){
+			
+			  String filePath = context[0].getFilesDir().getPath().toString()  + localName;
+			  
+			  Log.d("DownloadUsingRestfulAPI", "local file names: "+ filePath);
+			  
+			  Log.d("DownloadUsingRestfulAPI", "start downloading from restful service: path: "+ filePath);
+		      BufferedWriter  out = new BufferedWriter(new FileWriter(filePath));
+			
+		      HttpClient client = new DefaultHttpClient();
+			
+			  //HttpGet request = new HttpGet(serviceEndPoint);
+		      HttpGet request = new HttpGet(serviceEndPointCourseData+localName);
+			
+			  HttpResponse response = client.execute(request);
+			
+			  BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+			
+			  String line = "";
+			  
+			  int row=0;
+			  
+			  /*
+			  URL url = new URL("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
+			  HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
+	          connection.connect();
+	          int fileLength = connection.getContentLength();  
+	          //long total = 0;
+	          Log.d("DownloadUsingRestfulAPI", "fileLength: " + fileLength);*/
+	          
+	          
+			  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
+			  while ((line = rd.readLine()) != null) {	  
+				  out.write(line);	  
+				  // total+=line.length(); 		  			  
+				  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
+				  //int percentage = (int) ((total*100)/fileLength); 
+				  if(row<98000){
+					  if(row%1000==0)
+						  {
+						  publishProgress(row/1000);
+						  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10); 
+						  }
+					  		 
+				  }
+				  else
+					  publishProgress(98);
+				 			 			  
+				  row++;			
 			  }
-			  else
-				  publishProgress(98);
-			 			 			  
-			  row++;			
-		  }
-		  		  
-		  publishProgress(100);
-		  
-		  Log.d("DownloadUsingRestfulAPI", "finish writing to the file from buffer, total rows: " + row);
-		  out.close();
+			  		  
+			  publishProgress(100);
+			  
+			  Log.d("DownloadUsingRestfulAPI", localName+" finish writing to the file from buffer, total rows: " + row);
+			  out.close();
+			}
 		}
 		catch(Exception ex){
 			
@@ -398,11 +472,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		  
 		Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
 
-		
-		if(parseJSON(con.getFilesDir().getPath().toString() + "/CourseDB.json",con) ) //parse JSON	
-			return true; 
-		else			
-		    return false;	
+		 for(String localName: localFileNames){	
+			 String filePath = context[0].getFilesDir().getPath().toString()  + localName;
+			 if(parseJSON(filePath,con) ) //parse JSON	
+				  return false; 
+		 }	
+		 
+		 return true;
 	
 	}
 	
