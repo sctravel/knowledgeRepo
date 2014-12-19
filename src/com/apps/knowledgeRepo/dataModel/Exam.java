@@ -16,7 +16,7 @@ public class Exam implements Serializable{
 	String name;
 	long passing;
 	long timeLimit; 
-	List<Question> Questions; 
+	List<ExamQuestion> Questions; 
 	
 	public Exam() {}
 	public Exam(String courseId, String moduleId, long examId, String name) {
@@ -86,10 +86,10 @@ public class Exam implements Serializable{
 	public void setTimeLimit(long timeLimit) {
 		this.timeLimit = timeLimit;
 	}
-	public List<Question> getQuestions() {
+	public List<ExamQuestion> getQuestions() {
 		return Questions;
 	}
-	public void setQuestions(List<Question> questions) {
+	public void setQuestions(List<ExamQuestion> questions) {
 		Questions = questions;
 	}
 	

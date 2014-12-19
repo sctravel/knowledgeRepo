@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.utils.CourseUtil;
@@ -231,10 +231,10 @@ public final static char CHOICE_A= 'A';
     
     private void setAnswerText( int  questionNumber) {
     	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
-    	List<Answer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
+    	List<ExamAnswer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
     	String answerNum=" ";
     	int answerNo=0;
-    	for(Answer answer : answerList ) {
+    	for(ExamAnswer answer : answerList ) {
     		if(answer.getScore() ==1) {
     			answerNum = ""+(char)(answer.getAnswerNumber()+'A'-1);
     			answerNo = (int) answer.getAnswerNumber();

@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
-import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.dataModel.ExamQuestion;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
@@ -721,12 +721,12 @@ public class ExamModeActivity extends Activity{
    //TODO: save the grade result(user answer), and upload to web server.
    private boolean grade() {
 	   StringBuilder sb = new StringBuilder();
-	   List<Question> questionList = exam.getQuestions() ;
+	   List<ExamQuestion> questionList = exam.getQuestions() ;
 	   int count=0;
 	   boolean isPassed = false;
 	   
 	   List<Integer> correctList = new ArrayList<Integer>();
-	   for(Question question : questionList) {
+	   for(ExamQuestion question : questionList) {
 		  // if(answer.getAnswer().equalsIgnoreCase(scoreMap.get(count))) {
 		   String as = scoreMap.get(count);
 		   if(as != null && !as.isEmpty()) {

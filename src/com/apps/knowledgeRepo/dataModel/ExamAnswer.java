@@ -2,7 +2,7 @@ package com.apps.knowledgeRepo.dataModel;
 
 import java.io.Serializable;
 
-public class Answer implements Serializable {
+public class ExamAnswer implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

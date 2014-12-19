@@ -13,13 +13,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.apps.knowledgeRepo.dataModel.Answer;
+import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
-import com.apps.knowledgeRepo.dataModel.Question;
+import com.apps.knowledgeRepo.dataModel.ExamQuestion;
 import com.apps.knowledgeRepo.db.DBTool;
 
 public class CourseUtil {
@@ -84,11 +84,11 @@ public class CourseUtil {
 		   JSONArray questions = (JSONArray)exam.get("Questions");	            		   
 		   Iterator<JSONObject> questionIterator = questions.iterator();
 		   
-		   List<Question> quesstionObjs = new ArrayList<Question>(); 
+		   List<ExamQuestion> quesstionObjs = new ArrayList<ExamQuestion>(); 
    	   
 	   	   while (questionIterator.hasNext()) {
 	   		   
-	   		   Question questionObj = new Question();
+	   		   ExamQuestion questionObj = new ExamQuestion();
 	   		   
 	   		   JSONObject question= (JSONObject)questionIterator.next();		            		   
 	   		   Long questionNumber= (Long) question.get("questionNumber");		            		   
@@ -103,13 +103,13 @@ public class CourseUtil {
 	   		   questionObj.setQuestionNumber(questionNumber);
 	   		   questionObj.setExplanation(explanation);
 	   		   		            		   
-	   		   List<Answer> answerObjs = new ArrayList<Answer>(); 
+	   		   List<ExamAnswer> answerObjs = new ArrayList<ExamAnswer>(); 
 	   		   
 	   		   Iterator<JSONObject> answersIterator = answers.iterator();
 	       	   
 	       	   while (answersIterator.hasNext()) {
 	       		   
-	       		   Answer answerObj = new Answer();
+	       		   ExamAnswer answerObj = new ExamAnswer();
 	       		   
 	       		   JSONObject answer= (JSONObject)answersIterator.next();         		   
 	       		   Long answerNumber= (Long) answer.get("answerNumber");           		   

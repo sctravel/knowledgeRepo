@@ -112,7 +112,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 	}
 	public void playVideo(int currentSequenceNumber) {
 		TextView title = (TextView) findViewById(R.id.videoTitle);
-		title.setText( (currentSequenceNumber+1) +"/"+ module.getLessons().size() + "in module: "+module.getTitle()); 
+		title.setText( (currentSequenceNumber+1) +"/"+ module.getLessons().size() + " in module: "+module.getTitle()); 
 		
 		String vidAddress = module.getLessons().get(currentSequenceNumber).getURL(); //"http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
    		Uri vidUri = Uri.parse(vidAddress);

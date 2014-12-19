@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:orientation="vertical"
-    android:background="#d3d3d3"
+    
     android:padding="3dip" >
     
     <RelativeLayout
+        android:background="#d3d3d3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 	    <ImageView
 	        android:id="@+id/courseListHeaderIcon"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="match_parent"
 	        android:layout_alignParentLeft="true"
 	        android:layout_alignParentTop="true"
 	        android:gravity="center_horizontal"
@@ -23,20 +24,20 @@
 	    <TextView
 	        android:id="@+id/courseListHeaderTextLine"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="match_parent"
 	        android:layout_toRightOf="@id/courseListHeaderIcon"
-	        android:gravity="center_horizontal"
+	        android:gravity="bottom"
 	        android:textAlignment="gravity"
-	        android:layout_gravity="center_horizontal|center_vertical"
+	        android:layout_gravity="bottom"
 	        android:layout_centerHorizontal="true"
-	        android:text="Welcome to STC"
+	        android:text="Welcome to STC \n Xi TU"
 	        android:textSize="20sp" 
 	        android:textColor="#000" />
         
          <Button
 	        android:id="@+id/courseListSignInNotice"
-	        android:layout_width="36dp"
-	        android:layout_height="36dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_toRightOf="@id/courseListHeaderTextLine"
 	        android:layout_alignParentRight="true"
 	        android:gravity="center_horizontal"
@@ -49,22 +50,15 @@
    
     <TextView
 	        android:id="@+id/courseListPageName"
-	        android:layout_width="wrap_content"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="left"
 	        android:textAlignment="gravity"
-	        android:layout_gravity="center_horizontal|center_vertical"
+	        android:layout_gravity="left"
 	        android:layout_centerHorizontal="true"
+	        android:background="#fff"
 	        android:text=""
 	        android:textSize="25sp" 
 	        android:textColor="#000" />
     
-    
-         <Button
-            android:id="@+id/Flashcard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-    	    android:layout_gravity="center_vertical|center_horizontal"
-            android:gravity="bottom"
-            android:text="Flashcard" />
 </LinearLayout>
