@@ -166,11 +166,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		           else if(courseType == 3){
 		        	   
 		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
-		        	   
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_CARDS);
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS);
-		        	   cleanDB(context, db, TableNames.COURSES_METADATA);
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING);
+		        	   		        	   
 		        	   //storeFlashcourseToDB(courseId,courseName,courseOrientation, db);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
@@ -315,10 +311,6 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	  
 	  }
 	
-	public void cleanDB(Context context, SQLiteDatabase db,  String tableName){
-		
-		DBTool.cleanDB(context, db, tableName);
-	}
 	
 	public void storeCardToDB(String cardId, String cardType,String frontText,String endText, SQLiteDatabase db){
 		DBTool.insertCard(db, cardId, cardType, frontText, endText)   ;		
@@ -349,6 +341,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		HttpGet requestMeta = new HttpGet(serviceEndPointMetaData);
 		
+		
 		try {
 			HttpResponse responseMeta = clientMeta.execute(requestMeta);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(responseMeta.getEntity().getContent(), "UTF-8"));
@@ -370,6 +363,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		    
 		    SQLiteDatabase db = DBTool.getDB(context);
 		  
+		    //TODO: Clean all the DB first, may need to remove after we enable individual download
+		    cleanAllDBs(db);
+		    
 		    while (iterator.hasNext()) {
 		     	
 		    	JSONObject course= (JSONObject)iterator.next();
@@ -464,6 +460,18 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		 
 		 return true;
 	
+	}
+	
+	public void cleanAllDBs(SQLiteDatabase db) {
+		DBTool.cleanDB( db, TableNames.FLASH_CARD_CARDS );
+	    DBTool.cleanDB( db, TableNames.FLASH_CARD_BUCKETS );
+	    DBTool.cleanDB( db, TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING );
+	    DBTool.cleanDB( db, TableNames.COURSES_METADATA );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM );
+	    DBTool.cleanDB( db, TableNames.VIDEO_COURSES_MODULES );
+	    DBTool.cleanDB( db, TableNames.VIDEO_SEQUENCE );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM_ANSWER );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM_GRADE );
 	}
 	
 	public static boolean DownloadUsingRestfulAPI(Context context) {

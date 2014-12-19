@@ -158,14 +158,11 @@ public class DBTool {
     	Log.d("DB operation", "getting status from DB! Number of answers-"+examStatus.getUserAnswerMap().size()+" and usedTime:"+usedTimeMax);
     	return examStatus;
      }
-     public static void cleanDB(Context context,SQLiteDatabase db, String table){
-    	 
-    	 if( !db.isOpen()){
-          	db=DBTool.getDB(context);	
-         }
-    	 
+     public static void cleanDB(SQLiteDatabase db, String table){
+    	  
     	 String delete = "delete from " + table;
     	 db.execSQL(delete);
+    	 
      }
      
     public static void recordStatus(Context context,SQLiteDatabase db, String course_id, String module_id,String exam_id, String att, String qnum, String ans, String time){
