@@ -50,6 +50,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 
 	private final ProgressBar progressbar;
 	
+	NotificationManager nm;
+	
+	Notification notify;
+	
 	private final String serviceEndPoint= "https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";
 	
 	
@@ -62,10 +66,12 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	private final List<String> localFileNames = new ArrayList<String>();
 	
-	public CoursesDownloaderTask(ProgressBar progressbar){
+	public CoursesDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify){
 		
 		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
 		this.progressbar = progressbar;
+		this.nm=nm;
+		this.notify=notify;
 	}
 	
 	@Override
@@ -84,12 +90,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		super.onPreExecute();
 	}
 	
-	/*
 	@Override
-	protected void onPostExecute() {
+	protected void onPostExecute(Boolean result) {
 		progressbar.setVisibility(View.INVISIBLE);
-		//textView.setText(result);
-	}*/
+		
+		nm.notify(0, notify);
+		
+	}
 	
 	public boolean parseJSON(String fileName,Context context){
 		
@@ -103,16 +110,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			    //JSONObject jsonObject = (JSONObject) obj; 
 				JSONObject course = (JSONObject) obj; 
 				
-				
-			    /*
-			    Log.d("preloop", "prelooping");
-			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
-		
-				Iterator<JSONObject> iterator = listOfCourses.iterator();
-		
-			    while (iterator.hasNext()) {*/
-				
-				
+							
 			    	Log.d("loop", "looping");
 			      // Course courseObj= new Course();
 				    SQLiteDatabase db = DBTool.getDB(context);

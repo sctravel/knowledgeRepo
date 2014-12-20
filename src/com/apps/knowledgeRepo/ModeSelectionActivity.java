@@ -1,6 +1,10 @@
 package com.apps.knowledgeRepo;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -66,6 +70,7 @@ public class ModeSelectionActivity extends Activity {
 	private String currentVideoModuleId=null;
 	private String currentVideoLessonId=null;
 	private int currentModuleSequenceId = 0;
+	private  NotificationManager NM=null;
 	
 	private Course currentCourse = null;
 	private final static int LOGIN_PAGE = 0;
@@ -452,8 +457,15 @@ public class ModeSelectionActivity extends Activity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
              	// download restful feeds and serialize to DB 
+            	
+                NM= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        	  	Notification notify=new Notification(android.R.drawable. stat_notify_more,"STC downloader",System.currentTimeMillis());
+      	        PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
+      	        notify.setLatestEventInfo(getApplicationContext(),"Finish Downloading","Downloading Finished",pending);
+      	       
+      	        
             	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
-            	new CoursesDownloaderTask(mProgress).execute(getApplicationContext());
+            	new CoursesDownloaderTask(mProgress, NM,notify ).execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
 
