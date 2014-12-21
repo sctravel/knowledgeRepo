@@ -33,13 +33,14 @@ public class Fragment1 extends Fragment{
 	int prev = 0;
 	TimerTask task;
     Timer timer;
-	
+	int max ;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		
 		Bundle extras = this.getActivity().getIntent().getExtras();
 	
 		if (extras != null) {
         	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
+        	 max = bucket.getCardList().size()-1;
         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
         	 currCardNum = extras.getInt("currCardNum");
         	 
@@ -84,15 +85,27 @@ public class Fragment1 extends Fragment{
 	      
 	       final Handler handler = new Handler() { 
 	            public void handleMessage(Message msg) { 
-	            	 WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+	            	    
+	            	    WebView tv1 = (WebView)getView().findViewById(R.id.test1);
 						Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 						
+						View view = (View)tv2.getView();
+						WebView tv =  (WebView)view.findViewById(R.id.test2);
+						
+						if(next < max ){
 						tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
-						 View view = (View)tv2.getView();
-						 WebView tv =  (WebView)view.findViewById(R.id.test2);
-							tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-		        	   next = next +1;
-		        	   prev = next -1;
+						tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
+		        	
+					    next = next +1;
+		        	    prev = next -1;
+		        	    
+						} else {
+							
+							tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
+							tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
+							
+						}
+		        	   
 	                super.handleMessage(msg); 
 	            } 
 	        }; 
@@ -139,7 +152,9 @@ public class Fragment1 extends Fragment{
 			     }
 			      task = null;
 			      timer = null;
-			     
+			      
+			      next =0;
+			      prev =0;
 					
 				}
 
@@ -153,17 +168,28 @@ public class Fragment1 extends Fragment{
 					// TODO Auto-generated method stub
 					//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
 					//List<FlashCardBucket> buckets = flashcard_course.getBucket();
-					
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-					Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				    Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 					
-					tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
-					 View view = (View)tv2.getView();
-					 WebView tv =  (WebView)view.findViewById(R.id.test2);
+				    View view = (View)tv2.getView();
+				    WebView tv =  (WebView)view.findViewById(R.id.test2);
+				    
+				    if(next < max){
+
+					    tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+					   
 						tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
 						
 						prev = next -1 ;
 						next = next +1;
+					} else {
+						tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
+						   
+						tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
+						
+						prev = max -1 ;
+						next = max;
+					}
 				}
 	         });
 
