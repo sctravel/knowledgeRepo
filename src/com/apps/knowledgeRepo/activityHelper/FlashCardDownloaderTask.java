@@ -13,6 +13,8 @@ import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBTool;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -24,8 +26,8 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
 	
 	private final String localFileName=  "/FlashCardDB.json";
 
-	public FlashCardDownloaderTask(ProgressBar progressbar) {
-		super(progressbar);
+	public FlashCardDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify) {
+		super(progressbar,nm,notify);
 		
 	}
 	

@@ -50,6 +50,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 
 	private final ProgressBar progressbar;
 	
+	NotificationManager nm;
+	
+	Notification notify;
+	
 	private final String serviceEndPoint= "https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";
 	
 	
@@ -62,10 +66,12 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	private final List<String> localFileNames = new ArrayList<String>();
 	
-	public CoursesDownloaderTask(ProgressBar progressbar){
+	public CoursesDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify){
 		
 		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
 		this.progressbar = progressbar;
+		this.nm=nm;
+		this.notify=notify;
 	}
 	
 	@Override
@@ -84,12 +90,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		super.onPreExecute();
 	}
 	
-	/*
 	@Override
-	protected void onPostExecute() {
+	protected void onPostExecute(Boolean result) {
 		progressbar.setVisibility(View.INVISIBLE);
-		//textView.setText(result);
-	}*/
+		
+		nm.notify(0, notify);
+		
+	}
 	
 	public boolean parseJSON(String fileName,Context context){
 		
@@ -103,16 +110,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			    //JSONObject jsonObject = (JSONObject) obj; 
 				JSONObject course = (JSONObject) obj; 
 				
-				
-			    /*
-			    Log.d("preloop", "prelooping");
-			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
-		
-				Iterator<JSONObject> iterator = listOfCourses.iterator();
-		
-			    while (iterator.hasNext()) {*/
-				
-				
+							
 			    	Log.d("loop", "looping");
 			      // Course courseObj= new Course();
 				    SQLiteDatabase db = DBTool.getDB(context);
@@ -166,12 +164,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		           else if(courseType == 3){
 		        	   
 		        	   Log.d("loop", "parse courseType 3 (FlashCardCourse)");
-		        	   
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_CARDS);
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS);
-		        	   cleanDB(context, db, TableNames.COURSES_METADATA);
-		        	   cleanDB(context, db, TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING);
-		        	   storeFlashcourseToDB(courseId,courseName,courseOrientation, db);
+		        	   		        	   
+		        	   //storeFlashcourseToDB(courseId,courseName,courseOrientation, db);
 		        	   
 		        	   JSONArray buckets = (JSONArray)course.get("Buckets"); 
 			           Iterator<JSONObject> bucketIterator = buckets.iterator(); 
@@ -231,7 +225,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		         else if(courseType == 4){
 
 		        	   Log.d("loop", "parse courseType 4");
-		        	   storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
+		        	   //storeVideoCourseToDB(courseId,courseName,courseOrientation, context);
 
 		        	   //do we need    "Modules" layer?:[{"sequence": "title":"About The Exam",
 		        	   		        	   
@@ -315,22 +309,6 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	  
 	  }
 	
-	public void storeVideoCourseToDB(String courseId,String courseName,String courseOrientation, Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		
-		DBTool.insertVideoCourse(context, db, courseId, courseName, courseOrientation);
-		
-		Log.d("insertVideoCourse InDB", "COuseId---"+courseId+ "CourseName:"+courseName +"courseOrientation" + courseOrientation );
-		
-	}
-	
-	public void cleanDB(Context context, SQLiteDatabase db,  String tableName){
-		
-		DBTool.cleanDB(context, db, tableName);
-	}
-	public void storeFlashcourseToDB(String courseId, String courseName, String courseOrientation, SQLiteDatabase db){
-		DBTool.insertFlashcardCourse(db, courseId, courseName, courseOrientation);
-	 }
 	
 	public void storeCardToDB(String cardId, String cardType,String frontText,String endText, SQLiteDatabase db){
 		DBTool.insertCard(db, cardId, cardType, frontText, endText)   ;		
@@ -350,10 +328,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 
 	
 	@Override
-	public Boolean doInBackground(Context... context) {
-		// TODO Auto-generated method stub
-		//return DownloadUsingRestfulAPI(urls[0]);	
-		Context con = context[0];
+	public Boolean doInBackground(Context... contexts) {
+		Context context = contexts[0];
 		
 		//if(DownloadUsingRestfulAPI(con)) 		
 		//first call the get meta file list:
@@ -362,6 +338,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		HttpClient clientMeta = new DefaultHttpClient();
 		
 		HttpGet requestMeta = new HttpGet(serviceEndPointMetaData);
+		
 		
 		try {
 			HttpResponse responseMeta = clientMeta.execute(requestMeta);
@@ -382,16 +359,26 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		    
 		    Iterator<JSONObject> iterator = courses.iterator();
 		    
-	 
+		    SQLiteDatabase db = DBTool.getDB(context);
 		  
+		    //TODO: Clean all the DB first, may need to remove after we enable individual download
+		    cleanAllDBs(db);
+		    
 		    while (iterator.hasNext()) {
 		     	
-		    	   JSONObject course= (JSONObject)iterator.next();
-		           String courseId = (String) course.get("courseid");
-		           
-		           Log.d("DownloadUsingRestfulAPI", "getting meta data courseId name: "+ courseId);
-		      
-		           localFileNames.add(courseId); 
+		    	JSONObject course= (JSONObject)iterator.next();
+		        String courseId = (String) course.get("courseid");
+		        String courseName = (String) course.get("courseName");
+		        Long courseType = (Long) course.get("courseType");
+		        String courseOrientation = (String) ("courseOrientation");
+		        
+		        //Insert Course MetaData to DB
+		        Log.d("DownloadUsingRestfulAPI", "getting meta data for courseId : "+ courseId);
+		        DBTool.insertCourseMetaData(context, db, courseId, courseName, courseType, courseOrientation);
+		        localFileNames.add(courseId); 
+		    }
+		    if(db != null && db.isOpen()) {
+		    	db.close();
 		    }
 				
 		} catch (IOException e) {
@@ -406,9 +393,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		try {			
 			
 			
-		 for(String localName: localFileNames){
+		   for(String localName: localFileNames){
 			
-			  String filePath = context[0].getFilesDir().getPath().toString()  + localName;
+			  String filePath = context.getFilesDir().getPath().toString()  + localName;
 			  
 			  Log.d("DownloadUsingRestfulAPI", "local file names: "+ filePath);
 			  
@@ -427,15 +414,6 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			  String line = "";
 			  
 			  int row=0;
-			  
-			  /*
-			  URL url = new URL("https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014");
-			  HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
-	          connection.connect();
-	          int fileLength = connection.getContentLength();  
-	          //long total = 0;
-	          Log.d("DownloadUsingRestfulAPI", "fileLength: " + fileLength);*/
-	          
 	          
 			  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
 			  while ((line = rd.readLine()) != null) {	  
@@ -473,13 +451,25 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		Log.d("DownloadUsingRestfulAPI", "finished downloading from restful service");
 
 		 for(String localName: localFileNames){	
-			 String filePath = context[0].getFilesDir().getPath().toString()  + localName;
-			 if(parseJSON(filePath,con) ) //parse JSON	
+			 String filePath = context.getFilesDir().getPath().toString()  + localName;
+			 if( ! parseJSON(filePath,context) ) //parse JSON	
 				  return false; 
 		 }	
 		 
 		 return true;
 	
+	}
+	
+	public void cleanAllDBs(SQLiteDatabase db) {
+		DBTool.cleanDB( db, TableNames.FLASH_CARD_CARDS );
+	    DBTool.cleanDB( db, TableNames.FLASH_CARD_BUCKETS );
+	    DBTool.cleanDB( db, TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING );
+	    DBTool.cleanDB( db, TableNames.COURSES_METADATA );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM );
+	    DBTool.cleanDB( db, TableNames.VIDEO_COURSES_MODULES );
+	    DBTool.cleanDB( db, TableNames.VIDEO_SEQUENCE );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM_ANSWER );
+	    DBTool.cleanDB( db, TableNames.TEXT_EXAM_GRADE );
 	}
 	
 	public static boolean DownloadUsingRestfulAPI(Context context) {
