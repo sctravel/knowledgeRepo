@@ -2,38 +2,25 @@ package com.apps.knowledgeRepo.activityHelper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.json.JSONTokener;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.apps.knowledgeRepo.dataModel.ExamAnswer;
-import com.apps.knowledgeRepo.dataModel.TextCourse;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
-import com.apps.knowledgeRepo.dataModel.ExamQuestion;
-import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.TableNames;
 
@@ -49,19 +36,13 @@ import android.widget.ProgressBar;
 public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 
 	private final ProgressBar progressbar;
-	
-	NotificationManager nm;
-	
-	Notification notify;
-	
-	private final String serviceEndPoint= "https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";
-	
+	private final NotificationManager nm;
+	private final Notification notify;
 	
 	private final String serviceEndPointMetaData="https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";//mock
 	
 	private final String serviceEndPointCourseData="https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014&courseid=";//mock
 	
-	private final String localFileName=  "/CourseDB.json";
 	
 	
 	private final List<String> localFileNames = new ArrayList<String>();
@@ -96,6 +77,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		nm.notify(0, notify);
 		
+		
+		
 	}
 	
 	public boolean parseJSON(String fileName,Context context){
@@ -121,7 +104,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		           String courseOrientation = (String) course.get("courseOrientation");
 	           
 		           //course type equals to 3 indicate it's flash card course 
-		           if(courseType == 1){
+		           if(courseType == 1 || courseType == 2){
 		        	   
 		        	   Log.d("loop", "parse course Type 1 (examCourse)");
 		        	   

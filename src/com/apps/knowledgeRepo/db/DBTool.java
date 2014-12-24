@@ -178,7 +178,7 @@ public class DBTool {
     	    "'" +  ans + "'" + "," +
     	    "'" +  time +"'" +  ")" ; 
     	
-    	 String sqlQuery = "select count(*) from +" + TableNames.TEXT_EXAM_ANSWER + " where "  + 
+    	 String sqlQuery = "select count(*) from " + TableNames.TEXT_EXAM_ANSWER + " where "  + 
     	                   "course_id =? and module_id=? and exam_id=? and attempt = ? and qnum=  ?;";  
     	
     	 String sqlUpdate = "update " + TableNames.TEXT_EXAM_ANSWER + " set answer=? , time= ? where course_id=? and module_id=? and exam_id=? and attempt=? and qnum=?; " ;

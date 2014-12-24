@@ -15,10 +15,7 @@ import android.util.Log;
 
 import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.Course;
-import com.apps.knowledgeRepo.dataModel.TextCourse;
-import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
-import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.dataModel.ExamQuestion;
 import com.apps.knowledgeRepo.db.DBTool;
 
@@ -61,12 +58,12 @@ public class CourseUtil {
 	
 	public static Exam initilizeExam( String courseId, String moduleId, String examId, Context context){
 		
-		   String jsonStr= retrieveFromDB(courseId, moduleId,examId,context);		
-		   JSONParser parser = new JSONParser();
+	    String jsonStr= retrieveFromDB(courseId, moduleId,examId,context);		
+		JSONParser parser = new JSONParser();
 		
-		   Exam examObj = new Exam();
+		Exam examObj = new Exam();
 		 
-		   JSONObject exam;
+		JSONObject exam;
 		try {
 		   exam = (JSONObject) parser.parse(jsonStr);
      		       		   
@@ -82,6 +79,7 @@ public class CourseUtil {
 		   examObj.setTimeLimit(timeLimit);
 		   	            		   
 		   JSONArray questions = (JSONArray)exam.get("Questions");	            		   
+		   @SuppressWarnings("unchecked")
 		   Iterator<JSONObject> questionIterator = questions.iterator();
 		   
 		   List<ExamQuestion> quesstionObjs = new ArrayList<ExamQuestion>(); 
@@ -105,7 +103,8 @@ public class CourseUtil {
 	   		   		            		   
 	   		   List<ExamAnswer> answerObjs = new ArrayList<ExamAnswer>(); 
 	   		   
-	   		   Iterator<JSONObject> answersIterator = answers.iterator();
+	   		   @SuppressWarnings("unchecked")
+			   Iterator<JSONObject> answersIterator = answers.iterator();
 	       	   
 	       	   while (answersIterator.hasNext()) {
 	       		   

@@ -39,9 +39,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView; 
 import android.widget.Toast;
-import android.support.v7.app.ActionBar;
-
-import android.support.v7.app.ActionBarActivity;  
 
 
 public class ExamModeActivity extends Activity{
@@ -712,11 +709,6 @@ public class ExamModeActivity extends Activity{
 			dialog.show();
    }
    
-   private void printOutScoreMap() {
-	   for(Map.Entry<Integer,String> entry : scoreMap.entrySet()) {
-		   Log.d("ScoreMap","Number: "+entry.getKey()+"---|--- Value: "+entry.getValue());
-	   }
-   }
    //Grade the exam based on the user answer, and show the score of the user
    //TODO: save the grade result(user answer), and upload to web server.
    private boolean grade() {

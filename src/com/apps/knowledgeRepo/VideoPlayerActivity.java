@@ -20,6 +20,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
@@ -114,8 +115,12 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 		TextView title = (TextView) findViewById(R.id.videoTitle);
 		title.setText( (currentSequenceNumber+1) +"/"+ module.getLessons().size() + " in module: "+module.getTitle()); 
 		
-		String vidAddress = module.getLessons().get(currentSequenceNumber).getURL(); //"http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
-   		Uri vidUri = Uri.parse(vidAddress);
+		String vidAddress = module.getLessons().get(currentSequenceNumber).getURL().trim(); 
+		//vidAddress="https://www.youtube.com/watch?v=JDGrr07rP88";
+		//"http://p.demo.flowplayer.netdna-cdn.com/vod/demo.flowplayer/bbb-800.mp4"; // your URL here
+   		Log.d("VideoURL", vidAddress);
+		Uri vidUri = Uri.parse(vidAddress);
+		//vidView.setVideoPath("android.resource://"+getPackageName()+"/"+R.raw.s63video02);
    		vidView.setVideoURI(vidUri);
    		vidView.start();
 	}
