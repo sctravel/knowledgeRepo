@@ -12,9 +12,15 @@
     <TextView
         android:id="@+id/gradeTextExamEnd"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text=" You have finished all your questions. "
-        android:layout_below="@+id/imageExamEnd"/>
+        android:layout_height="32dp"
+        android:text=" You have finished all questions. "
+        android:layout_below="@+id/imageExamEnd"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true" />
      <Button
         android:id="@+id/reviewAllButton"
         android:layout_width="fill_parent"
