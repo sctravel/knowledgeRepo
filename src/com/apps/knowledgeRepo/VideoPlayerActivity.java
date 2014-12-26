@@ -56,8 +56,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         if (extras != null) {
         	 module = (VideoModule) extras.get(Constants.VIDEO_MODULE_NAME);	    
         }
-        if(module==null) throw new RuntimeException("VideoModule is null!");
-        if(module.getLessons().isEmpty()) {
+        if(module==null || module.getLessons().isEmpty()) {
 			Toast.makeText(getApplicationContext(), "This Video Module is Empty! ", Toast.LENGTH_LONG).show();
 			finish();
         }

@@ -37,21 +37,14 @@ public class CourseUtil {
 		return examContent;
 	}
 	
-	public static Course initilizeVideoCourse(Course courseMeta, Context context) {
-		SQLiteDatabase db = DBTool.getDB(context);
-		
-		Course videoCourse = DBTool.queryVideoCourse(context, db, courseMeta);
+	public static Course initilizeVideoCourse(Course courseMeta, Context context) {		
+		Course videoCourse = DBTool.queryVideoCourse(context, courseMeta);
 		return videoCourse;
-		
 	}
 	
 	public static Course initilizeFlashCardCourse(Course courseMeta, Context context){
 		
-		SQLiteDatabase db = DBTool.getDB(context);
-		Course courseObj  = DBTool.queryFlashCardCourse(context, db, courseMeta);
-			
-
-					
+		Course courseObj  = DBTool.queryFlashCardCourse(context, courseMeta);					
 		return courseObj;
 			
 	}

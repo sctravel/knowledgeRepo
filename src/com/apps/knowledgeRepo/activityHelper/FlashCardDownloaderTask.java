@@ -35,7 +35,7 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
 	public boolean parseJSON(String fileName,Context context){
 		
 	    JSONParser parser = new JSONParser();
-	 		    
+	    SQLiteDatabase db = null;
 		try{
 			
 			Log.d("JSON parser", "start parsing JSON, file Name: "+ fileName);
@@ -75,6 +75,7 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
         	   
 	        	   List<Exam> examObjs = new ArrayList<Exam>(); 
 	        	   
+	        	   db = DBTool.getDB(context);
 	        	   while (examIterator.hasNext()) {
 	        		   
 	        		   Exam examObj = new Exam(); 
@@ -85,7 +86,7 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
 	        		   
 	        		   String examContent = exam.toJSONString();
 	        		   
-	        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
+	        		   storeExamToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, db);
 	        	   }
 	           }
 		           
@@ -96,23 +97,26 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
 
 			Log.e("parser error",ex.toString()+"  "+ex.getStackTrace());
 			return false;
+		} finally {
+			if(db!=null && db.isOpen()) {
+				db.close();
+			}
 		}
 		
 		Log.d("JSON parser", "finished parsing JSON");
 		return true; 
-}
+	}
 
 	
-@Override
-public void storeToDB(String courseId, String courseName, String courseType, String courseOrientation, 
-		String moduleId, String guide, String examid,String examName, String examContent, Context context){
+	@Override
+	public void storeExamToDB(String courseId, String courseName, String courseType, String courseOrientation, 
+		String moduleId, String guide, String examid,String examName, String examContent, SQLiteDatabase db){
 	
-	SQLiteDatabase db = DBTool.getDB(context);
-	DBTool.insertExam(context, db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
-	Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
+		DBTool.insertExam( db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
+		Log.d("InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
 	
-	return; 
+		return; 
 
-}
+	}
 
 }

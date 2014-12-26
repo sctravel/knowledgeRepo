@@ -84,8 +84,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	@SuppressWarnings({ "unchecked", "unused" })
 	public boolean parseJSON(String fileName,Context context){
 		
-		    JSONParser parser = new JSONParser();
-		 		    
+		JSONParser parser = new JSONParser();
+		SQLiteDatabase db = null;		    
 			try{
 				
 				Log.d("JSON parser", "start parsing JSON, file Name: "+ fileName);
@@ -95,17 +95,15 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				JSONObject course = (JSONObject) obj; 
 				
 							
-			    	Log.d("loop", "looping");
-			      // Course courseObj= new Course();
-				    SQLiteDatabase db = DBTool.getDB(context);
-				   //JSONObject course= (JSONObject)iterator.next();
-		           String courseId = (String) course.get("courseid");
-		           String courseName = (String) course.get("courseName");
-		           long courseType = (Long) course.get("courseType");
-		           String courseOrientation = (String) course.get("courseOrientation");
+			    Log.d("loop", "looping");
+				db = DBTool.getDB(context);
+		        String courseId = (String) course.get("courseid");
+		        String courseName = (String) course.get("courseName");
+		        long courseType = (Long) course.get("courseType");
+		        String courseOrientation = (String) course.get("courseOrientation");
 	           
-		           //course type equals to 3 indicate it's flash card course 
-		           if(courseType == 1 || courseType == 2){
+		        //course type equals to 3 indicate it's flash card course 
+		        if(courseType == 1 || courseType == 2){
 		        	   
 		        	   Log.d("loop", "parse course Type 1 (examCourse)");
 		        	   
@@ -122,14 +120,12 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			        	   String moduleId = String.valueOf( module.get("module"));    
 			        	   String guide = String.valueOf( module.get("guide")); 
 			        	   JSONArray exams = (JSONArray)module.get("Exams");
-	        	            	   
+	        	            	   			        	 
+				           Iterator<JSONObject> examIterator = exams.iterator();
 			        	   
-			        	 
-				        	   Iterator<JSONObject> examIterator = exams.iterator();
-			        	   
-				        	   List<Exam> examObjs = new ArrayList<Exam>(); 
+				           List<Exam> examObjs = new ArrayList<Exam>(); 
 				        	   
-				        	   while (examIterator.hasNext()) {
+				           while (examIterator.hasNext()) {
 				        		   
 				        		   Exam examObj = new Exam(); 
 				        		   
@@ -140,7 +136,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        		   String examContent = exam.toJSONString();
 				        		   
 				        		   Log.d("loop", "parse course Type 1 (examCourse) begin stroe to DB");
-				        		   storeToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, context);
+				        		   storeExamToDB(courseId, courseName, ""+courseType, courseOrientation, moduleId,guide, examid,examName, examContent, db);
 				        		   Log.d("loop", "parse course Type 1 (examCourse) end stroe to DB");
 				        	   }
 			        	   }
@@ -229,7 +225,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				           Iterator<JSONObject> videoIterator = videoLessons.iterator();
 				           
 				           
-				           storeVideoModuleToDB(sequenceModuleId,title, courseId,context);
+				           storeVideoModuleToDB(sequenceModuleId, title, courseId, db);
 				           
 				           		           
 				           while (videoIterator.hasNext()) {
@@ -239,24 +235,20 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 				        	   int sequence = Integer.parseInt(String.valueOf( video.get("sequence")));    
 				        	   String URL = String.valueOf( video.get("URL"));
 	                            //need local location colum as well
-				        	   storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
+				        	   storeVideoToDB(sequenceModuleId, sequence, URL, courseId, db);
 				        	   	        	   
 				           }
-		        	   }
-
-		        	   
-		        	   
-			           
-		           }
-
-		        	           
-			    db.close();	           
-		          // storeToDB(courseId, courseName, courseContent, context);	           	 	
+		        	   }			           
+		           }           
+			    	           
 			}
 			catch(Exception ex){			
-
 				Log.e("parser error",ex.toString()+"  "+ex.getStackTrace());
 				return false;
+			} finally {
+				if(db!=null && db.isOpen()) {
+					db.close();
+				}
 			}
 			
 			Log.d("JSON parser", "finished parsing JSON");
@@ -264,20 +256,17 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	}
 	
 	    
-	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,Context context){
-		
-		SQLiteDatabase db = DBTool.getDB(context);
-		
-		DBTool.insertVideoModule(context, db, sequenceModuleId, courseId, title);
+	public void storeVideoModuleToDB(int sequenceModuleId, String title, String courseId,SQLiteDatabase db){
+				
+		DBTool.insertVideoModule(db, sequenceModuleId, courseId, title);
 		
 	}
 	
 	
-	public void storeToDB(String courseId, String courseName, String courseType, String courseOrientation, 
-			String moduleId, String guide, String examid,String examName, String examContent, Context context){
+	public void storeExamToDB(String courseId, String courseName, String courseType, String courseOrientation, 
+			String moduleId, String guide, String examid,String examName, String examContent, SQLiteDatabase db){
 		
-		SQLiteDatabase db = DBTool.getDB(context);
-		DBTool.insertExam(context, db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid,examName, examContent);
+		DBTool.insertExam(db, courseId, courseName, courseType, courseOrientation, moduleId, guide, examid, examName, examContent);
 		Log.d("storeToDB InDB", "COuseId---"+courseId+ "Exam Name" + examName +   "; Length---"+examContent.length());
 		
 		return; 
@@ -285,10 +274,8 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	}
 	
 	
-	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, Context context){
-		SQLiteDatabase db = DBTool.getDB(context);
-		// storeVideoToDB(sequenceModuleId,sequence,URL, courseId,context);
-		DBTool.insertVideo(context, db,sequenceModuleId,sequence,URL, courseId );
+	public void storeVideoToDB(int sequenceModuleId, int sequence,String URL, String courseId, SQLiteDatabase db){
+		DBTool.insertVideo(db, sequenceModuleId, sequence, URL, courseId);
 		Log.d("storeVideoToDB InDB", "COuseId---"+courseId+ "sequenceModuleId" + sequenceModuleId +   "URL: "+URL);
 	  
 	  }
