@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity {
 	    test1.loadData(bucket.getCardList().get(currCardNum).getFrontText(), "text/html","utf-8");
 	    test2.loadData(bucket.getCardList().get(currCardNum).getBackText(), "text/html","utf-8");
 	 
-		
+	    setTitle(bucket.getTitle());
 		viewAnimator1.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
@@ -61,7 +61,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.display_message, menu);
+		getMenuInflater().inflate(R.menu.exam_mode_menu, menu);
 		return true;
 	}
 

@@ -263,7 +263,6 @@ public class ModeSelectionActivity extends Activity {
 	    listView.addHeaderView(listHeader);		
 	    
         setContentView(listView);
-        
         addSignInButton();
         TextView pageName = (TextView) findViewById(R.id.courseListPageName);
 		pageName.setText(course.getCourseName());

@@ -42,9 +42,9 @@ public class TextExamArrayAdapter extends ArrayAdapter<ExamMetaData>{
 	    ExamMetaData emd = exams.get(position);
 	    textView.setText(emd.getExamName());
 	    if(emd.getCourseType()==1) {
-	    	imageView.setImageResource(R.drawable.icon_book);
-	    } else if(emd.getCourseType()==2) {
 	    	imageView.setImageResource(R.drawable.icon_exam);
+	    } else if(emd.getCourseType()==2) {
+	    	imageView.setImageResource(R.drawable.icon_book);
 	    }
 	    
 	    

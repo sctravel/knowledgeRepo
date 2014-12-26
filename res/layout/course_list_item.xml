@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="3dip"
         android:contentDescription="TODO"
-        android:src="@drawable/icon_exam" />
+        android:src="@drawable/icon_flash_card" />
 
     <TextView
         android:id="@+id/courseListItemTextLine"

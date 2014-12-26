@@ -12,6 +12,8 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 // android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
@@ -43,10 +46,10 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //int mPos=savedInstanceState.getInt("pos");
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,  
-             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(
+       //     WindowManager.LayoutParams.FLAG_FULLSCREEN,  
+        //     WindowManager.LayoutParams.FLAG_FULLSCREEN);
    		setContentView(R.layout.video_player);
    		        
         Bundle extras = getIntent().getExtras();
@@ -54,9 +57,15 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         	 module = (VideoModule) extras.get(Constants.VIDEO_MODULE_NAME);	    
         }
         if(module==null) throw new RuntimeException("VideoModule is null!");
+        if(module.getLessons().isEmpty()) {
+			Toast.makeText(getApplicationContext(), "This Video Module is Empty! ", Toast.LENGTH_LONG).show();
+			finish();
+        }
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
         initializeVideoPlayer();
+        setTitle(module.getTitle());
+
         playVideo(currentSequenceNumber);
         
    		Button next = (Button) findViewById(R.id.nextVideoButton);
@@ -85,6 +94,25 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 		});
        
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.exam_mode_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	public void initializeVideoPlayer() {
 		vidView = (VideoView)findViewById(R.id.CourseVideoView);
    		/*wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
@@ -104,7 +132,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 	}
 	public void playVideo(int currentSequenceNumber) {
 		TextView title = (TextView) findViewById(R.id.videoTitle);
-		title.setText( (currentSequenceNumber+1) +"/"+ module.getLessons().size() + " in module: "+module.getTitle()); 
+		title.setText( "Video Sequence: "+(currentSequenceNumber+1) +"/"+ module.getLessons().size() ); 
 		
 		String vidAddress = module.getLessons().get(currentSequenceNumber).getURL().trim(); 
 		//vidAddress="https://www.youtube.com/watch?v=JDGrr07rP88";

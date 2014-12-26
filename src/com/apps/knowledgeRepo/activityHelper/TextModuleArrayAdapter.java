@@ -53,9 +53,9 @@ public class TextModuleArrayAdapter extends ArrayAdapter<ExamModuleMetaData>{
 	    ExamModuleMetaData emd = modules.get(position);
 	    textView.setText(moduleIdNameMap.get(emd.getModuleId()));
 	    if(emd.getCourseType()==1) {
-	    	imageView.setImageResource(R.drawable.icon_book);
-	    } else if(emd.getCourseType()==2) {
 	    	imageView.setImageResource(R.drawable.icon_exam);
+	    } else if(emd.getCourseType()==2) {
+	    	imageView.setImageResource(R.drawable.icon_book);
 	    }
 	    
 	    
