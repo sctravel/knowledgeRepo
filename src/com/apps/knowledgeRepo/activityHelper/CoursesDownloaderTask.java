@@ -81,6 +81,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 	}
 	
+	@SuppressWarnings({ "unchecked", "unused" })
 	public boolean parseJSON(String fileName,Context context){
 		
 		    JSONParser parser = new JSONParser();
@@ -310,6 +311,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Boolean doInBackground(Context... contexts) {
 		Context context = contexts[0];

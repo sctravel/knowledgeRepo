@@ -1,24 +1,15 @@
 package com.apps.knowledgeRepo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.om.Constants;
-import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -135,7 +126,6 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 	protected void onStop() {
 		super.onStop();
 		if(vidView !=  null ) {
-			int currentPosition = vidView.getCurrentPosition();
 			vidView.stopPlayback();
 			vidView = null;
 		}

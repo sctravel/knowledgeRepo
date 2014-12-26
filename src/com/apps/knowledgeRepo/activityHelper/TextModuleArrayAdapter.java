@@ -4,11 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.ExamModuleMetaData;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +42,7 @@ public class TextModuleArrayAdapter extends ArrayAdapter<ExamModuleMetaData>{
 	    this.modules = Arrays.asList(modules);
 	}
 
+	@SuppressLint("ViewHolder")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context

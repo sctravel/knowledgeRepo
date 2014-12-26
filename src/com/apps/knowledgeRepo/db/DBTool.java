@@ -1,9 +1,7 @@
 package com.apps.knowledgeRepo.db;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.FlashCardCard;
