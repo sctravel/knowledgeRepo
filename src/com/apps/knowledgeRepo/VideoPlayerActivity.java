@@ -20,6 +20,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
@@ -139,7 +140,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 	@Override
 	protected void onSaveInstanceState (Bundle outState){
         super.onSaveInstanceState(outState);
-	    outState.putInt("pos", vidView.getCurrentPosition()); // save it here
+	    Log.d("test","test");
 	    vidView.pause();
 	} 
 	
