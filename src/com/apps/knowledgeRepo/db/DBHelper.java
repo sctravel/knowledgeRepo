@@ -55,7 +55,15 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    " 'COURSE_ID' varchar(256)," + 
 	    " PRIMARY KEY (BUCKET_ID)  )"; 	   
 	    	    
-	    
+	private static final String SQL_CREATE_FLASHCARDS_RECORDS = 
+		    " CREATE TABLE " + TableNames.FLASH_CARDS_RECORDS + " ( " +
+		    " 'COURSE_ID' varchar(256)," +
+		    " 'BUCKET_ID' varchar(256)," +
+		    " 'LAST_VIEWED' varchar(256)," +
+		    " PRIMARY KEY (COURSE_ID,BUCKET_ID))";
+		     
+    
+    
 	private static final String SQL_CREATE_CARDS = 
 	    " CREATE TABLE " + TableNames.FLASH_CARD_CARDS + " ( " +
 	    " 'CARD_ID' varchar(256)," +
@@ -129,6 +137,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         //db.execSQL(SQL_CREATE_VIDEO_COURSES);
         db.execSQL(SQL_CREATE_VIDEO_COURSES_MODULE);
         db.execSQL(SQL_CREATE_VIDEO);
+        db.execSQL(SQL_CREATE_FLASHCARDS_RECORDS);
 	        
         Log.d("Insert DB", "finished creating DB table ");
     }

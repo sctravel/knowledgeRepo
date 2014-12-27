@@ -7,7 +7,7 @@ public class TableNames {
 	public static final String FLASH_CARD_BUCKETS = "FLASH_CARD_BUCKETS";
 	public static final String FLASH_CARD_CARDS = "FLASH_CARD_CARDS";
 	public static final String FLASH_CARD_BUCKETS_CARDS_MAPPING = "FLASH_CARD_BUCKETS_CARDS_MAPPING";
-	
+	public static final String FLASH_CARDS_RECORDS= "FLASH_CARDS_RECORDS";
 	
 	public static final String VIDEO_COURSES_MODULES = "VIDEO_COURSES_MODULES";
 	public static final String VIDEO_SEQUENCE = "VIDEO_SEQUENCE";

@@ -19,6 +19,8 @@ public class Constants {
 	public static final String VIDEO_MODULE_NAME = "videoModule"; 
 	public static final String FLASH_CARD_BUCKET_NAME = "flashCardBucket"; 
 	public static final String COURSE_ID_NAME = "courseId"; 
+	public static final String BUCKET_ID_NAME = "bucketId"; 
+
 
 	
 }

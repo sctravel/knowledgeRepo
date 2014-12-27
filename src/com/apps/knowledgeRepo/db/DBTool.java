@@ -196,7 +196,17 @@ public class DBTool {
     	 
     	 db.close();
      }
-     
+    
+     public static void recordFlashcardNum(Context context,SQLiteDatabase db, String course_id, String bucket_id, String curr_num){
+    	 
+     	String sqlInsert = "insert into " + TableNames.FLASH_CARDS_RECORDS + 
+        	    " values ( " + "'" +  course_id + "'" + "," +
+				      		    "'" + bucket_id + "'" + "," +
+				        	    "'" +  curr_num + "'" + ")" ; 
+     	
+     	db.execSQL(sqlInsert);
+    	 
+     }
      
      public static void insertVideoModule(Context context, SQLiteDatabase db, int SequenceModule_id, String Course_id, String title){
  		if( !db.isOpen()){

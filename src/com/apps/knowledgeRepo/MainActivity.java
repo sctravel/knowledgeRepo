@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,15 +34,18 @@ public class MainActivity extends FragmentActivity {
     FlashCardCourse flashcard_course;
     FlashCardBucket  bucket;
     String courseId ;
+    String buckedId;
     int currCardNum = 0;
+    Bundle extras;
        
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	                  
-         Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
          if (extras != null) {
         	  bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
          	  courseId = extras.getString(Constants.COURSE_ID_NAME);
+         	  buckedId = extras.getString(Constants.BUCKET_ID_NAME);
          	  currCardNum = extras.getInt("currCardNum");
          }
          if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
@@ -74,7 +78,8 @@ public class MainActivity extends FragmentActivity {
 			}
        });
 		*/
-		
+	    
+	 
 		viewAnimator1.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
@@ -88,6 +93,17 @@ public class MainActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.display_message, menu);
 		return true;
 	}
+	
+	   @Override
+			protected void onStop() {
+				// TODO Auto-generated method stub
+				super.onStop();
+				
+				
+			}
+			
+	
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

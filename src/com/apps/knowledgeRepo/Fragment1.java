@@ -8,9 +8,13 @@ import java.util.TimerTask;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
+import com.apps.knowledgeRepo.db.DBHelper;
+import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,11 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
 public class Fragment1 extends Fragment{
 	String courseId = null;
+	String bucketId = null;
 	FlashCardBucket bucket= null;
 	int currCardNum = 0;
 	int next =  0;
@@ -40,8 +46,9 @@ public class Fragment1 extends Fragment{
 	
 		if (extras != null) {
         	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
-        	 max = bucket.getCardList().size()-1;
+        	 bucketId =  String.valueOf(bucket.getBucketId());	
         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
+        	 max = bucket.getCardList().size()-1;
         	 currCardNum = extras.getInt("currCardNum");
         	 
         }
@@ -54,9 +61,43 @@ public class Fragment1 extends Fragment{
 		   Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
 		   Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
 		   Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
+		   Button buttonJump = (Button)fragment1.findViewById(R.id.button5);
+		                      
+		   final EditText jumpTo = (EditText)fragment1.findViewById(R.id.jumpTo);
+		    
+		    
 		   
 		   next = currCardNum + 1;
 		   prev = currCardNum - 1;
+		   
+		   buttonJump.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			String jumpNum = jumpTo.getText().toString();
+			
+			int jump = Integer.valueOf(jumpNum);
+			
+			if(!(jump>max) && !(jump<0)){
+				
+				WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+				Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				currCardNum = jump;
+				tv1.loadData(bucket.getCardList().get(jump).getFrontText(),"text/html","utf-8");
+				 View view = (View)tv2.getView();
+				 WebView tv =  (WebView)view.findViewById(R.id.test2);
+					tv.loadData(bucket.getCardList().get(jump).getBackText(),"text/html","utf-8");
+					if(jump < max){
+					next = jump + 1;
+					}else{ 
+						next = max; }
+					    prev = jump - 1;
+			
+			}
+			
+			jumpTo.setText(null);
+			}});
 		   
 	       buttonPrev.setOnClickListener(new View.OnClickListener(){
 	           
@@ -65,6 +106,11 @@ public class Fragment1 extends Fragment{
 					// TODO Auto-generated method stub
 					//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
 					//List<FlashCardBucket> buckets = flashcard_course.getBucket();
+					if(currCardNum>0){
+					currCardNum = currCardNum -1;
+					}
+					
+					
 					if(prev >=0){
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
 					Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
@@ -92,10 +138,14 @@ public class Fragment1 extends Fragment{
 						View view = (View)tv2.getView();
 						WebView tv =  (WebView)view.findViewById(R.id.test2);
 						
+						
+						if(currCardNum < max){
+							currCardNum = currCardNum + 1;
+							}
 						if(next < max ){
 						tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
 						tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-		        	
+		        	    
 					    next = next +1;
 		        	    prev = next -1;
 		        	    
@@ -168,12 +218,17 @@ public class Fragment1 extends Fragment{
 					// TODO Auto-generated method stub
 					//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
 					//List<FlashCardBucket> buckets = flashcard_course.getBucket();
+				if(currCardNum <max ){
+					
+					currCardNum = currCardNum + 1; 
+				}
+					
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
 				    Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 					
 				    View view = (View)tv2.getView();
 				    WebView tv =  (WebView)view.findViewById(R.id.test2);
-				    
+				    currCardNum = currCardNum+1;
 				    if(next < max){
 
 					    tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
@@ -201,5 +256,19 @@ public class Fragment1 extends Fragment{
 		
 	
 	}
-
+	   @Override
+	   public void onStop() {
+					// TODO Auto-generated method stub
+					super.onStop();
+					
+					Log.d("test123", "jkjhkjh");
+					
+					Context context = this.getActivity().getBaseContext();
+					SQLiteDatabase db = DBTool.getDB(context);
+					
+					DBTool.recordFlashcardNum(context, db, courseId, bucketId, String.valueOf(currCardNum));
+					
+				}
+					
+	
 }
