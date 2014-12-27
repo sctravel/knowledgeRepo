@@ -16,8 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+//import android.view.Window;
+//import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -59,6 +59,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         if(module==null || module.getLessons().isEmpty()) {
 			Toast.makeText(getApplicationContext(), "This Video Module is Empty! ", Toast.LENGTH_LONG).show();
 			finish();
+			return;
         }
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// If your minSdkVersion is 11 or higher, instead use:
@@ -113,7 +114,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 		return super.onOptionsItemSelected(item);
 	}
 	public void initializeVideoPlayer() {
-		vidView = (VideoView)findViewById(R.id.CourseVideoView);
+		vidView = (VideoView) findViewById(R.id.CourseVideoView);
    		/*wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
    			    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 

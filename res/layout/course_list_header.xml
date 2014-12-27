@@ -53,10 +53,10 @@
     <TextView
 	        android:id="@+id/courseListPageName"
 	        android:layout_width="fill_parent"
-	        android:layout_height="0dp"
+	        android:layout_height="wrap_content"
 	        android:gravity="left"
 	        android:textAlignment="gravity"
-        android:layout_centerHorizontal="true"
+        	android:layout_centerHorizontal="true"
 	        android:background="#fff"
 	        android:text=""
 	        android:textSize="25sp" 
