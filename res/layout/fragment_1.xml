@@ -65,6 +65,9 @@
    		android:paddingLeft="0dp"
         android:paddingRight="0dp"
         android:paddingTop="0dp"
+        android:clickable="true"
+	    android:focusable="true"
+	    android:focusableInTouchMode="true"
         android:layout_weight="0.60" />
     
 

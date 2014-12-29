@@ -20,5 +20,9 @@ public class Constants {
 	public static final String FLASH_CARD_BUCKET_NAME = "flashCardBucket"; 
 	public static final String COURSE_ID_NAME = "courseId"; 
 
+	//account file/username/password
+	public static final String PREF_ACCOUNT_FILE = "myAccountFile";
+	public static final String PREF_USERNAME = "username";
+	public static final String PREF_PASSWORD = "password";
 	
 }

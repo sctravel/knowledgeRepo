@@ -6,8 +6,8 @@
     android:background="@drawable/background"
     android:weightSum="1">
     <WebView 
-         android:id="@+id/test2"
-          android:layout_width="match_parent"
+        android:id="@+id/test2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" 
         android:background="@android:color/transparent"
@@ -15,5 +15,8 @@
    		android:paddingLeft="0dp"
         android:paddingRight="0dp"
         android:paddingTop="0dp"
+        android:clickable="true"
+		android:focusable="true"
+		android:focusableInTouchMode="true"
         android:layout_weight="0.43" />
 </LinearLayout>
