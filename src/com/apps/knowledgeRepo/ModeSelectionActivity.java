@@ -496,10 +496,11 @@ public class ModeSelectionActivity extends Activity {
       	        PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
       	        notify.setLatestEventInfo(getApplicationContext(),"Finish Downloading","Downloading Finished",pending);
       	       
-      	        new CoursesDownloaderTask(mProgress, nm,notify ).execute(getApplicationContext());
+      	        new CoursesDownloaderTask(mProgress, nm,notify,ModeSelectionActivity.this).execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
-
+   			    	
+   			     //setContentView(R.layout.mode_selection);
             	//selectCoursesPage();
             }
         });
