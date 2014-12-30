@@ -141,7 +141,7 @@ public class ModeSelectionActivity extends Activity {
     	return map;
     }
     
-	private void selectCoursesPage(){
+	public void selectCoursesPage(){
 		//refresh the course list every time we go to Course Page
 		courseList = DBTool.getCourseMetaData(getApplicationContext());
 
