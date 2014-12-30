@@ -1,9 +1,7 @@
 package com.apps.knowledgeRepo.db;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.FlashCardCard;
@@ -96,10 +94,8 @@ public class DBTool {
     	return metaDataList;
      }
      
-     public static List<List<String>> queryDB(Context context,SQLiteDatabase db, String sql, String[] selectionArgs ){
-    	if( !db.isOpen()){
-        	db=DBTool.getDB(context);	
-        }
+     public static List<List<String>> queryDB(SQLiteDatabase db, String sql, String[] selectionArgs ){
+    	
     	List<List<String>> result =new ArrayList<List<String>>();
     		
     	Cursor cursor = db.rawQuery(sql, selectionArgs);
@@ -178,12 +174,12 @@ public class DBTool {
     	    "'" +  ans + "'" + "," +
     	    "'" +  time +"'" +  ")" ; 
     	
-    	 String sqlQuery = "select count(*) from +" + TableNames.TEXT_EXAM_ANSWER + " where "  + 
+    	 String sqlQuery = "select count(*) from " + TableNames.TEXT_EXAM_ANSWER + " where "  + 
     	                   "course_id =? and module_id=? and exam_id=? and attempt = ? and qnum=  ?;";  
     	
     	 String sqlUpdate = "update " + TableNames.TEXT_EXAM_ANSWER + " set answer=? , time= ? where course_id=? and module_id=? and exam_id=? and attempt=? and qnum=?; " ;
     	     	 
-    	 List<List<String>> result = DBTool.queryDB(context,db, sqlQuery, new String[]{course_id,module_id,exam_id,att,qnum});
+    	 List<List<String>> result = DBTool.queryDB(db, sqlQuery, new String[]{course_id,module_id,exam_id,att,qnum});
     	 int a = Integer.parseInt(result.get(0).get(0));  	 
     	 if ( a  > 0){
          	Log.d("DB operation","Doing Update question status!");
@@ -208,11 +204,7 @@ public class DBTool {
     	 
      }
      
-     public static void insertVideoModule(Context context, SQLiteDatabase db, int SequenceModule_id, String Course_id, String title){
- 		if( !db.isOpen()){
-    		db=DBTool.getDB(context);
-    	}
-	    	
+     public static void insertVideoModule(SQLiteDatabase db, int SequenceModule_id, String Course_id, String title){	    	
  		String sqlInsertVideoCourseModules = 
  			"insert into " + TableNames.VIDEO_COURSES_MODULES +" values ( " +
 	        " '" + SequenceModule_id +  "'" + "," +
@@ -222,12 +214,7 @@ public class DBTool {
 		db.execSQL(sqlInsertVideoCourseModules);
      }
 
-     public static void insertVideo(Context context, SQLiteDatabase db, int SequenceModule_id, int sequence, String URL, String courseId){ 
-    	if( !db.isOpen()){
-     		db=DBTool.getDB(context);
-     		
-     	}
- 	    
+     public static void insertVideo(SQLiteDatabase db, int SequenceModule_id, int sequence, String URL, String courseId){ 
     	String sqlInsertVideoCourseModules = "insert into " + TableNames.VIDEO_SEQUENCE +" values ( " + 
  	        " '" + sequence +  "'" + ","  +
  	        " '" + URL + "'" +"," +
@@ -291,11 +278,9 @@ public class DBTool {
      
      
      
-     public static void insertExam(Context context,SQLiteDatabase db, String courseId, String courseName, 
+     public static void insertExam(SQLiteDatabase db, String courseId, String courseName, 
     		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String examContent){
-    	 
-    	 //Log.d("insertCourse","insertCourse");
-    		
+    	     		
     	 examContent=examContent.replaceAll("'", "!!pattern!!") ;
     	 String sqlInsert = "insert into " + TableNames.TEXT_EXAM +" values ( " + 
     	     "'" +  courseId + "'" + "," + 
@@ -316,7 +301,7 @@ public class DBTool {
     	 //DBTool.queryDB(context, db, sqlQuery, new String[]{course_id}).get(0);
     	 //Log.d("after query","after query");
     	
-    	 List<List<String>> result =DBTool.queryDB(context,db, sqlQuery, new String[]{courseId,moduleId,examId});
+    	 List<List<String>> result =DBTool.queryDB(db, sqlQuery, new String[]{courseId,moduleId,examId});
     	 int a = Integer.parseInt(result.get(0).get(0));
     	 
     	 if ( a > 0){
@@ -362,7 +347,7 @@ public class DBTool {
          SQLiteDatabase	db=DBTool.getDB(context);	
 
     	 String queryMaxAttempt = "select count(1) from " + TableNames.TEXT_EXAM_GRADE +" where COURSE_ID= ? and module_id=? and exam_id=? ";
-    	 List<List<String> >result = DBTool.queryDB(context, db, queryMaxAttempt, new String[]{cId,moduleId,examId});
+    	 List<List<String> >result = DBTool.queryDB(db, queryMaxAttempt, new String[]{cId,moduleId,examId});
     	 
     	 //TODO check whether we need to add 1
     	 if( result!=null && !result.isEmpty() ) {
@@ -379,7 +364,7 @@ public class DBTool {
       	
     	 String queryGrade = "select grade from " + TableNames.TEXT_EXAM_GRADE +" where COURSE_ID= ? and module_id=? and exam_id=? and attempt=?" ; 
     	
-    	 List<List<String>> result = DBTool.queryDB(context, db, queryGrade, new String[]{cId,moduleId,examId,attempt});
+    	 List<List<String>> result = DBTool.queryDB(db, queryGrade, new String[]{cId,moduleId,examId,attempt});
     	 String examGrade = null;
     	 if( result!=null && !result.isEmpty() ) {
     		 examGrade = result.get(0).get(0);
@@ -395,7 +380,7 @@ public class DBTool {
      		
      	}
     	Log.d("DB","cid:"+cid+"; moduleId: "+moduleId+"; examId: "+examId);
-    	List<List<String>> examContent = DBTool.queryDB(context, db, queryCourseSQL, new String[]{cid,moduleId,examId});
+    	List<List<String>> examContent = DBTool.queryDB(db, queryCourseSQL, new String[]{cid,moduleId,examId});
     	
     	db.close();
     	if(examContent==null || examContent.isEmpty() ) {
@@ -411,7 +396,9 @@ public class DBTool {
     	
      }
       
-     public static Course queryVideoCourse(Context context, SQLiteDatabase db, Course courseMeta) {
+     public static Course queryVideoCourse(Context context, Course courseMeta) {
+    	 SQLiteDatabase db=DBTool.getDB(context);
+      	 
     	 String courseId = courseMeta.getCourseId();
     	 VideoCourse course= new VideoCourse(courseMeta.getCourseId(), courseMeta.getCourseName(),
     			 courseMeta.getCourseType(), courseMeta.getCourseOrientation());
@@ -419,7 +406,7 @@ public class DBTool {
     	 //Get all the modules
     	 String selectAllModules = " select sequence_module_id, title from " + TableNames.VIDEO_COURSES_MODULES + 
     			 " where course_id = ? ";
-    	 List<List<String>> allModules = DBTool.queryDB(context, db, selectAllModules, new String[]{courseId});
+    	 List<List<String>> allModules = DBTool.queryDB(db, selectAllModules, new String[]{courseId});
     	 for(List<String> list : allModules) {
     		 VideoModule module = new VideoModule(Integer.parseInt(list.get(0)), list.get(1)); 
     		 course.getVideoModules().add(module);
@@ -431,7 +418,7 @@ public class DBTool {
     	 //add all the lessons to the corresponding Module
     	 for(VideoModule module : course.getVideoModules()) {
 	    	 int moduleSequenceId = module.getModuleSequenceId();
-	    	 List<List<String>> allLessons = DBTool.queryDB(context, db, selectAllLessons, new String[]{courseId, ""+moduleSequenceId});
+	    	 List<List<String>> allLessons = DBTool.queryDB(db, selectAllLessons, new String[]{courseId, ""+moduleSequenceId});
 	    	 for(List<String> list : allLessons) {
 	    		 int sequence = Integer.parseInt(list.get(1));
 	    		 String url = list.get(2);
@@ -439,7 +426,7 @@ public class DBTool {
 	    		 module.getLessons().add(vl);
 	    	 }
     	 }
-    	 
+    	 db.close();
     	 return course;
      }
      
@@ -447,7 +434,7 @@ public class DBTool {
      // Buckets table: 
      // Cards table: FC_ID, FC_TYPE, FRONT, BACK 
      // BucketCards table: FC_ID, BUCKET_ID
-     public static Course queryFlashCardCourse(Context context,SQLiteDatabase db, Course courseMeta){
+     public static Course queryFlashCardCourse(Context context, Course courseMeta){
     	 
     	 String queryCourseBucketSQL = " select fcb.BUCKET_ID, fcb.SEQUENCE,fcb.TYPE, fcb.TITLE " +
     	 		" from " + TableNames.COURSES_METADATA + " fcc " +
@@ -465,10 +452,8 @@ public class DBTool {
       	 		" where FLASH_CARD_BUCKETS_CARDS_MAPPING.BUCKET_ID= ?" ;
 
     	 
-    	   	 
-    	if( !db.isOpen() ){
-     	    db=DBTool.getDB(context);
-     	}
+   		SQLiteDatabase db=DBTool.getDB(context);
+     	
     	String courseId = courseMeta.getCourseId();
     	  	 
     	Log.d("DB","cid:"+courseMeta);
@@ -477,7 +462,7 @@ public class DBTool {
     			courseMeta.getCourseType(), courseMeta.getCourseOrientation());
     	
     	//get bucket ids
-    	List<List<String>> bucketStrs = DBTool.queryDB(context, db, queryCourseBucketSQL, new String[]{courseId});
+    	List<List<String>> bucketStrs = DBTool.queryDB(db, queryCourseBucketSQL, new String[]{courseId});
     	
     	List<FlashCardBucket> buckets= createBucket(bucketStrs);
     	
@@ -485,7 +470,7 @@ public class DBTool {
     	
     	for(FlashCardBucket bucket : buckets){
     		
-    		List<List<String>> cardIdStrs = DBTool.queryDB(context, db, queryCourseBucketCardSQL, new String[]{Long.toString(bucket.getBucketId())});
+    		List<List<String>> cardIdStrs = DBTool.queryDB(db, queryCourseBucketCardSQL, new String[]{Long.toString(bucket.getBucketId())});
     		
     		List<FlashCardCard> cards= createCard(cardIdStrs);
     		

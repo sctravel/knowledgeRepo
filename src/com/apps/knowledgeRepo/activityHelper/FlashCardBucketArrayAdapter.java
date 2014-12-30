@@ -1,13 +1,9 @@
 package com.apps.knowledgeRepo.activityHelper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
-import com.apps.knowledgeRepo.dataModel.VideoModule;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+@SuppressLint("ViewHolder")
 public class FlashCardBucketArrayAdapter extends ArrayAdapter<FlashCardBucket> {
 
 	  private final Context context;

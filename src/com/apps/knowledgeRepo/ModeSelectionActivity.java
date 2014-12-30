@@ -1,5 +1,6 @@
 package com.apps.knowledgeRepo;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,12 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -23,10 +19,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -41,15 +35,14 @@ import java.util.HashMap;
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
-import com.apps.knowledgeRepo.activityHelper.ExamDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.FlashCardBucketArrayAdapter;
+import com.apps.knowledgeRepo.activityHelper.TextExamArrayAdapter;
+import com.apps.knowledgeRepo.activityHelper.TextModuleArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.VideoModuleArrayAdapter;
 import com.apps.knowledgeRepo.dataModel.Course;
+import com.apps.knowledgeRepo.dataModel.ExamModuleMetaData;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
-import com.apps.knowledgeRepo.dataModel.TextCourse;
-import com.apps.knowledgeRepo.dataModel.TextCourseModule;
-import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamMetaData;
 import com.apps.knowledgeRepo.dataModel.VideoCourse;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
@@ -57,20 +50,15 @@ import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.Constants;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
+@SuppressLint("InflateParams")
 public class ModeSelectionActivity extends Activity {
 	
 	// Map< courseId, Map<moduleId, List<examId> >
-	private Map<String,TextCourse> courseMetaData = new HashMap<String, TextCourse>();
 	private List<Course> courseList = new ArrayList<Course>();
 	
 	private String currentCourseId=null;
-	private String currentTextModuleId=null;
-	private String currentTextExamId=null;
-	private long currentBucketId = 0;
-	private String currentVideoModuleId=null;
-	private String currentVideoLessonId=null;
-	private int currentModuleSequenceId = 0;
-	private  NotificationManager NM=null;
+
+	private  NotificationManager nm=null;
 	
 	private Course currentCourse = null;
 	private final static int LOGIN_PAGE = 0;
@@ -78,8 +66,8 @@ public class ModeSelectionActivity extends Activity {
 	private final static int TEXT_MODULE_PAGE = 2;
 	private final static int TEXT_EXAM_PAGE = 3;
 	private final static int FLASH_CARD_BUCKET_PAGE = 4;
-	private final static int VIDEO_MODULE_PAGE = 5;
-	private final static int VIDEO_LESSON_PAGE = 6;
+	private final static int FLASH_CARD_TYPE_PAGE = 5;
+	private final static int VIDEO_MODULE_PAGE = 6;
 	
 	
 
@@ -88,16 +76,7 @@ public class ModeSelectionActivity extends Activity {
 	// 2 - ModulePage
 	// 3 - examPage
 	private int currentPage = COURSE_PAGE;
-	private  static final Map<Long, String> moduleIdNameMap = new HashMap<Long, String>(); 
-	private  static final Map<String, Exam> examNameToExamMap = new HashMap<String,Exam>();
-	private static final Map<String, Long> currentModuleNameToIdMap = new HashMap<String, Long>();
-
-	static {
-		moduleIdNameMap.put( 0L, "Simulation Exams");
-		moduleIdNameMap.put(1L, "Open Book Exams");
-		moduleIdNameMap.put(2L, "Close Book Exams");
-		moduleIdNameMap.put(3L, "By Topic Exams");
-	};
+	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -111,10 +90,8 @@ public class ModeSelectionActivity extends Activity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_search:
-                openSearch();
                 return true;
             case R.id.action_settings:
-                openSettings();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -134,6 +111,22 @@ public class ModeSelectionActivity extends Activity {
         });	
 	}
 
+    //
+    Map<String, List<ExamMetaData>> groupExamByModule(List<ExamMetaData> examList) {
+    	Map<String, List<ExamMetaData>> map = new HashMap<String, List<ExamMetaData>>();
+    	for(ExamMetaData emd : examList) {
+    		String moduleId = emd.getModuleId();
+    		if(map.containsKey(moduleId)) {
+    			map.get(moduleId).add(emd);
+    		} else {
+    			List<ExamMetaData> list= new ArrayList<ExamMetaData>();
+    			list.add(emd);
+    			map.put(moduleId, list);
+    		}
+    	}
+    	return map;
+    }
+    
 	private void selectCoursesPage(){
 		//refresh the course list every time we go to Course Page
 		courseList = DBTool.getCourseMetaData(getApplicationContext());
@@ -157,30 +150,30 @@ public class ModeSelectionActivity extends Activity {
 	    listView.setOnItemClickListener(new OnItemClickListener() {
 	        @Override
 	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	            // ListView Clicked item index
-                int itemPosition = position;
 		        // ListView Clicked item value
 		        Course  courseMeta    = (Course) listView.getItemAtPosition(position);
 		        currentCourseId = courseMeta.getCourseId();
-		        Toast.makeText(getApplicationContext(),"Position :"+itemPosition+"  ListItem : " +courseMeta.getCourseName() , Toast.LENGTH_LONG)
-		             .show();
-		        
+		        currentCourse = courseMeta;
 		        long courseType = courseMeta.getCourseType();
 		        
-		        if(courseType==Constants.TEXT_COURSE_TYPE) {
-		          /* TextCourse textCourse = DBTool;//(TextCourse) course;
-			        if(course.getModules().size()>1) {
-				            		selectCourseModulePage(course);
-				               } else {
-				            		//If there's only one module, skip the select Module page
-				            		currentModuleId=""+course.getModules().get(0).getModuleId();
-				            		selectExamsPage(course,course.getModules().get(0));
-				               }*/
-		         } else if(courseType==Constants.FINAL_EXAM_TYPE) {
+		        if(courseType==Constants.TEXT_COURSE_TYPE || courseType==Constants.FINAL_EXAM_TYPE) {
+		        	List<ExamMetaData> examList = DBTool.getExamListForCourse(getApplicationContext(), courseMeta.getCourseId());
+		        	Map<String, List<ExamMetaData>> examByModuleMap = groupExamByModule(examList);
+			        if(examByModuleMap.size()>1) {
+			        	List<ExamModuleMetaData> moduleList = getModuleListFromMap(examByModuleMap);
+				        selectCourseModulePage(courseMeta, moduleList, examByModuleMap);
+				    	Log.d("Select Course: ", "Select Module");
+
+				    } else {
+				        //If there's only one module, skip the select Module page
+				    	Log.d("Select Course: ", "Skip Module selection");
+				        String currentModuleId=examList.get(0).getModuleId();
+				        selectExamsPage(courseMeta, currentModuleId, examList);
+				    }		    
 		        	 
 		         } else if(courseType==Constants.FLASH_CARD_COURSE_TYPE) {
 		        	 currentCourse = CourseUtil.initilizeFlashCardCourse(courseMeta, getApplicationContext());
-		        	 selectFlashCardBucketPage( (FlashCardCourse) currentCourse );
+		        	 selectFlashCardTypePage( (FlashCardCourse) currentCourse );
 		         } else if(courseType==Constants.VIDEO_COURSE_TYPE) { // Video
 		        	 currentCourse = CourseUtil.initilizeVideoCourse(courseMeta, getApplicationContext());
 		        	 selectVideoModulePage( (VideoCourse) currentCourse );
@@ -200,7 +193,16 @@ public class ModeSelectionActivity extends Activity {
         pageText.setText("Course Menu:");
         
 	}
-	
+	List<ExamModuleMetaData> getModuleListFromMap(Map<String, List<ExamMetaData>> examByModuleMap) {
+		List<ExamModuleMetaData> moduleList = new ArrayList<ExamModuleMetaData>();
+		for(List<ExamMetaData> list : examByModuleMap.values()) {
+			if(!list.isEmpty()) {
+				ExamModuleMetaData emm = list.get(0).getExamModuleMetaData();
+				moduleList.add(emm);
+			}
+		}
+		return moduleList;
+	}
 	private void addSignInButton() {
 		Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
@@ -209,9 +211,64 @@ public class ModeSelectionActivity extends Activity {
             }
         });
 	}
-	private void selectFlashCardBucketPage( final FlashCardCourse course ) {
-		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+	
+	private Map<String, List<FlashCardBucket>> groupFlashCardBucketsByType(List<FlashCardBucket> bucketList) {
+		Map<String, List<FlashCardBucket>> map = new HashMap<String, List<FlashCardBucket>>();
+		for(FlashCardBucket fcb : bucketList) {
+			String type = fcb.getBucketType();
+			if(map.containsKey(type)) {
+				map.get(type).add(fcb);
+			} else {
+				List<FlashCardBucket> list = new ArrayList<FlashCardBucket>();
+				list.add(fcb);
+				map.put(type, list);
+			}
+		}
+		return map;
+	}
+	
+	private void selectFlashCardTypePage( final FlashCardCourse course ) {
+		
+		final Map<String, List<FlashCardBucket>> map = groupFlashCardBucketsByType(course.getBucket());
+		
+		
+		currentPage = FLASH_CARD_TYPE_PAGE;
+		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
+		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+			
+		final ListView listView = new ListView(getApplicationContext());
+		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
+		listView.setLayoutParams(lpbt);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+		        R.layout.course_list_item, R.id.courseListItemTextLine, new ArrayList<String>( map.keySet() ) );    
+		// Assign adapter to ListView
+		listView.setAdapter(adapter); 
+		
+		// ListView Item Click Listener
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            // ListView Clicked item index
+		        // ListView Clicked item value
+                String  bucketType    = (String) listView.getItemAtPosition(position);
+		        
+                selectFlashCardBucketPage( course, map.get(bucketType) ); 
+	                  
+	        }
+	    }); 
+	            
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
+        setContentView(listView);
+        addSignInButton();
+        TextView pageName = (TextView) findViewById(R.id.courseListPageName);
 		pageName.setText(course.getCourseName());
+	}
+	private void selectFlashCardBucketPage( final FlashCardCourse course, List<FlashCardBucket> bucketList ) {
+		
 		
 		currentPage = FLASH_CARD_BUCKET_PAGE;
 		
@@ -222,7 +279,7 @@ public class ModeSelectionActivity extends Activity {
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
 		ArrayAdapter<FlashCardBucket> adapter = new FlashCardBucketArrayAdapter(getApplicationContext(),
-	        R.layout.course_list_item, course.getBucket());    
+	        R.layout.course_list_item, bucketList);    
 	    // Assign adapter to ListView
 	    listView.setAdapter(adapter); 
 	            
@@ -231,10 +288,8 @@ public class ModeSelectionActivity extends Activity {
 	        @Override
 	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	            // ListView Clicked item index
-                int itemPosition = position;
 		        // ListView Clicked item value
                 FlashCardBucket  bucket    = (FlashCardBucket) listView.getItemAtPosition(position);
-		        currentBucketId = bucket.getBucketId();
 		        
 		        beginFlashCardBucket( view, bucket ); 
 	                  
@@ -248,12 +303,11 @@ public class ModeSelectionActivity extends Activity {
         setContentView(listView);
         
         addSignInButton();
-        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
-        pageText.setText("Video Course Module:");
+        TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(course.getCourseName());
 	}
 	private void selectVideoModulePage(final VideoCourse course) {
-		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
-		pageName.setText(course.getCourseName());
+		
 		
 		currentPage = VIDEO_MODULE_PAGE;
 		
@@ -272,11 +326,9 @@ public class ModeSelectionActivity extends Activity {
 	    listView.setOnItemClickListener(new OnItemClickListener() {
 	        @Override
 	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	            // ListView Clicked item index
-                int itemPosition = position;
+	            
 		        // ListView Clicked item value
                 VideoModule  videoModule    = (VideoModule) listView.getItemAtPosition(position);
-		        currentModuleSequenceId = videoModule.getModuleSequenceId();	        
 		        beginVideoModule( view, videoModule ); 
 	        }
 	    }); 
@@ -288,114 +340,77 @@ public class ModeSelectionActivity extends Activity {
         setContentView(listView);
         
         addSignInButton();
-        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
-        pageText.setText("Video Course Module:");
+        TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(course.getCourseName());
 	}
 	
 	
 	
-	private void selectCourseModulePage(final TextCourse course) {
-		Log.d("CourseInfo",course.getCourseId()+" "+course.getCourseName()+" "+
-					course.getCourseType() );//+"  number of modules:"+course.getModules().size());
-		
-		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
-		pageName.setText(course.getCourseName());
+	private void selectCourseModulePage(final Course courseMeta, final List<ExamModuleMetaData> moduleList, 
+			final Map<String, List<ExamMetaData>> examByModuleMap) {
+		Log.d("CourseInfo",courseMeta.getCourseId()+" "+courseMeta.getCourseName()+" "+
+				courseMeta.getCourseType() );//+"  number of modules:"+course.getModules().size());
 		
 		currentPage = TEXT_MODULE_PAGE;
 
-		List<TextCourseModule> moduleList = course.getModules();
+		//List<TextCourseModule> moduleList = course.getModules();
 		
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
 		
-		currentModuleNameToIdMap.clear();
-		 for(final TextCourseModule courseModule : moduleList) {
-		    	String moduleName = moduleIdNameMap.get(courseModule.getModuleId());
-		    	currentModuleNameToIdMap.put(moduleName, courseModule.getModuleId());
-		    
-		 }
 		 
 		final ListView listView = new ListView(getApplicationContext());
 	    listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-		R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(currentModuleNameToIdMap.keySet()));
+		ArrayAdapter<ExamModuleMetaData> adapter = new TextModuleArrayAdapter(getApplicationContext(),
+				R.layout.course_list_item, moduleList);
 		// Assign adapter to ListView
 		listView.setAdapter(adapter); 
 		            
 		// ListView Item Click Listener
 		listView.setOnItemClickListener(new OnItemClickListener() {
 		 
-		              @Override
-		                  public void onItemClick(AdapterView<?> parent, View view,
-		                     int position, long id) {
-		                    
-			                   // ListView Clicked item index
-			                   int itemPosition     = position;
-			                   
-			                   // ListView Clicked item value
-			                   String  itemValue    = (String) listView.getItemAtPosition(position);
-			                   currentTextModuleId = currentModuleNameToIdMap.get(itemValue).toString();
-			                    // Show Alert 
-			                   Toast.makeText(getApplicationContext(),
-			                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-			                      .show();
-			                   TextCourse course = courseMetaData.get(currentCourseId);
-			                   TextCourseModule currentModule=null;
-			                   for(TextCourseModule module : course.getModules()) {
-			                	   if(module.getModuleId() == Long.parseLong(currentTextModuleId)) {
-			                		   currentModule = module;
-			                		   break;
-			                	   }
-			                   }
-			                   selectExamsPage(course, currentModule);
+		    @Override
+		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		                   
-		                  }
+		    	// ListView Clicked item value
+		    	ExamModuleMetaData  moduleMeta    = (ExamModuleMetaData) listView.getItemAtPosition(position);
+		    	String moduleId = moduleMeta.getModuleId();
+			    selectExamsPage(courseMeta, moduleId, examByModuleMap.get(moduleId));
+		                   
+		    }
 		    
-		             }); 
-		    ;
-		    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-		    listHeader.setClickable(false);
-		    listView.addHeaderView(listHeader);	
+		}); 
+		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+		listHeader.setClickable(false);
+		listView.addHeaderView(listHeader);	
 		  
-	        setContentView(listView);
+	    setContentView(listView);
 	        
-	        addSignInButton();
-	        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
-	        pageText.setText("Module Menu for Course - "+ courseMetaData.get(currentCourseId).getCourseName());
-	        //pageText.setTextSize(20);
-	        //pageText.setTextColor(0);
-
+	    addSignInButton();
+	    TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(courseMeta.getCourseName());
 	}
 	
 	//TODO: Need to have course information in courseModule
-	private void selectExamsPage(final TextCourse course, TextCourseModule courseModule) {
+	private void selectExamsPage(final Course courseMeta, final String moduleId, List<ExamMetaData> examList) {
 		
 		currentPage = TEXT_EXAM_PAGE; 
 		
-		//ScrollView scrollView = new ScrollView(getApplicationContext());
-		TextView pageName = (TextView) findViewById(R.id.courseListPageName);
-		pageName.setText(course.getCourseName());
-		List<Exam> examList = courseModule.getExams();
-		Collections.sort(examList, new Comparator<Exam>(){
+		
+		Collections.sort(examList, new Comparator<ExamMetaData>(){
 
 			// Overriding the compare method to sort the age 
-			public int compare(Exam d, Exam d1){
-			   return d.getName().compareTo(d1.getName());
+			public int compare(ExamMetaData d, ExamMetaData d1){
+			   return d.getExamName().compareTo(d1.getExamName());
 			}
 		});
 		//setContentView(R.layout.course_selection);
 		
 		TextView tv = new TextView(getApplicationContext() ) ;//findViewById(R.id.courseSelectionText);
-		tv.setText("Exams in CourseModule: "+course.getCourseName()+", Module: "+courseModule.getModuleId());
+		tv.setText("Exams in CourseModule: "+courseMeta.getCourseName());
 		tv.setTextColor(Color.parseColor("black"));
 		tv.setTextSize(20);
-		
-		examNameToExamMap.clear();
-	    for(final Exam exam : examList) {
-	    	examNameToExamMap.put(exam.getName(), exam);
-	    }
-	    
 
 		LayoutParams lpbt = new LayoutParams((LayoutParams.MATCH_PARENT), (LayoutParams.WRAP_CONTENT));
 		lpbt.gravity= Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL; 
@@ -403,8 +418,8 @@ public class ModeSelectionActivity extends Activity {
         final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-	              R.layout.course_list_item, R.id.courseListItemTextLine,new ArrayList<String>(examNameToExamMap.keySet()));    
+		ArrayAdapter<ExamMetaData> adapter = new TextExamArrayAdapter(getApplicationContext(),
+	              R.layout.course_list_item, examList);    
 	            // Assign adapter to ListView
 	            listView.setAdapter(adapter); 
 	            
@@ -414,21 +429,10 @@ public class ModeSelectionActivity extends Activity {
 	                  @Override
 	                  public void onItemClick(AdapterView<?> parent, View view,
 	                     int position, long id) {
-	                    
-		                   // ListView Clicked item index
-		                   int itemPosition     = position;
-		                   
-		                   // ListView Clicked item value
-		                   String  itemValue    = (String) listView.getItemAtPosition(position);
-		                   Exam currentExam = examNameToExamMap.get(itemValue);
-		                   currentTextExamId = ""+currentExam.getExamId();
-		                    // Show Alert 
-		                   Toast.makeText(getApplicationContext(),
-		                      "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-		                      .show();
-		                   
-		                   beginExam(view, currentExam);
-	                   
+	                     // ListView Clicked item value
+		                   ExamMetaData  emd    = (ExamMetaData) listView.getItemAtPosition(position);
+		                     
+		                   beginExam(view, courseMeta, moduleId, emd.getExamId());
 	                  }
 	    
 	             }); 
@@ -439,11 +443,8 @@ public class ModeSelectionActivity extends Activity {
 	            
         setContentView(listView);
         addSignInButton();
-        TextView pageText = (TextView) findViewById(R.id.courseListPageName);
-        pageText.setText("Exam Menu for Course - "+ courseMetaData.get(currentCourseId).getCourseName());
-        //pageText.setTextSize(20);
-        //pageText.setTextColor(0);
-
+        TextView pageName = (TextView) findViewById(R.id.courseListPageName);
+		pageName.setText(courseMeta.getCourseName());
 	}
 	
 	private void loginPage() {
@@ -455,60 +456,42 @@ public class ModeSelectionActivity extends Activity {
         Log.d("loginPage", "construct progress bar:  "+ mProgress.getId());
         
         buttonLogin.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+            @SuppressWarnings("deprecation")
+			public void onClick(View v) {
              	// download restful feeds and serialize to DB 
             	
-                NM= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                nm= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         	  	Notification notify=new Notification(android.R.drawable. stat_notify_more,"STC downloader",System.currentTimeMillis());
       	        PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
       	        notify.setLatestEventInfo(getApplicationContext(),"Finish Downloading","Downloading Finished",pending);
       	       
-      	        
-            	String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/CourseDB.json";
-            	new CoursesDownloaderTask(mProgress, NM,notify ).execute(getApplicationContext());
+      	        new CoursesDownloaderTask(mProgress, nm,notify ).execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
 
             	//selectCoursesPage();
             }
         });
-        /*
-        final Button buttonBack = (Button) findViewById(R.id.loginBackButton);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	mainPage();
-            }
-        });*/
+      
         
 	}
 
     
-   private Intent getDefaultIntent() {
-       Intent intent = new Intent(Intent.ACTION_SEND);
-       intent.setType("image/*");
-       return intent;
-   }
-   
-    private void openSearch(){
-    	
-    }   
-    private void openSettings(){
-    	
-    }
+  
     
     
     
     /** Called when the user clicks the Send button */
-    public void beginExam(View view, Exam exam) {
+    public void beginExam(View view, Course courseMeta, String moduleId, String examId) {
         Intent intent ;
-        if(Integer.parseInt(exam.getModuleId())%2 == 0 ) {
+        if(Integer.parseInt(moduleId)%2 == 0 ) {
         	intent = new Intent(this, ExamModeActivity.class);
     	} else {
         	intent = new Intent(this, PracticeModeActivity.class);
     	}
-        intent.putExtra("courseId", currentCourseId);
-        intent.putExtra("moduleId", currentTextModuleId);
-        intent.putExtra("examId", currentTextExamId);
+        intent.putExtra("courseId", courseMeta.getCourseId());
+        intent.putExtra("moduleId", moduleId);
+        intent.putExtra("examId", examId);
         startActivity(intent);
     }
     public void beginPractice(View view, String courseId, String courseModuleId, String examId) {
@@ -544,10 +527,17 @@ public class ModeSelectionActivity extends Activity {
     
     @Override
     public void onBackPressed() {
-    	if(currentPage == COURSE_PAGE) {
-    		super.onBackPressed();
-    	} else {
-    		selectCoursesPage();
+    	switch(currentPage) {
+    		case COURSE_PAGE: 
+    			super.onBackPressed();
+    			break;
+    		case FLASH_CARD_BUCKET_PAGE:
+    			selectFlashCardTypePage((FlashCardCourse) currentCourse);
+    			break;
+    		
+    		default : 
+    			selectCoursesPage();
+    			break;
     	}
     }
 

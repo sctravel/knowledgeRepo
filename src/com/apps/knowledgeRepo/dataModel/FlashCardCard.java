@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class FlashCardCard implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	int cardId; 	
 	String name; 
 	String frontText;
@@ -69,12 +70,14 @@ public class FlashCardCard implements Serializable {
 		
 		Math(0), Normal(1);
 		
-		  private int CardType;
+		private int cardType;
 
-	        private CardType(int CardType) {
-	                this.CardType = CardType;
-	        }
-
+	    private CardType(int cardType) {
+	    	this.cardType = cardType;
+	    }
+	    public int getCardType() {
+	    	return cardType;
+	    }
 
 	
 	}

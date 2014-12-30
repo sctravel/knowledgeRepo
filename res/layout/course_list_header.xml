@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="@dimen/TitleBar"
     android:orientation="vertical"
     
-    android:padding="3dip" >
+    android:padding="3dip"
+    android:weightSum="1">
     
     <RelativeLayout
         android:background="#d3d3d3"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="6">
 	    <ImageView
 	        android:id="@+id/courseListHeaderIcon"
 	        android:layout_width="wrap_content"
@@ -19,8 +21,9 @@
 	        android:gravity="center_horizontal"
 	        android:layout_marginRight="3dip"
 	        android:contentDescription="TODO"
-	        android:src="@drawable/launch_icon" />
-	
+	        android:src="@drawable/launch_icon"
+            android:layout_alignParentBottom="true" />
+
 	    <TextView
 	        android:id="@+id/courseListHeaderTextLine"
 	        android:layout_width="wrap_content"
@@ -29,23 +32,22 @@
 	        android:gravity="bottom"
 	        android:textAlignment="gravity"
 	        android:layout_gravity="bottom"
-	        android:layout_centerHorizontal="true"
-	        android:text="Welcome to STC \n Xi TU"
+            android:text="Welcome to STC \n "
 	        android:textSize="20sp" 
-	        android:textColor="#000" />
+	        android:textColor="#000"
+            android:layout_centerInParent="true" />
         
          <Button
 	        android:id="@+id/courseListSignInNotice"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/courseListHeaderTextLine"
-	        android:layout_alignParentRight="true"
-	        android:gravity="center_horizontal"
+	        android:layout_width="@dimen/TitleBar"
+	        android:layout_height="@dimen/TitleBar"
+             android:gravity="center_horizontal"
 	        android:textAlignment="gravity"
 	        android:layout_gravity="center_horizontal|center_vertical"
-	        android:layout_centerHorizontal="true"
-	        android:background="@drawable/icon_download"
-	        />
+             android:background="@drawable/icon_download"
+             android:layout_alignParentTop="true"
+             android:layout_alignParentRight="true"
+             android:layout_alignParentEnd="true" />
    </RelativeLayout>
    
     <TextView
@@ -54,11 +56,10 @@
 	        android:layout_height="wrap_content"
 	        android:gravity="left"
 	        android:textAlignment="gravity"
-	        android:layout_gravity="left"
-	        android:layout_centerHorizontal="true"
+        	android:layout_centerHorizontal="true"
 	        android:background="#fff"
 	        android:text=""
-	        android:textSize="25sp" 
+	        android:textSize="18sp" 
 	        android:textColor="#000" />
-    
+
 </LinearLayout>

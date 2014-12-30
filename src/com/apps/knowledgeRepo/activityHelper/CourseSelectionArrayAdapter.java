@@ -1,11 +1,9 @@
 package com.apps.knowledgeRepo.activityHelper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.Course;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +30,8 @@ public class CourseSelectionArrayAdapter extends ArrayAdapter<Course> {
 	      this.courses = Arrays.asList(courses);
 	  }
 
-	  @Override
+	  @SuppressLint("ViewHolder")
+	@Override
 	  public View getView(int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

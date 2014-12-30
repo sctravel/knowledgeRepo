@@ -1,23 +1,12 @@
 package com.apps.knowledgeRepo;
 
-
-import java.util.List;
-
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.AnimationFactory.FlipDirection;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
-import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
-import com.apps.knowledgeRepo.dataModel.VideoModule;
-import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.om.Constants;
-import com.apps.knowledgeRepo.utils.CourseUtil;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 public class MainActivity extends FragmentActivity {
@@ -61,25 +48,14 @@ public class MainActivity extends FragmentActivity {
        	WebView test1 = (WebView)this.findViewById(R.id.fragment1).findViewById(R.id.test1);
     	WebView test2 = (WebView)this.findViewById(R.id.fragment2).findViewById(R.id.test2);
 		  
-	    Button button = (Button)test1.findViewById(R.id.button1);
-	    Button buttonPrev = (Button)test1.findViewById(R.id.button2);
+	    //Button button = (Button)test1.findViewById(R.id.button1);
+	    //Button buttonPrev = (Button)test1.findViewById(R.id.button2);
 	  
 	    test1.loadData(bucket.getCardList().get(currCardNum).getFrontText(), "text/html","utf-8");
 	    test2.loadData(bucket.getCardList().get(currCardNum).getBackText(), "text/html","utf-8");
 	 
-	
-/*
-	 button.setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				
-			}
-       });
-		*/
-	    
-	 
+
+	    setTitle(bucket.getTitle());
 		viewAnimator1.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
@@ -90,7 +66,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.display_message, menu);
+		getMenuInflater().inflate(R.menu.exam_mode_menu, menu);
 		return true;
 	}
 	

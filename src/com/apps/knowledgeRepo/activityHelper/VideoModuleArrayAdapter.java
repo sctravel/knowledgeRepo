@@ -1,12 +1,9 @@
 package com.apps.knowledgeRepo.activityHelper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.Course;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +30,7 @@ public class VideoModuleArrayAdapter extends ArrayAdapter<VideoModule> {
 	      this.modules = Arrays.asList(modules);
 	  }
 
+	  @SuppressLint("ViewHolder")
 	  @Override
 	  public View getView(int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context

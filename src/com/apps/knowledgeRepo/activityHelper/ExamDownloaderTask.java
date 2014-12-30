@@ -17,9 +17,6 @@ import org.apache.http.util.ByteArrayBuffer;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
-
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,39 +28,42 @@ import org.json.simple.parser.ParseException;
 @SuppressWarnings("unused")
 public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
 		     	    
-        public boolean DownloadFromUrl(String fileURL, String fileName) {  //this is the downloader method
-                try {
-                        URL url = new URL(fileURL); 
-                        File file = new File(fileName);
+    public boolean DownloadFromUrl(String fileURL, String fileName) {  //this is the downloader method
+        try {
+        	URL url = new URL(fileURL); 
+            File file = new File(fileName);
                         
-                        if (file.exists()) {
-                        	 Log.w("file already exisits, will try to overwrite it","before download check");
-                        }
+            if (file.exists()) {
+                Log.w("file already exisits, will try to overwrite it","before download check");
+            }
  
-                        long startTime = System.currentTimeMillis();
-                        Log.w("exam downloader", "download begining");
-                        Log.w("exam downloader", "download url:" + url);
-                        Log.w("exam downloader", "downloaded file name:" + fileName);
-                        /* Open a connection to that URL. */
-                        URLConnection ucon = url.openConnection();
+            long startTime = System.currentTimeMillis();
+            Log.w("exam downloader", "download begining");
+            Log.w("exam downloader", "download url:" + url);
+            Log.w("exam downloader", "downloaded file name:" + fileName);
+            /* Open a connection to that URL. */
+            URLConnection ucon = url.openConnection();
  
-                        /*
-                         * Define InputStreams to read from the URLConnection.
-                         */
-                        InputStream is = ucon.getInputStream();
-                        BufferedInputStream bis = new BufferedInputStream(is);
+           
+            /*
+             * Define InputStreams to read from the URLConnection.
+             */
+            InputStream is = ucon.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
  
-                        /*
-                         * Read bytes to the Buffer until there is nothing more to read(-1).
-                         */
-                        ByteArrayBuffer baf = new ByteArrayBuffer(50);
-                        int current = 0;
-                        while ((current = bis.read()) != -1) {
-                                baf.append((byte) current);
-                        }
+            /*
+             * Read bytes to the Buffer until there is nothing more to read(-1).
+             */
+           
+            ByteArrayBuffer baf = new ByteArrayBuffer(50);
+            int current = 0;
+            
+            while ((current = bis.read()) != -1) {
+            	baf.append((byte) current);
+            }
  
                         /* Convert the Bytes read to a String. */
-                        FileOutputStream fos = new FileOutputStream(file);
+                        final FileOutputStream fos = new FileOutputStream(file);
                         fos.write(baf.toByteArray());
                         fos.close();
                         Log.w("exam downloader", "download ready in"
@@ -73,7 +73,7 @@ public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
                         
                         //parse JSON
                         
-                        JSONParser parser = new JSONParser();
+                        final JSONParser parser = new JSONParser();
                         
                     	try{
             				Object obj = parser.parse(new FileReader(fileName));
@@ -135,33 +135,28 @@ public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
             			            	   }     		  		            	  
             		            	   }
             	            	   }         	             	   
-            	               }               	               
-            	               System.out.print("courseid:" + courseid); 
-            				 }		   	   
-            			}
-            			catch( ParseException ex){
-            				
-            				System.out.print(ex.toString()); 						   
-            			}
-                        
-                                               
-                        return true;
+         	               }               	               
+                    System.out.print("courseid:" + courseid); 
+            	}		   	   
+   			}
+            catch( ParseException ex){         				
+   				System.out.print(ex.toString()); 						   
+            }            
+                                                                       
+            return true;
  
-                } catch (IOException e) {
-                        Log.w("exam downloader", "Error: " + e);
-                }
-                
-                return false;
- 
+        } catch (IOException e) {
+        	Log.w("exam downloader", "Error: " + e);
         }
+                
+        return false;
+ 
+    }
 
-		@Override
-		protected Boolean doInBackground(String... urls) {
-			// TODO Auto-generated method stub
-			return DownloadFromUrl(urls[0], urls[1]);
-		}
-		
-		
-	
-
+	@Override
+	protected Boolean doInBackground(String... urls) {
+		// TODO Auto-generated method stub
+		return DownloadFromUrl(urls[0], urls[1]);
+	}
+				
 }

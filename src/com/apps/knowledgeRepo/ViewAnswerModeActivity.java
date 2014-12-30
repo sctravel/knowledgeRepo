@@ -1,8 +1,5 @@
 package com.apps.knowledgeRepo;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -46,7 +42,7 @@ public class ViewAnswerModeActivity extends Activity{
     private String moduleId;
     
     private List<RadioButton> choiceList; 
-    private int answerValue=0;
+    //private int answerValue=0;
 
     public void initilizeExam() {
     	
@@ -209,7 +205,7 @@ public class ViewAnswerModeActivity extends Activity{
     	final TextView answerText = (TextView ) findViewById(R.id.checkAnswer);
     	List<ExamAnswer> answerList = exam.getQuestions().get(questionNumber).getAnswers();
     	String answerNum=" ";
-    	int answerNo=0;
+    	//int answerNo=0;
     	for(ExamAnswer answer : answerList ) {
     		if(answer.getScore() ==1) {
     			answerNum = ""+(char)(answer.getAnswerNumber()+'A'-1);

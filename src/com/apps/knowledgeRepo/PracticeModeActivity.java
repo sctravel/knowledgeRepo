@@ -1,38 +1,22 @@
 package com.apps.knowledgeRepo;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.Exam;
-import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -206,7 +190,8 @@ public final static char CHOICE_A= 'A';
         
         
     }
-    private void setRadioButtonChecked(String answer) {
+    @SuppressWarnings("unused")
+	private void setRadioButtonChecked(final String answer) {
     	   
     	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.singleChoicePractice);
     	radioGroup.setEnabled(true);

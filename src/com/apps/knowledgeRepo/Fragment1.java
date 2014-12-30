@@ -1,12 +1,11 @@
 package com.apps.knowledgeRepo;
 
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.apps.knowledagerepo.R;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
+
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
@@ -15,11 +14,13 @@ import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.apps.knowledgeRepo.om.Constants;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 
 
 public class Fragment1 extends Fragment{
@@ -39,7 +41,10 @@ public class Fragment1 extends Fragment{
 	int prev = 0;
 	TimerTask task;
     Timer timer;
+
 	int max ;
+	
+	@SuppressLint("HandlerLeak")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		
 		Bundle extras = this.getActivity().getIntent().getExtras();
