@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
            <activity
-        android:name="com.apps.knowledgeRepo.MainActivity"
+        android:name="com.apps.knowledgeRepo.FlashCardActivity"
         android:label="Flashcard"
         android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
         <meta-data

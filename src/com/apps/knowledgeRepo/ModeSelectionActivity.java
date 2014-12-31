@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -57,7 +59,8 @@ public class ModeSelectionActivity extends Activity {
 	private List<Course> courseList = new ArrayList<Course>();
 	
 	private String currentCourseId=null;
-
+	private String username = null;
+	private String password = null;
 	private  NotificationManager nm=null;
 	
 	private Course currentCourse = null;
@@ -101,12 +104,23 @@ public class ModeSelectionActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
    		//setContentView(R.layout.mode_selection);
-			
+        SharedPreferences pref = getSharedPreferences(Constants.PREF_ACCOUNT_FILE,MODE_PRIVATE);   
+    	username = pref.getString(Constants.PREF_USERNAME, null);
+    	password = pref.getString(Constants.PREF_PASSWORD, null);
+
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	loginPage();
+            	
+            	if (username == null || password == null) {
+            	    //Prompt for username and password
+            		loginPage();
+            	} else {
+            		//TODO: direct download using the stored username password
+            		loginPage();
+            	}
+            	
             }
         });	
 	}
@@ -127,7 +141,7 @@ public class ModeSelectionActivity extends Activity {
     	return map;
     }
     
-	private void selectCoursesPage(){
+	public void selectCoursesPage(){
 		//refresh the course list every time we go to Course Page
 		courseList = DBTool.getCourseMetaData(getApplicationContext());
 
@@ -447,6 +461,8 @@ public class ModeSelectionActivity extends Activity {
 		pageName.setText(courseMeta.getCourseName());
 	}
 	
+	//Display the login page if there's no username/password stored in sharedPreferences file
+	// and store the username/password in sharedPreferences file
 	private void loginPage() {
 		currentPage = LOGIN_PAGE;
         setContentView(R.layout.login_page);
@@ -459,16 +475,32 @@ public class ModeSelectionActivity extends Activity {
             @SuppressWarnings("deprecation")
 			public void onClick(View v) {
              	// download restful feeds and serialize to DB 
-            	
+            	final EditText usernameText = (EditText) findViewById(R.id.loginUserNameInput);
+                final EditText passwordText = (EditText) findViewById(R.id.loginPasswordInput);
+                
+                String username = usernameText.getText().toString();
+                String password = passwordText.getText().toString();
+                
+                 
+                //It is not necessary to use Android AccountManager(class) to manage the account here.
+                // store the username/password in sharedPreference
+                getSharedPreferences(Constants.PREF_ACCOUNT_FILE,MODE_PRIVATE)
+                .edit()
+                .putString(Constants.PREF_USERNAME, username)
+                .putString(Constants.PREF_PASSWORD, password)
+                .commit();
+                
+                //TODO use the username/password here
                 nm= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         	  	Notification notify=new Notification(android.R.drawable. stat_notify_more,"STC downloader",System.currentTimeMillis());
       	        PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
       	        notify.setLatestEventInfo(getApplicationContext(),"Finish Downloading","Downloading Finished",pending);
       	       
-      	        new CoursesDownloaderTask(mProgress, nm,notify ).execute(getApplicationContext());
+      	        new CoursesDownloaderTask(mProgress, nm,notify,ModeSelectionActivity.this).execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
-
+   			    	
+   			     //setContentView(R.layout.mode_selection);
             	//selectCoursesPage();
             }
         });
@@ -503,7 +535,7 @@ public class ModeSelectionActivity extends Activity {
     }
     public void  beginFlashCardBucket(View view, FlashCardBucket bucket ){
     	Intent intent ;
-        intent = new Intent(this, MainActivity.class);
+        intent = new Intent(this, FlashCardActivity.class);
     	/*query current card num 
     	 * 
     	 * 

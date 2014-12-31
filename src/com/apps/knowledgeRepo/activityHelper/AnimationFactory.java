@@ -1,27 +1,4 @@
-package com.apps.knowledgeRepo;
-
-/**
- * Copyright (c) 2012 Ephraim Tekle genzeb@gmail.com
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
- * associated documentation files (the "Software"), to deal in the Software without restriction, including 
- * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the 
- * following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial 
- * portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
- * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN 
- * NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
- *  @author Ephraim A. Tekle
- *
- */
-
+package com.apps.knowledgeRepo.activityHelper;
 
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -37,36 +14,34 @@ import android.widget.ViewAnimator;
 /**
  * This class contains methods for creating {@link Animation} objects for some of the most common animation, including a 3D flip animation, {@link FlipAnimation}.
  * Furthermore, utility methods are provided for initiating fade-in-then-out and flip animations.
- * 
- * @author Ephraim A. Tekle
  *
  */
 public class AnimationFactory {
-        
-        /**
-         * The {@code FlipDirection} enumeration defines the most typical flip view transitions: left-to-right and right-to-left. {@code FlipDirection} is used during the creation of {@link FlipAnimation} animations.
-         * 
-         * @author Ephraim A. Tekle
-         *
-         */
-        public static enum FlipDirection {
-                LEFT_RIGHT, 
-                RIGHT_LEFT;
+   private static final long ANIMATION_DURATION = 200; //ms
+   
+   /**
+    * The {@code FlipDirection} enumeration defines the most typical flip view transitions: 
+    * left-to-right and right-to-left. 
+    * {@code FlipDirection} is used during the creation of {@link FlipAnimation} animations.
+    */
+   public static enum FlipDirection {
+	   LEFT_RIGHT, 
+       RIGHT_LEFT;
                 
-                public float getStartDegreeForFirstView() {
-                        return 0;
-                }
+       public float getStartDegreeForFirstView() {
+    	   return 0;
+       }
                 
-                public float getStartDegreeForSecondView() {
-                        switch(this) {
-                        case LEFT_RIGHT:
-                                return -90;
-                        case RIGHT_LEFT:
-                                return 90;
-                        default:
-                                return 0;
-                        }
-                }
+       public float getStartDegreeForSecondView() {
+    	   switch(this) {
+              case LEFT_RIGHT:
+            	  return -90;
+              case RIGHT_LEFT:
+            	  return 90;
+              default:
+            	  return 0;
+           }
+       }
                 
                 public float getEndDegreeForFirstView() {
                         switch(this) {
@@ -344,7 +319,7 @@ public class AnimationFactory {
          */
         public static Animation fadeOutAnimation(long duration, final View view) {
                 
-                Animation animation = fadeOutAnimation(500, 0); 
+            Animation animation = fadeOutAnimation(ANIMATION_DURATION, 0); 
 
             animation.setAnimationListener(new AnimationListener() { 
                         @Override
@@ -405,7 +380,7 @@ public class AnimationFactory {
                  
                 v.setVisibility(View.VISIBLE);
                 AnimationSet animation = new AnimationSet(true);
-                Animation[] fadeInOut = fadeInThenOutAnimation(500,delay); 
+                Animation[] fadeInOut = fadeInThenOutAnimation(ANIMATION_DURATION,delay); 
             animation.addAnimation(fadeInOut[0]);
             animation.addAnimation(fadeInOut[1]);
             animation.setAnimationListener(new AnimationListener() { 

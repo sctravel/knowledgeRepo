@@ -1,9 +1,9 @@
 package com.apps.knowledgeRepo;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.AnimationFactory.FlipDirection;
+import com.apps.knowledgeRepo.activityHelper.AnimationFactory;
+import com.apps.knowledgeRepo.activityHelper.AnimationFactory.FlipDirection;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
-import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.om.Constants;
 
 import android.support.v4.app.FragmentActivity;
@@ -11,36 +11,34 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.ViewAnimator;
 
-public class MainActivity extends FragmentActivity {
+public class FlashCardActivity extends FragmentActivity {
 
-    FlashCardCourse flashcard_course;
     FlashCardBucket  bucket;
     String courseId ;
     String buckedId;
     int currCardNum = 0;
     Bundle extras;
-       
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	                  
-        extras = getIntent().getExtras();
-         if (extras != null) {
-        	  bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
-         	  courseId = extras.getString(Constants.COURSE_ID_NAME);
-         	  buckedId = extras.getString(Constants.BUCKET_ID_NAME);
-         	  currCardNum = extras.getInt("currCardNum");
-         }
-         if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
-     	
-        
-        
-	     
-		setContentView(R.layout.activity_main);
+      extras = getIntent().getExtras();
+        if (extras != null) {
+        	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
+         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
+         	 currCardNum = extras.getInt("currCardNum");
+        }
+        if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
+     	     
+		setContentView(R.layout.flash_card_mode);
+
 		
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
 		
@@ -64,6 +62,8 @@ public class MainActivity extends FragmentActivity {
 
 		});
 	}
+    
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.exam_mode_menu, menu);
@@ -91,5 +91,11 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean dispatchTouchEvent (MotionEvent ev) {
+	    // Do your calculations
+	    return super.dispatchTouchEvent(ev);
 	}
 }

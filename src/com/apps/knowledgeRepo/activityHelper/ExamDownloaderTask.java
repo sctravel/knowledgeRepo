@@ -43,8 +43,7 @@ public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
             Log.w("exam downloader", "downloaded file name:" + fileName);
             /* Open a connection to that URL. */
             URLConnection ucon = url.openConnection();
- 
-           
+            
             /*
              * Define InputStreams to read from the URLConnection.
              */

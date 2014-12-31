@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.activityHelper.OnSwipeTouchListener;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamStatus;
 import com.apps.knowledgeRepo.dataModel.ExamQuestion;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -82,12 +84,16 @@ public class ExamModeActivity extends Activity{
     
     public void initilizeExam() {
     	exam = CourseUtil.initilizeExam(courseId, moduleId, examId, getApplicationContext());
-        if(exam==null) throw new RuntimeException("Exam is null after initialization for id-"+examId);
+        if(exam==null || exam.getQuestions().isEmpty()) {
+        	Toast.makeText(getApplicationContext(), "This Exam is Empty. ", Toast.LENGTH_LONG).show();
+			finish();
+			return;        
+		}
         
         attempt=DBTool.retriveNewAttempt(getApplicationContext(), courseId, moduleId, examId);
         Log.d("Attemp", "Current attempt is: "+attempt);
     	ExamStatus examStatus = DBTool.retriveStatus(getApplicationContext(), 
-    			DBTool.getDB(getApplicationContext()), courseId, moduleId, examId, attempt); 
+    			courseId, moduleId, examId, attempt); 
     	
     	scoreMap = examStatus.getUserAnswerMap();
     	questionNumber = scoreMap.size();
@@ -98,6 +104,7 @@ public class ExamModeActivity extends Activity{
  		addListenerOnGradeButton();
         addListenerOnPrevAndNextButton();
         addListenerOnReviewMarkedButton();
+        addListernerOnGuesture();
         startTime = System.currentTimeMillis();
         pauseStartTime=0;
         setTitle(exam.getName());
@@ -105,15 +112,47 @@ public class ExamModeActivity extends Activity{
         //titleView.setText(exam.getName());
 	    refreshPage();
     }
-  //Review Mode can only see the questions marked for review
-
+    /*
+    @Override
+    public boolean dispatchTouchEvent (MotionEvent ev) {
+        // Do your calculations
+        return super.dispatchTouchEvent(ev);
+    }*/
+    private void addListernerOnGuesture() {
+    	final View rootView = (View) findViewById(R.id.examModeScrollView);
+    	//Add webview explicitly here, otherwise it won't work. 
+    	//Seeking better solutions
+    	final WebView webview = (WebView) findViewById(R.id.questionExam);
+    	OnSwipeTouchListener listener = new OnSwipeTouchListener(getApplicationContext()){
+    		@Override
+    	    public void onSwipeLeft() {
+    			final Button buttonPrev = (Button) findViewById(R.id.previousButtonExam);
+    			if(buttonPrev.isEnabled()) {
+    				buttonPrev.performClick();
+    			} else {
+    	    		Toast.makeText(getApplicationContext(), "Button Prev is disabled.", Toast.LENGTH_LONG).show();
+    			}
+    	    }
+    		@Override
+    	    public void onSwipeRight() {
+    			final Button buttonNext = (Button) findViewById(R.id.nextButtonExam);
+    			if(buttonNext.isEnabled()) {
+    				buttonNext.performClick();
+    			} else {
+    	    		Toast.makeText(getApplicationContext(), "Button Next is disabled.", Toast.LENGTH_LONG).show();
+    			}
+    	    }
+    	};
+    	rootView.setOnTouchListener(listener);
+    	webview.setOnTouchListener(listener);
+    }
+    
     public boolean getReviewMode() {
     	return this.isReviewMode;
     }
     public void setReviewMode(boolean isReviewMode) {
     	this.isReviewMode=isReviewMode;
     }
-    
     
     
     @Override
@@ -202,7 +241,6 @@ public class ExamModeActivity extends Activity{
     	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
 	    //startActivity(intent);
     	this.finish();
-		System.out.println("returnToMainMenuButton!");
     }
     /** Defines a default (dummy) share intent to initialize the action provider.
      * However, as soon as the actual content to be used in the intent
@@ -280,10 +318,9 @@ public class ExamModeActivity extends Activity{
     
     private long getRemainTimeInMillis() {
     	long passedTime = System.currentTimeMillis() - startTime ;
-    	System.out.println("Total used time is: "+totalUsedTime+"; Total pass time is: "+passedTime);
-
     	return exam.getTimeLimit()*1000*60 - (passedTime- totalPauseTime + totalUsedTime) ;
     }
+    
     private void refreshPage() {
     	
     	if(isTimeOut()) {
@@ -355,33 +392,26 @@ public class ExamModeActivity extends Activity{
     }
     
     private void setQuestionText(int questionNumber) {
-    	//final TextView questionText = (TextView) findViewById(R.id.questionExam);
     	final WebView questionText = (WebView) findViewById(R.id.questionExam);
-       
-        
         questionText.loadData((questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText().trim(),"text/html","utf-8");
         questionText.setBackgroundColor(Color.TRANSPARENT);
-        //questionText.setText(Html.fromHtml( (questionNumber+1)+". "+ exam.getQuestions().get(questionNumber).getText()));
         for(int i=0; i< choiceList.size(); ++i) {
         	//Log.d("Choice","size of choiceList  is "+choiceList.size());
         	choiceList.get(i).setVisibility(View.INVISIBLE); 
         }
         for(int i=0; i< exam.getQuestions().get(questionNumber).getAnswers().size(); ++i) {
-        	Log.d("Choice","size of choiceList  is "+choiceList.size());
         	char c = (char) ('A'+i);
         	choiceList.get(i).setText(Html.fromHtml(c+". "+exam.getQuestions().get(questionNumber).getAnswers().get(i).getAnswerText() )); 
         	choiceList.get(i).setVisibility(View.VISIBLE); 
         }
-        //choiceB.setText(Html.fromHtml("B. "+exam.getQuestions().get(questionNumber).getAnswers().get(1).getAnswerText()));
-        //choiceC.setText(Html.fromHtml("C. "+exam.getQuestions().get(questionNumber).getAnswers().get(2).getAnswerText()));
-        //choiceD.setText(Html.fromHtml("D. "+exam.getQuestions().get(questionNumber).getAnswers().get(3).getAnswerText()));
+       
     }
     public  void onRadioButtonClicked(View view) {
     	
     	String value = getCheckedAnswer();
     	//Store user answer
         scoreMap.put(questionNumber, value);
-        DBTool.recordStatus(getApplicationContext(), DBTool.getDB(getApplicationContext()), 
+        DBTool.recordStatus(getApplicationContext(), 
     			courseId, moduleId, examId , ""+attempt, ""+questionNumber, 
     			value, ""+(exam.getTimeLimit()*60*1000-getRemainTimeInMillis()) );
         Log.d("DB operation","Write question:"+questionNumber+" with answer:"+value+" to DB");
@@ -426,7 +456,7 @@ public class ExamModeActivity extends Activity{
    
    
    public void pause() {
-	   System.out.println("Exam paused;");
+	   Log.d("Exam Mode","Exam paused;");
 	   pauseStartTime=System.currentTimeMillis();
    }
    
@@ -440,7 +470,7 @@ public class ExamModeActivity extends Activity{
    }
    
    public void resume() {
-	   System.out.println("Exam resumed;");
+	   Log.d("Exam Mode","Exam resumed;");
 	   if(pauseStartTime>0)
 		   totalPauseTime += System.currentTimeMillis()-pauseStartTime;
 	   //TODO resume the screen
@@ -700,8 +730,6 @@ public class ExamModeActivity extends Activity{
 				    //intent.putExtra(EXTRA_MESSAGE, message);
 					ExamModeActivity.this.finish();
 				    startActivity(intent);
-					System.out.println("returnToMainMenuButton!");
-
 				}
 			});
 			

@@ -1,4 +1,4 @@
-package com.apps.knowledgeRepo;
+package com.apps.knowledgeRepo.activityHelper;
 
 import android.view.animation.Animation;
 import android.graphics.Camera;

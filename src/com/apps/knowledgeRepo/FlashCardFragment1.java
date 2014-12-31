@@ -31,8 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-
-public class Fragment1 extends Fragment{
+public class FlashCardFragment1 extends Fragment{
 	String courseId = null;
 	String bucketId = null;
 	FlashCardBucket bucket= null;
@@ -50,20 +49,21 @@ public class Fragment1 extends Fragment{
 		Bundle extras = this.getActivity().getIntent().getExtras();
 	
 		if (extras != null) {
-        	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
+        	 bucket = (FlashCardBucket)extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
         	 bucketId =  String.valueOf(bucket.getBucketId());	
         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
         	 max = bucket.getCardList().size()-1;
         	 currCardNum = extras.getInt("currCardNum");
+
+      
         	 
         }
         if(bucket==null) throw new RuntimeException("FlashCardBucket is null!");
         
 		View fragment1 =  inflater.inflate(R.layout.fragment_1, container, false);
 
-	     
 		   Button button = (Button)fragment1.findViewById(R.id.button1);
-		   Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
+		   final Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
 		   Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
 		   Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
 		   Button buttonJump = (Button)fragment1.findViewById(R.id.button5);
@@ -71,10 +71,10 @@ public class Fragment1 extends Fragment{
 		   final EditText jumpTo = (EditText)fragment1.findViewById(R.id.jumpTo);
 		    
 		    
-		   
-		   next = currCardNum + 1;
-		   prev = currCardNum - 1;
-		   
+
+	    next = currCardNum + 1;
+        prev = currCardNum - 1;
+
 		   buttonJump.setOnClickListener(new View.OnClickListener(){
 
 			@Override
@@ -104,19 +104,17 @@ public class Fragment1 extends Fragment{
 			jumpTo.setText(null);
 			}});
 		   
-	       buttonPrev.setOnClickListener(new View.OnClickListener(){
+
+
+        buttonPrev.setOnClickListener(new View.OnClickListener(){
 	           
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
-					//List<FlashCardBucket> buckets = flashcard_course.getBucket();
-					if(currCardNum>0){
-					currCardNum = currCardNum -1;
-					}
-					
-					
-					if(prev >=0){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
+				//List<FlashCardBucket> buckets = flashcard_course.getBucket();
+				if(prev >=0){
+
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
 					Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 					
@@ -126,6 +124,7 @@ public class Fragment1 extends Fragment{
 						tv.loadData(bucket.getCardList().get(prev).getBackText(),"text/html","utf-8");
 						next = prev + 1;
 						prev = prev - 1;
+
 					}	
 				}
 	         });
@@ -160,34 +159,28 @@ public class Fragment1 extends Fragment{
 							tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
 							
 						}
-		        	   
-	                super.handleMessage(msg); 
-	            } 
-	        }; 
-	       
-	       buttonAuto.setOnClickListener(new View.OnClickListener(){
-	           
-				@Override
-				public void onClick(View v) {
-					if(timer == null) {
-						
-						timer = new Timer(true);
-					}
-					if(task == null ){
-					   task = new TimerTask(){  
-				           public void run() {  
-				        	   Message m = new Message(); 
-			                    handler.sendMessage(m); 
 
-				        }  
-					       
-				     };  
-				     
-				     timer.schedule(task,1000, 1000); 
-					
-				}}
-				
-	       
+				}	
+	       }
+					;
+	         
+	
+	    buttonAuto.setOnClickListener(new View.OnClickListener(){
+	           
+			@Override
+			public void onClick(View v) {
+				if(timer == null) {				
+					timer = new Timer(true);
+				}
+				if(task == null ){
+				   task = new TimerTask(){  
+			           public void run() {  
+			        	   Message m = new Message(); 
+		                   handler.sendMessage(m); 
+				       }  			       
+				   };  
+				   timer.schedule(task,1000, 1000); 
+				}}   
 	       }); 
 	       
 	       buttonStop.setOnClickListener(new View.OnClickListener(){
@@ -214,7 +207,7 @@ public class Fragment1 extends Fragment{
 				}
 
 	       }); 
-	     
+				
 		   
 	       button.setOnClickListener(new View.OnClickListener(){
           
@@ -251,16 +244,10 @@ public class Fragment1 extends Fragment{
 						next = max;
 					}
 				}
-	         });
-
-	     
+	         });    
 	       return fragment1;
-		
-	   
-
-		
-	
 	}
+
 	   @Override
 	   public void onStop() {
 					// TODO Auto-generated method stub
@@ -275,5 +262,5 @@ public class Fragment1 extends Fragment{
 					
 				}
 					
-	
+
 }

@@ -22,5 +22,9 @@ public class Constants {
 	public static final String BUCKET_ID_NAME = "bucketId"; 
 
 
+	//account file/username/password
+	public static final String PREF_ACCOUNT_FILE = "myAccountFile";
+	public static final String PREF_USERNAME = "username";
+	public static final String PREF_PASSWORD = "password";
 	
 }

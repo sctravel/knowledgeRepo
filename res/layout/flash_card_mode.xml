@@ -9,15 +9,17 @@
 
 	<fragment
 	    android:id="@+id/fragment1"
-	    android:name="com.apps.knowledgeRepo.Fragment1"
+	    android:name="com.apps.knowledgeRepo.FlashCardFragment1"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" />
 	
 	<fragment 
 	    android:id="@+id/fragment2"
 	    android:layout_width="match_parent"
+
 	    android:layout_height="match_parent"
 	    android:name="com.apps.knowledgeRepo.Fragment2"/>
+
 
 
 </ViewFlipper>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.activityHelper.OnSwipeTouchListener;
 import com.apps.knowledgeRepo.dataModel.ExamAnswer;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.utils.CourseUtil;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -56,14 +58,10 @@ public final static char CHOICE_A= 'A';
         choiceList.add(choiceC);
         choiceList.add(choiceD);
 
-       /* TextView titleView = (TextView) findViewById(R.id.practiceModeExamName);
-        titleView.setText(exam.getName());*/
         setTitle(exam.getName());
  		addListenerOnJumpToButton();
- 		
         addListenerOnPrevAndNextButton();
-        //parseExam();
-
+        addListernerOnGuesture();
 	    questionNumber=0;
 	    refreshPage();
     }
@@ -82,7 +80,11 @@ public final static char CHOICE_A= 'A';
     	    //exam = (Exam) extras.getSerializable("exam");
     	    
         }
-        if(exam==null) throw new RuntimeException("Exam is null");
+        if(exam==null || exam.getQuestions().isEmpty()) {
+        	Toast.makeText(getApplicationContext(), "This exam is Empty. ", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+        }
 
         setContentView(R.layout.practice_mode);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,6 +95,43 @@ public final static char CHOICE_A= 'A';
         
         initilizeExam();
     }
+    
+    /*
+    @Override
+    public boolean dispatchTouchEvent (MotionEvent ev) {
+        // Do your calculations
+        return super.dispatchTouchEvent(ev);
+    }*/
+    
+    private void addListernerOnGuesture() {
+    	final View rootView = (View) findViewById(R.id.practiceModeScrollView);
+    	final WebView webView = (WebView) findViewById(R.id.questionPractice);
+
+    	OnSwipeTouchListener listener = new OnSwipeTouchListener(getApplicationContext()){
+    		@Override
+    	    public void onSwipeLeft() {
+    			final Button buttonPrev = (Button) findViewById(R.id.previousButtonPractice);
+    			if(buttonPrev.isEnabled()) {
+    				buttonPrev.performClick();
+    			} else {
+    	    		Toast.makeText(getApplicationContext(), "Button Prev is disabled.", Toast.LENGTH_LONG).show();
+    			}
+    	    }
+    		@Override
+    	    public void onSwipeRight() {
+    			final Button buttonNext = (Button) findViewById(R.id.nextButtonPractice);
+    			if(buttonNext.isEnabled()) {
+    				buttonNext.performClick();
+    			} else {
+    	    		Toast.makeText(getApplicationContext(), "Button Next is disabled.", Toast.LENGTH_LONG).show();
+    			}
+    	    }
+    	};
+    	
+    	rootView.setOnTouchListener(listener);
+    	webView.setOnTouchListener(listener);
+    }
+    
     private void addListenerOnPrevAndNextButton() {
        	final Button buttonPrev = (Button) findViewById(R.id.previousButtonPractice);
            buttonPrev.setOnClickListener(new View.OnClickListener() {

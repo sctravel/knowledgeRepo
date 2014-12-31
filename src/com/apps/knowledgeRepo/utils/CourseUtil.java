@@ -19,12 +19,13 @@ import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamQuestion;
 import com.apps.knowledgeRepo.db.DBTool;
 
+//TODO: All the DB related function should add try catch block and put db.close in the finally clause
+//       to make sure all the db connections are closed.
 public class CourseUtil {
-	
-	
-	public static String retrieveFromDB(String cid, String moduleId, String examId,Context context){
+
+	public static String retrieveExamContentFromDB(String cid, String moduleId, String examId,Context context){
 		SQLiteDatabase db = DBTool.getDB(context);
-		String examContent = DBTool.queryExam(context, db, cid, moduleId, examId);
+		String examContent = DBTool.queryExam(db, cid, moduleId, examId);
 		
 		if(examContent == null || examContent.isEmpty()) {
 			Log.d("retrieveFromDB", " examContent is  null!!!");
@@ -32,8 +33,7 @@ public class CourseUtil {
 			examContent=examContent.replaceAll("!!pattern!!", "'");
 			Log.d("retrieveFromDB", " examContent is  not null with length--"+examContent.length());
 		}
-		Log.d("Retrieve fromDB ", " Retrieve fromDB  with length--"+examContent.length());
-
+		db.close();
 		return examContent;
 	}
 	
@@ -51,7 +51,7 @@ public class CourseUtil {
 	
 	public static Exam initilizeExam( String courseId, String moduleId, String examId, Context context){
 		
-	    String jsonStr= retrieveFromDB(courseId, moduleId,examId,context);		
+	    String jsonStr= retrieveExamContentFromDB(courseId, moduleId,examId,context);		
 		JSONParser parser = new JSONParser();
 		
 		Exam examObj = new Exam();

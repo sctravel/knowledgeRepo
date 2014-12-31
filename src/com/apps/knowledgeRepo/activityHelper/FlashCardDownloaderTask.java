@@ -9,10 +9,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.apps.knowledgeRepo.ModeSelectionActivity;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBTool;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -26,8 +28,8 @@ public class FlashCardDownloaderTask extends CoursesDownloaderTask{
 	
 	private final String localFileName=  "/FlashCardDB.json";
 
-	public FlashCardDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify) {
-		super(progressbar,nm,notify);
+	public FlashCardDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify,ModeSelectionActivity activity) {
+		super(progressbar,nm,notify,activity);
 		
 	}
 	

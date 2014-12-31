@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/examModeScrollView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
@@ -9,176 +10,180 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:clickable="true"
+	android:focusable="true"
+	android:focusableInTouchMode="true"
     tools:context=".ExamModeActivity" >
 
    <LinearLayout android:layout_width="match_parent"
         android:layout_height="match_parent" 
         android:orientation="vertical" >
     
-    <LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        android:padding="2dp">
-        
-        <TextView
-	        android:id="@+id/singleChoiceExamNumber"
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:paddingStart="2dp"
+	        android:paddingEnd="2dp"
+	        android:padding="2dp">
+	        
+	        <TextView
+		        android:id="@+id/singleChoiceExamNumber"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="left"
+		        android:text="1/100" />
+	        
+	       <EditText
+	            android:id="@+id/jumpToTextExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:textColor="@android:color/black"
+	            android:textCursorDrawable="@null"
+	            android:padding="10dp"
+	            android:background="@drawable/edit_text_box"
+	            android:layout_marginLeft="5dp"
+	      	    android:gravity="left"
+	      	    android:hint="Page"
+	      	    android:inputType="number"/>
+	        <Button
+	            android:id="@+id/jumpToButtonExam"
+	            android:layout_width="50dp"
+	            android:layout_height="40dp"
+	            android:layout_marginLeft="0dp"
+	      	    android:gravity="left"
+	            android:text="Go" />
+	        <Button
+	            android:id="@+id/previousButtonExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:layout_marginLeft="20dp"
+	            android:layout_gravity="right"
+	            android:text="@string/previous" />
+	        <Button
+	            android:id="@+id/nextButtonExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:layout_marginRight="0dp"
+	            android:layout_gravity="right"
+	            android:text="@string/next" />
+	    </LinearLayout>
+	    
+	   <RelativeLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:weightSum="1"
+	        android:orientation="horizontal" >
+	        <Button
+	            android:id="@+id/gradeButtonExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:layout_marginLeft="0dp"
+	            android:weightSum="0.2"
+	            android:layout_alignParentLeft="true"
+	      	    android:gravity="left"
+	      	    android:layout_gravity="left"
+	            android:text="Grade" />
+	        <Button
+	            android:id="@+id/pauseButtonExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:layout_toRightOf="@id/gradeButtonExam"
+	            android:weightSum="0.2"
+	            android:text="Pause" />
+	        <Button
+	            android:id="@+id/reviewButtonExam"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:layout_alignParentRight="true"
+	            android:gravity="right"
+	            android:weightSum="0.3"
+	            android:layout_gravity="right"
+	            android:text="Review Marked" />
+	    </RelativeLayout>
+	    
+	   
+	    
+	    <TextView
+	        android:id="@+id/singleChoiceExamTitle"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:gravity="left"
-	        android:text="1/100" />
-        
-       <EditText
-            android:id="@+id/jumpToTextExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:textColor="@android:color/black"
-            android:textCursorDrawable="@null"
-            android:padding="10dp"
-            android:background="@drawable/edit_text_box"
-            android:layout_marginLeft="5dp"
-      	    android:gravity="left"
-      	    android:hint="Page"
-      	    android:inputType="number"/>
-        <Button
-            android:id="@+id/jumpToButtonExam"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="0dp"
-      	    android:gravity="left"
-            android:text="Go" />
-        <Button
-            android:id="@+id/previousButtonExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="right"
-            android:text="@string/previous" />
-        <Button
-            android:id="@+id/nextButtonExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginRight="0dp"
-            android:layout_gravity="right"
-            android:text="@string/next" />
-    </LinearLayout>
-    
-   <RelativeLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:orientation="horizontal" >
-        <Button
-            android:id="@+id/gradeButtonExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginLeft="0dp"
-            android:weightSum="0.2"
-            android:layout_alignParentLeft="true"
-      	    android:gravity="left"
-      	    android:layout_gravity="left"
-            android:text="Grade" />
-        <Button
-            android:id="@+id/pauseButtonExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_toRightOf="@id/gradeButtonExam"
-            android:weightSum="0.2"
-            android:text="Pause" />
-        <Button
-            android:id="@+id/reviewButtonExam"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:gravity="right"
-            android:weightSum="0.3"
-            android:layout_gravity="right"
-            android:text="Review Marked" />
-    </RelativeLayout>
-    
-   
-    
-    <TextView
-        android:id="@+id/singleChoiceExamTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" 
-        android:textStyle="bold|italic"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge"  />
-    
-   
-    <WebView
-        android:id="@+id/questionExam"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" 
-        android:background="@android:color/transparent"
-        android:paddingBottom="0dp"
-   		android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp"
-        />    
-        
-   	<LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:orientation="vertical" >	
-    <RadioGroup
-        android:id="@+id/singleChoiceExam"
-        android:layout_marginTop="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
- 
-       
-        <RadioButton
-            android:id="@+id/choiceAExam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/choiceA" 
-            android:onClick="onRadioButtonClicked" />
- 
-        <RadioButton
-            android:id="@+id/choiceBExam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/choiceB" 
-            android:onClick="onRadioButtonClicked" />
-        <RadioButton
-            android:id="@+id/choiceCExam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/choiceC"  
-            android:onClick="onRadioButtonClicked" />
-        <RadioButton
-            android:id="@+id/choiceDExam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/choiceD" 
-            android:onClick="onRadioButtonClicked" />
- 
-    </RadioGroup>
-    
-   </LinearLayout>
-        
-    
-    <RelativeLayout 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1"
-        android:orientation="horizontal" >
-        <TextView
-	        android:id="@+id/remainTime"
-	        android:layout_width="wrap_content"
+	        android:text="" 
+	        android:textStyle="bold|italic"
+	        android:gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceLarge"  />
+	    
+	   
+	    <WebView
+	        android:id="@+id/questionExam"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_alignParentBottom="true"
-	        android:layout_alignParentLeft="true"
-	        android:layout_gravity="bottom|left"
-	        android:text="60 minutes remaining" />
-        <CheckBox
+	        android:text="@string/hello_world" 
+	        android:background="@android:color/transparent"
+	        android:clickable="true"
+			android:focusable="true"
+			android:focusableInTouchMode="true"
+	        android:paddingBottom="0dp"
+	   		android:paddingLeft="0dp"
+	        android:paddingRight="0dp"
+	        android:paddingTop="0dp"
+	        />    
+        
+	   	<LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:weightSum="1"
+	        android:orientation="vertical" >	
+		    <RadioGroup
+		        android:id="@+id/singleChoiceExam"
+		        android:layout_marginTop="30dp"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		 	       
+		        <RadioButton
+		            android:id="@+id/choiceAExam"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/choiceA" 
+		            android:onClick="onRadioButtonClicked" />
+		 
+		        <RadioButton
+		            android:id="@+id/choiceBExam"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/choiceB" 
+		            android:onClick="onRadioButtonClicked" />
+		        <RadioButton
+		            android:id="@+id/choiceCExam"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/choiceC"  
+		            android:onClick="onRadioButtonClicked" />
+		        <RadioButton
+		            android:id="@+id/choiceDExam"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/choiceD" 
+		            android:onClick="onRadioButtonClicked" />
+		 
+		    </RadioGroup>
+	    
+	   </LinearLayout>
+        
+	    <RelativeLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:weightSum="1"
+	        android:orientation="horizontal" >
+        	<TextView
+		        android:id="@+id/remainTime"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:layout_alignParentLeft="true"
+		        android:layout_gravity="bottom|left"
+		        android:text="60 minutes remaining" />
+       		<CheckBox
                 android:id="@+id/markForReviewExam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -187,8 +192,6 @@
                 android:layout_alignParentRight="true"            
                 android:layout_gravity="bottom|right"
                 android:text="Mark for Review" />       
-    </RelativeLayout>
-     
-     
+    	</RelativeLayout>    
 	</LinearLayout>
 </ScrollView>
