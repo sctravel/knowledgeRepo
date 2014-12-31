@@ -5,9 +5,7 @@ import java.io.Serializable;
 public class VideoLesson implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-
 	int sequence;
-	
 	String URL;
 	
 	String localPath;
@@ -46,8 +44,5 @@ public class VideoLesson implements Serializable{
 	public void setLocalPath(String localPath) {
 		this.localPath = localPath;
 	} 
-	
-	
-	
 
 }

@@ -54,60 +54,53 @@ public class FlashCardFragment1 extends Fragment{
         	 bucketId =  String.valueOf(bucket.getBucketId());	
         	 courseId = extras.getString(Constants.COURSE_ID_NAME);
         	 max = bucket.getCardList().size()-1;
-        	 currCardNum = extras.getInt("currCardNum");
-
-      
-        	 
+        	 currCardNum = extras.getInt("currCardNum");     	 
         }
         if(bucket==null) throw new RuntimeException("FlashCardBucket is null!");
         
 		View fragment1 =  inflater.inflate(R.layout.fragment_1, container, false);
-		
-		
-	
-       	
 
-		   Button button = (Button)fragment1.findViewById(R.id.button1);
-		   final Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
-		   Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
-		   Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
-		   Button buttonJump = (Button)fragment1.findViewById(R.id.button5);
-		                      
-		   final EditText jumpTo = (EditText)fragment1.findViewById(R.id.jumpTo);
-		    
-		    
+	    Button button = (Button)fragment1.findViewById(R.id.button1);
+	    final Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
+	    Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
+	    Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
+	    Button buttonJump = (Button)fragment1.findViewById(R.id.button5);
+	                      
+	    final EditText jumpTo = (EditText)fragment1.findViewById(R.id.jumpTo);
 
 	    next = currCardNum + 1;
         prev = currCardNum - 1;
 
-		   buttonJump.setOnClickListener(new View.OnClickListener(){
+		buttonJump.setOnClickListener(new View.OnClickListener(){
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			String jumpNum = jumpTo.getText().toString();
-			
-			int jump = Integer.valueOf(jumpNum);
-			
-			if(!(jump>max) && !(jump<0)){
+				String jumpNum = jumpTo.getText().toString();
 				
-				WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-				Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
-				currCardNum = jump;
-				tv1.loadData(bucket.getCardList().get(jump).getFrontText(),"text/html","utf-8");
-				 View view = (View)tv2.getView();
-				 WebView tv =  (WebView)view.findViewById(R.id.test2);
+				int jump = Integer.valueOf(jumpNum);
+				
+				if(!(jump>max) && !(jump<0)){
+					
+					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+					Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+					currCardNum = jump;
+					tv1.loadData(bucket.getCardList().get(jump).getFrontText(),"text/html","utf-8");
+					View view = (View)tv2.getView();
+				    WebView tv =  (WebView)view.findViewById(R.id.test2);
 					tv.loadData(bucket.getCardList().get(jump).getBackText(),"text/html","utf-8");
 					if(jump < max){
-					next = jump + 1;
+						next = jump + 1;
 					}else{ 
-						next = max; }
-					    prev = jump - 1;
-			
+						next = max; 
+					}
+				    prev = jump - 1;
+				
+				}
+				
+				jumpTo.setText(null);
 			}
-			
-			jumpTo.setText(null);
-			}});
+		});
 		   
 
 
@@ -115,63 +108,48 @@ public class FlashCardFragment1 extends Fragment{
 	           
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
-				//List<FlashCardBucket> buckets = flashcard_course.getBucket();
 				if(prev >=0){
 
 					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
 					Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
 					
 					tv1.loadData(bucket.getCardList().get(prev).getFrontText(),"text/html","utf-8");
-					 View view = (View)tv2.getView();
-					 WebView tv =  (WebView)view.findViewById(R.id.test2);
-						tv.loadData(bucket.getCardList().get(prev).getBackText(),"text/html","utf-8");
-						next = prev + 1;
-						prev = prev - 1;
-
-					}	
-				}
-	         });
-	       
-	     
-
-	     
-	      
-	       final Handler handler = new Handler() { 
-	            public void handleMessage(Message msg) { 
-	            	    
-	            	    WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-						Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
-						
-						View view = (View)tv2.getView();
-						WebView tv =  (WebView)view.findViewById(R.id.test2);
-						
-						
-						if(currCardNum < max){
-							currCardNum = currCardNum + 1;
-							}
-						if(next < max ){
-						tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
-						tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-		        	    
-					    next = next +1;
-		        	    prev = next -1;
-		        	    
-						} else {
-							
-							tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
-							tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
-							
-						}
+					View view = (View)tv2.getView();
+					WebView tv =  (WebView)view.findViewById(R.id.test2);
+				    tv.loadData(bucket.getCardList().get(prev).getBackText(),"text/html","utf-8");
+					next = prev + 1;
+					prev = prev - 1;
 
 				}	
-	       }
-					;
+			}
+	    });
+	             
+       final Handler handler = new Handler() { 
+            public void handleMessage(Message msg) { 
+            	    
+        	    WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+				Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				
+				View view = (View)tv2.getView();
+				WebView tv =  (WebView)view.findViewById(R.id.test2);				
+				
+				if(currCardNum < max){
+					currCardNum = currCardNum + 1;
+				}
+				if(next < max ){
+					tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+					tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");      	    
+				    next = next +1;
+	        	    prev = next -1;       	    
+				} else {				
+					tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
+					tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
+				}
+			}	
+       };
 	         
 	
-	    buttonAuto.setOnClickListener(new View.OnClickListener(){
-	           
+	   buttonAuto.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				if(timer == null) {				
@@ -185,89 +163,87 @@ public class FlashCardFragment1 extends Fragment{
 				       }  			       
 				   };  
 				   timer.schedule(task,1000, 1000); 
-				}}   
-	       }); 
-	       
-	       buttonStop.setOnClickListener(new View.OnClickListener(){
-	           
-				@Override
-				public void onClick(View v) {
-			   
-					if(task!=null){
-				    	 
-				    	 task.cancel();
-				     }
-					
-					if(timer!=null){
-			    	 
-			    	 timer.cancel();
-			    	 
-			     }
-			      task = null;
-			      timer = null;
-			      
-			      next =0;
-			      prev =0;
-					
 				}
-
-	       }); 
+			}   
+	    }); 
+	       
+	    buttonStop.setOnClickListener(new View.OnClickListener(){          
+			@Override
+			public void onClick(View v) {		   
+				if(task!=null){
+			    	 task.cancel();
+			     }
+			     task = null;
+			     timer = null;
+			      
+			     next =0;
+			     prev =0;
+					
+			}
+	    }); 
 				
 		   
-	       button.setOnClickListener(new View.OnClickListener(){
-          
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					//FlashCardCourse flashcard_course= (FlashCardCourse) CourseUtil.initilizeFlashCardCourse("iFC_04",  getActivity());
-					//List<FlashCardBucket> buckets = flashcard_course.getBucket();
-				if(currCardNum <max ){
-					
+	   button.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if(currCardNum <max ){		
 					currCardNum = currCardNum + 1; 
 				}
+				
+				WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+			    Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				
+			    View view = (View)tv2.getView();
+			    WebView tv =  (WebView)view.findViewById(R.id.test2);
+			    currCardNum = currCardNum+1;
+			    if(next < max){
+	
+				    tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+				   
+					tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
 					
-					WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-				    Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
-					
-				    View view = (View)tv2.getView();
-				    WebView tv =  (WebView)view.findViewById(R.id.test2);
-				    currCardNum = currCardNum+1;
-				    if(next < max){
-
-					    tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+					prev = next -1 ;
+					next = next +1;
+				} else {
+					tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
 					   
-						tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-						
-						prev = next -1 ;
-						next = next +1;
-					} else {
-						tv1.loadData(bucket.getCardList().get(max).getFrontText(),"text/html","utf-8");
-						   
-						tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
-						
-						prev = max -1 ;
-						next = max;
-					}
+					tv.loadData(bucket.getCardList().get(max).getBackText(),"text/html","utf-8");
+					
+					prev = max -1 ;
+					next = max;
 				}
-	         });    
-	       return fragment1;
+			}
+	   });    
+	     
+		   
+       button.setOnClickListener(new View.OnClickListener(){
+		   @Override
+		   public void onClick(View v) {
+			   WebView tv1 = (WebView)getView().findViewById(R.id.test1);
+			   Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
+				
+			   tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
+			   View view = (View)tv2.getView();
+			   WebView tv =  (WebView)view.findViewById(R.id.test2);
+			   tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
+					
+			   prev = next -1 ;
+			   next = next +1;
+		   }
+        });    
+        return fragment1;
 	}
 
-	   @Override
-	   public void onStop() {
-					// TODO Auto-generated method stub
-					super.onStop();
-					
+    @Override
+    public void onStop() {
+				// TODO Auto-generated method stub
+	    super.onStop();
+		
+	    Context context = this.getActivity().getBaseContext();
+	    SQLiteDatabase db = DBTool.getDB(context);
+		
+	    DBTool.recordFlashcardNum(context, db, courseId, bucketId, String.valueOf(currCardNum));
 				
-					
-					Context context = this.getActivity().getBaseContext();
-					SQLiteDatabase db = DBTool.getDB(context);
-					
-					
-					
-					DBTool.recordFlashcardNum(context, db, courseId, bucketId, String.valueOf(currCardNum));
-					
-				}
-					
+    }					
 
 }

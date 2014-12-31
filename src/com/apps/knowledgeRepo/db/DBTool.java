@@ -23,14 +23,10 @@ import android.util.Log;
 
 
 public class DBTool {
-     public static  SQLiteDatabase getDB(Context context){
-    	 
+     public static  SQLiteDatabase getDB(Context context) {
     	 DBHelper dbHelper = new DBHelper(context);
-    	    
     	 SQLiteDatabase db = dbHelper.getWritableDatabase();
-    	 
-    	 return db;
-    	
+    	 return db;   	
      } 
      
      public static List<Course> getCourseMetaData(Context context) {
@@ -49,6 +45,7 @@ public class DBTool {
              Course course = new Course(courseId, courseName, courseType, courseOrientation);
              result.add(course);
     	 }
+    	 
     	 db.close();
     	 return result;
      }
@@ -70,8 +67,8 @@ public class DBTool {
                String guide = metaDataCursor.getString(5);
                String examId = metaDataCursor.getString(6);
                String examName = metaDataCursor.getString(7);
-               ExamMetaData metaData = new ExamMetaData(courseId,courseName,courseType,courseOrientation,
-            		   moduleId,guide,examId,examName  );
+               ExamMetaData metaData = new ExamMetaData( courseId,courseName,courseType,courseOrientation,
+            	   moduleId,guide,examId,examName );
                metaDataList.add(metaData);
     	}
     	db.close();
@@ -108,8 +105,8 @@ public class DBTool {
     	examStatus.setAttempt(attempt);
     	examStatus.setUsedTime(0); //set it to 0 initially
 
-    	 String sqlQuery = "select * from " + TableNames.TEXT_EXAM_ANSWER + " where "  + 
-    	                   "course_id =? and module_id=? and exam_id=? and attempt = ?;";
+    	String sqlQuery = "select * from " + TableNames.TEXT_EXAM_ANSWER + " where "  + 
+    	    " course_id =? and module_id=? and exam_id=? and attempt = ? ;";
         
     	Cursor cursor= db.rawQuery(sqlQuery, new String[]{courseId,moduleId,examId,""+attempt});
     	
@@ -241,31 +238,29 @@ public class DBTool {
    
      public static void insertBucket(SQLiteDatabase db, String  courseId, String bucketId, String  type, String  sequence,String  title){
  		
- 		String sqlInsertCards = "insert into " + TableNames.FLASH_CARD_BUCKETS + " values (" 
- 			                     + "'"   + bucketId + "'" + "," 
- 			                     + "'"   + sequence + "'" +","
- 			                     + "'"   + type +  "'" + ","
- 			                     + "'"   + title + "'" + ","
- 			                     + "'"   + courseId + "'" +
- 			                            ")"; 
- 		db.execSQL(sqlInsertCards);
+ 		 String sqlInsertCards = "insert into " + TableNames.FLASH_CARD_BUCKETS + " values (" 
+             + "'"   + bucketId + "'" + "," 
+             + "'"   + sequence + "'" +","
+             + "'"   + type +  "'" + ","
+             + "'"   + title + "'" + ","
+             + "'"   + courseId + "'" +
+             " )"; 
+ 		 db.execSQL(sqlInsertCards);
      }
    
      public static void insertBucketCard(SQLiteDatabase db, String cardId, String bucketId){
   		
 	  	 String insertBucketCard = "insert into " + TableNames.FLASH_CARD_BUCKETS_CARDS_MAPPING + " values (" 
-	  			                        + "'" + cardId +  "'" + "," 
-	  			                        + "'" + bucketId+  "'" + 
-	  			                            
-	  			                            ")"; 
+             + "'" + cardId + "'" + "," 
+             + "'" + bucketId+ "'" + 	  			                            
+             " ) "; 
 	  	 db.execSQL(insertBucketCard);
      }
      
-     
-     
-     
+       
      public static void insertExam(SQLiteDatabase db, String courseId, String courseName, 
-    		 String courseType, String courseOrientation, String moduleId, String guide, String examId,String examName, String examContent){
+         String courseType, String courseOrientation, String moduleId, String guide, 
+         String examId,String examName, String examContent){
     	     		
     	 examContent=examContent.replaceAll("'", "!!pattern!!") ;
     	 String sqlInsert = "insert into " + TableNames.TEXT_EXAM +" values ( " + 
@@ -280,7 +275,7 @@ public class DBTool {
     	     "'" +  examContent + "'" + ");"; 
     	
     	 String sqlQuery = "select count(*) from " + TableNames.TEXT_EXAM + " where "  + 
-    	                   "course_id =? and module_id=? and exam_id=?;";  
+             "course_id =? and module_id=? and exam_id=?;";  
     	
     	 String sqlUpdate = "update " + TableNames.TEXT_EXAM + " set exam_content=? where course_id=? and module_id=? and exam_id=?; " ;
     	   	
@@ -301,21 +296,21 @@ public class DBTool {
     
      public static void recordGrade(Context context,String cId, String examId, String moduleId, String attempt, boolean is_grade, String grade, String grade_time ){
     	
-    	    SQLiteDatabase	db=DBTool.getDB(context);
-        			
-    		String sqlRecordGrade = 
-    			"insert into " + TableNames.TEXT_EXAM_GRADE +" values (" +
-		    	"'"+ cId + "'," +
-		    	"'"+ moduleId + "'," +
-		    	"'"+ examId + "'," +
-		    	"'"+ attempt+ "'," +
-		    	"'"+ is_grade + "'," +
-		    	"'"+ grade + "'," + 
-		    	"'" +grade_time +"'" + 
-		    	")";
-    		 
-    		db.execSQL(sqlRecordGrade);
-    		db.close();
+	     SQLiteDatabase	db=DBTool.getDB(context);
+    			
+		 String sqlRecordGrade = 
+		 	 "insert into " + TableNames.TEXT_EXAM_GRADE +" values (" +
+	     	 "'"+ cId + "'," +
+	    	 "'"+ moduleId + "'," +
+	    	 "'"+ examId + "'," +
+	    	 "'"+ attempt+ "'," +
+	    	 "'"+ is_grade + "'," +
+	    	 "'"+ grade + "'," + 
+	    	 "'" +grade_time +"'" + 
+	    	 ")";
+		 
+		 db.execSQL(sqlRecordGrade);
+		 db.close();
     	
      }
      

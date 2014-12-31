@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -248,7 +247,6 @@ public final static char CHOICE_A= 'A';
     	}
     	if(checkedButtonId !=0 ) {
     		radioGroup.check(checkedButtonId);
-    		//radioGroup.
     	}
     	radioGroup.setEnabled(false);
     }
@@ -336,8 +334,6 @@ public final static char CHOICE_A= 'A';
     }
     
     private void backToMainMenu() {
-    	//Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
-	    //startActivity(intent);
     	this.finish();
 		System.out.println("returnToMainMenuButton!");
     }

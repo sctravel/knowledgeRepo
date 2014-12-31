@@ -1,6 +1,5 @@
 package com.apps.knowledgeRepo;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +29,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -653,88 +651,87 @@ public class ExamModeActivity extends Activity{
    
    private void showResultDialog(String results, boolean isPassed) {
 	// custom dialog
-			final Dialog dialog = new Dialog(ExamModeActivity.this);
-			dialog.setContentView(R.layout.grade_dialog);
-			dialog.setTitle("Exam Finished");
-			dialog.setCancelable(false);
+		final Dialog dialog = new Dialog(ExamModeActivity.this);
+		dialog.setContentView(R.layout.grade_dialog);
+		dialog.setTitle("Exam Finished");
+		dialog.setCancelable(false);
 
-			//String results = grade();
-			// set the custom dialog components - text, image and button
-			TextView text = (TextView) dialog.findViewById(R.id.gradeTextExamEnd);
-			text.setText(Html.fromHtml(results));
-			ImageView image = (ImageView) dialog.findViewById(R.id.imageExamEnd);
-			image.setImageResource(R.drawable.ic_launcher);
+		//String results = grade();
+		// set the custom dialog components - text, image and button
+		TextView text = (TextView) dialog.findViewById(R.id.gradeTextExamEnd);
+		text.setText(Html.fromHtml(results));
+		ImageView image = (ImageView) dialog.findViewById(R.id.imageExamEnd);
+		image.setImageResource(R.drawable.ic_launcher);
 
-			//Review All Button
-			Button reviewAllButton = (Button) dialog.findViewById(R.id.reviewAllButton);
-			// if button is clicked, close the custom dialog
-			reviewAllButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
-					//need to pass exam information to ViewAnswerModeActivity
-				    intent.putExtra("examId", examId);
-				    intent.putExtra("courseId", courseId);
-				    intent.putExtra("moduleId", moduleId);
-				    ExamModeActivity.this.finish();
-				    startActivity(intent);
-					System.out.println("reviewAllButton!");
-				}
-			});
-			//Review Incorrect Button
-			Button reviewIncorrectButton = (Button) dialog.findViewById(R.id.reviewInCorrectButton);
-			// if button is clicked, close the custom dialog
-			reviewIncorrectButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
-					//need to pass exam information to ViewAnswerModeActivity
-					//intent.putExtra("exam", exam);
-					intent.putExtra("examId", examId);
-				    intent.putExtra("courseId", courseId);
-					intent.putExtra("moduleId", moduleId);
-				    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
-				    ExamModeActivity.this.finish();
-				    startActivity(intent);
-				    System.out.println("reviewIncorrectButton!");
+		//Review All Button
+		Button reviewAllButton = (Button) dialog.findViewById(R.id.reviewAllButton);
+		// if button is clicked, close the custom dialog
+		reviewAllButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
+				//need to pass exam information to ViewAnswerModeActivity
+			    intent.putExtra("examId", examId);
+			    intent.putExtra("courseId", courseId);
+			    intent.putExtra("moduleId", moduleId);
+			    ExamModeActivity.this.finish();
+			    startActivity(intent);
+				System.out.println("reviewAllButton!");
+			}
+		});
+		//Review Incorrect Button
+		Button reviewIncorrectButton = (Button) dialog.findViewById(R.id.reviewInCorrectButton);
+		// if button is clicked, close the custom dialog
+		reviewIncorrectButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ExamModeActivity.this, ViewAnswerModeActivity.class);	
+				//need to pass exam information to ViewAnswerModeActivity
+				//intent.putExtra("exam", exam);
+				intent.putExtra("examId", examId);
+			    intent.putExtra("courseId", courseId);
+				intent.putExtra("moduleId", moduleId);
+			    intent.putIntegerArrayListExtra("inCorrectList", (ArrayList<Integer>) inCorrectList);
+			    ExamModeActivity.this.finish();
+			    startActivity(intent);
+			    System.out.println("reviewIncorrectButton!");
 
-				}
-			});
-			//Retake Exam Button
-			Button retakeExamButton = (Button) dialog.findViewById(R.id.retakeExamButton);
-			// if button is clicked, close the custom dialog
-			retakeExamButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					//dialog.dismiss();
-					Intent intent = new Intent(ExamModeActivity.this, ExamModeActivity.class);				       
-					//intent.putExtra("exam", exam);
-					intent.putExtra("examId", examId);
-					intent.putExtra("courseId", courseId);
-					intent.putExtra("moduleId", moduleId);
-					ExamModeActivity.this.finish();
-				    startActivity(intent);
-					System.out.println("retakeExamButton!");
+			}
+		});
+		//Retake Exam Button
+		Button retakeExamButton = (Button) dialog.findViewById(R.id.retakeExamButton);
+		// if button is clicked, close the custom dialog
+		retakeExamButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//dialog.dismiss();
+				Intent intent = new Intent(ExamModeActivity.this, ExamModeActivity.class);				       
+				//intent.putExtra("exam", exam);
+				intent.putExtra("examId", examId);
+				intent.putExtra("courseId", courseId);
+				intent.putExtra("moduleId", moduleId);
+				ExamModeActivity.this.finish();
+			    startActivity(intent);
+				System.out.println("retakeExamButton!");
 
-				}
-			});
-			
-			//Return to Main Menu Button
-			Button returnToMainMenuButton = (Button) dialog.findViewById(R.id.returnToMainMenuButton);
-			// if button is clicked, close the custom dialog
-			returnToMainMenuButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					//dialog.dismiss();
-					Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
-				    //intent.putExtra(EXTRA_MESSAGE, message);
-					ExamModeActivity.this.finish();
-				    startActivity(intent);
-				}
-			});
-			
-			
-			dialog.show();
+			}
+		});
+		
+		//Return to Main Menu Button
+		Button returnToMainMenuButton = (Button) dialog.findViewById(R.id.returnToMainMenuButton);
+		// if button is clicked, close the custom dialog
+		returnToMainMenuButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//dialog.dismiss();
+				Intent intent = new Intent(ExamModeActivity.this, ModeSelectionActivity.class);				       
+			    //intent.putExtra(EXTRA_MESSAGE, message);
+				ExamModeActivity.this.finish();
+			    startActivity(intent);
+			}
+		});
+				
+		dialog.show();
    }
    
    //Grade the exam based on the user answer, and show the score of the user
@@ -779,13 +776,11 @@ public class ExamModeActivity extends Activity{
 	   } else {
 		   sb.append("<b><font color=\"red\">Sorry, you didn't pass the exam.</font><b> ");
 	   }
-	   
-	   
+	     
 	   sb.append("Your score is "+totalScore+", and the passing score is "+exam.getPassing()+". ");
 	   
 	   showResultDialog(sb.toString(),isPassed);
 		
 	   return isPassed;
-	   //Toast.makeText(getApplicationContext(), "Your score is "+correctList.size()+" out of "+answerList.size(), Toast.LENGTH_LONG).show();
    }
 }

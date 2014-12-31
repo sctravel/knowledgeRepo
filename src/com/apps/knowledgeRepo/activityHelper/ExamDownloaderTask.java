@@ -61,80 +61,80 @@ public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
             	baf.append((byte) current);
             }
  
-                        /* Convert the Bytes read to a String. */
-                        final FileOutputStream fos = new FileOutputStream(file);
-                        fos.write(baf.toByteArray());
-                        fos.close();
-                        Log.w("exam downloader", "download ready in"
-                                        + ((System.currentTimeMillis() - startTime) / 1000)
-                                        + " sec");
-                        
-                        
-                        //parse JSON
-                        
-                        final JSONParser parser = new JSONParser();
-                        
-                    	try{
-            				Object obj = parser.parse(new FileReader(fileName));
-            			
-            	
-            			    JSONObject jsonObject = (JSONObject) obj;  
-            				
-            			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
-            			    Iterator<JSONObject> iterator = listOfCourses.iterator();
-            			   
-            			    while (iterator.hasNext()) {
-            				   JSONObject course= (JSONObject)iterator.next();
-            	               String courseid = (String) course.get("courseid");
-            	               String couseName = (String) course.get("courseName");
-            	               long courseType = (Long) course.get("courseType");
-            	               String courseOrientation = (String) course.get("courseOrientation");
-            	               
-            	               //JSONArray courseModels = (JSONArray)course.get("CourseModules"); 
-            	               JSONArray courseModels = (JSONArray)course.get("Modules"); 
-            	               Iterator<JSONObject> modelIterator = courseModels.iterator();
-            	            	   
-            	               while (modelIterator.hasNext()) {
-            	            	   
-            	            	   JSONObject module= (JSONObject)modelIterator.next();   	   
-            	            	   Long moduleId = (Long) module.get("module");    	   
-            	            	   String guide = (String) module.get("guide");      	   
-            	            	   JSONArray exams = (JSONArray)module.get("Exams");
-            	            	            	   
-            	            	   Iterator<JSONObject> examIterator = exams.iterator();
-            	            	   
-            	            	   while (examIterator.hasNext()) {
-            	            		   
-            	            		   JSONObject exam= (JSONObject)examIterator.next();          		   
-            	            		   Long examid= (Long) exam.get("examid");           		   
-            	            		   String name= (String) exam.get("name");           		   
-            	            		   Long passing= (Long) exam.get("passing");            		   
-            	            		   Long timeLimit= (Long) exam.get("timeLimit");
-            	            		   	            		   
-            	            		   JSONArray questions = (JSONArray)exam.get("Questions");	            		   
-            	            		   Iterator<JSONObject> questionIterator = questions.iterator();
-            		            	   
-            		            	   while (questionIterator.hasNext()) {
-            		            		   
-            		            		   JSONObject question= (JSONObject)questionIterator.next();		            		   
-            		            		   Long questionNumber= (Long) question.get("questionNumber");		            		   
-            		            		   String category= (String) question.get("category");	            		   
-            		            		   String text= (String) question.get("text");	            		   
-            		            		   String explanation= (String) question.get("explanation");	            		   
-            		            		   JSONArray answers = (JSONArray)question.get("Answers");
-            		            		   
-            		            		   Iterator<JSONObject> answersIterator = answers.iterator();
-            			            	   
-            			            	   while (answersIterator.hasNext()) {
-            			            		   
-            			            		   JSONObject answer= (JSONObject)answersIterator.next();         		   
-            			            		   Long answerNumber= (Long) answer.get("answerNumber");           		   
-            			            		   Long score= (Long) answer.get("score");            					            		   
-            			            		   String answerText= (String) answer.get("answerText");	            		          		   
-            			            	   }     		  		            	  
-            		            	   }
-            	            	   }         	             	   
-         	               }               	               
+            /* Convert the Bytes read to a String. */
+            final FileOutputStream fos = new FileOutputStream(file);
+            fos.write(baf.toByteArray());
+            fos.close();
+            Log.w("exam downloader", "download ready in"
+                            + ((System.currentTimeMillis() - startTime) / 1000)
+                            + " sec");
+            
+            
+            //parse JSON
+            
+            final JSONParser parser = new JSONParser();
+            
+        	try{
+				Object obj = parser.parse(new FileReader(fileName));
+			
+	
+			    JSONObject jsonObject = (JSONObject) obj;  
+				
+			    JSONArray listOfCourses = (JSONArray) jsonObject.get("Courses");  
+			    Iterator<JSONObject> iterator = listOfCourses.iterator();
+			   
+			    while (iterator.hasNext()) {
+				   JSONObject course= (JSONObject)iterator.next();
+	               String courseid = (String) course.get("courseid");
+	               String couseName = (String) course.get("courseName");
+	               long courseType = (Long) course.get("courseType");
+	               String courseOrientation = (String) course.get("courseOrientation");
+	               
+	               //JSONArray courseModels = (JSONArray)course.get("CourseModules"); 
+	               JSONArray courseModels = (JSONArray)course.get("Modules"); 
+	               Iterator<JSONObject> modelIterator = courseModels.iterator();
+	            	   
+	               while (modelIterator.hasNext()) {
+	            	   
+	            	   JSONObject module= (JSONObject)modelIterator.next();   	   
+	            	   Long moduleId = (Long) module.get("module");    	   
+	            	   String guide = (String) module.get("guide");      	   
+	            	   JSONArray exams = (JSONArray)module.get("Exams");
+	            	            	   
+	            	   Iterator<JSONObject> examIterator = exams.iterator();
+	            	   
+	            	   while (examIterator.hasNext()) {
+	            		   
+	            		   JSONObject exam= (JSONObject)examIterator.next();          		   
+	            		   Long examid= (Long) exam.get("examid");           		   
+	            		   String name= (String) exam.get("name");           		   
+	            		   Long passing= (Long) exam.get("passing");            		   
+	            		   Long timeLimit= (Long) exam.get("timeLimit");
+	            		   	            		   
+	            		   JSONArray questions = (JSONArray)exam.get("Questions");	            		   
+	            		   Iterator<JSONObject> questionIterator = questions.iterator();
+		            	   
+		            	   while (questionIterator.hasNext()) {
+		            		   
+		            		   JSONObject question= (JSONObject)questionIterator.next();		            		   
+		            		   Long questionNumber= (Long) question.get("questionNumber");		            		   
+		            		   String category= (String) question.get("category");	            		   
+		            		   String text= (String) question.get("text");	            		   
+		            		   String explanation= (String) question.get("explanation");	            		   
+		            		   JSONArray answers = (JSONArray)question.get("Answers");
+		            		   
+		            		   Iterator<JSONObject> answersIterator = answers.iterator();
+			            	   
+			            	   while (answersIterator.hasNext()) {
+			            		   
+			            		   JSONObject answer= (JSONObject)answersIterator.next();         		   
+			            		   Long answerNumber= (Long) answer.get("answerNumber");           		   
+			            		   Long score= (Long) answer.get("score");            					            		   
+			            		   String answerText= (String) answer.get("answerText");	            		          		   
+			            	   }     		  		            	  
+		            	    }
+	            	    }         	             	   
+	                }               	               
                     System.out.print("courseid:" + courseid); 
             	}		   	   
    			}
@@ -149,7 +149,6 @@ public class ExamDownloaderTask extends AsyncTask<String, Void, Boolean>{
         }
                 
         return false;
- 
     }
 
 	@Override

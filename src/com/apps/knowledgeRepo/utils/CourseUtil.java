@@ -127,8 +127,7 @@ public class CourseUtil {
 			// TODO Auto-generated catch block
 			Log.d("Exam initalizer","parser error during initialization"+e.getMessage());
 		}
-  
-	    		        	   
+  	    		        	   
 		return examObj; 
 	}
 	

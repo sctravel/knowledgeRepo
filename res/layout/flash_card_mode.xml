@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:clickable="true"
-    android:padding="30dip" >
+    android:padding="0dip" >
 
 	<fragment
 	    android:id="@+id/fragment1"
