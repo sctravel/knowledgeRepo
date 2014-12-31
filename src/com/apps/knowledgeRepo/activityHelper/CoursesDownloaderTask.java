@@ -19,11 +19,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.ModeSelectionActivity;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.TableNames;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -38,6 +41,7 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	private final ProgressBar progressbar;
 	private final NotificationManager nm;
 	private final Notification notify;
+	private final ModeSelectionActivity activity; 
 	
 	private final String serviceEndPointMetaData="https://www.stcinteractive.com/servlet/stctrain?get=template&TemplateName=Rest.htm&username=test2014&password=test2014";//mock
 	
@@ -47,12 +51,13 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 	
 	private final List<String> localFileNames = new ArrayList<String>();
 	
-	public CoursesDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify){
+	public CoursesDownloaderTask(ProgressBar progressbar, NotificationManager nm,Notification notify,ModeSelectionActivity activity){
 		
 		Log.d("DownloadUsingRestfulAPI", "construct progress bar:  "+ progressbar.getId());
 		this.progressbar = progressbar;
 		this.nm=nm;
 		this.notify=notify;
+		this.activity =activity; 
 	}
 	
 	@Override
@@ -77,6 +82,9 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		
 		nm.notify(0, notify);
 		
+		this.activity.setContentView(R.layout.course_selection);
+		this.activity.selectCoursesPage();
+		// setContentView();
 		
 		
 	}
