@@ -179,6 +179,12 @@ public class DBTool {
 				      		    "'" + bucket_id + "'" + "," +
 				        	    "'" +  curr_num + "'" + ")" ; 
      	
+     	String sqlClean = "delete from " +  TableNames.FLASH_CARDS_RECORDS + 
+     			           " where bucket_id = " +  "'" + bucket_id  + "'" + 
+     			           " and course_id = " +  "'" + course_id + "'";
+     	
+     	db.execSQL(sqlClean);
+
      	db.execSQL(sqlInsert);
     	 
      }
@@ -190,6 +196,7 @@ public class DBTool {
 	        " '" + title + "'" +"," +
 	        " '" + Course_id + "'" +
 			" )"; 
+ 		
 		db.execSQL(sqlInsertVideoCourseModules);
      }
 

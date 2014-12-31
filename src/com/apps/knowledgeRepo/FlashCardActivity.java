@@ -54,7 +54,26 @@ public class FlashCardActivity extends FragmentActivity {
 	 
 
 	    setTitle(bucket.getTitle());
+	   
+	    
 		viewAnimator1.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
+			}
+
+		});
+	    
+	    
+	    test1.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
+			}
+
+		});
+	    
+	    test2.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
 				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);

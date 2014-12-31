@@ -29,6 +29,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ViewAnimator;
 
 
 public class FlashCardFragment1 extends Fragment{
@@ -61,6 +62,10 @@ public class FlashCardFragment1 extends Fragment{
         if(bucket==null) throw new RuntimeException("FlashCardBucket is null!");
         
 		View fragment1 =  inflater.inflate(R.layout.fragment_1, container, false);
+		
+		
+	
+       	
 
 		   Button button = (Button)fragment1.findViewById(R.id.button1);
 		   final Button buttonPrev = (Button)fragment1.findViewById(R.id.button2);
@@ -253,10 +258,12 @@ public class FlashCardFragment1 extends Fragment{
 					// TODO Auto-generated method stub
 					super.onStop();
 					
-					Log.d("test123", "jkjhkjh");
+				
 					
 					Context context = this.getActivity().getBaseContext();
 					SQLiteDatabase db = DBTool.getDB(context);
+					
+					
 					
 					DBTool.recordFlashcardNum(context, db, courseId, bucketId, String.valueOf(currCardNum));
 					

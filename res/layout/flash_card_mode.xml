@@ -18,7 +18,7 @@
 	    android:layout_width="match_parent"
 
 	    android:layout_height="match_parent"
-	    android:name="com.apps.knowledgeRepo.Fragment2"/>
+	    android:name="com.apps.knowledgeRepo.FlashCardFragment2"/>
 
 
 
