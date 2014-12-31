@@ -3,9 +3,11 @@ package com.apps.knowledgeRepo;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 
+import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.activityHelper.AnimationFactory;
+import com.apps.knowledgeRepo.activityHelper.AnimationFactory.FlipDirection;
+import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
 import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
@@ -16,6 +18,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.apps.knowledgeRepo.om.Constants;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,7 +69,9 @@ public class FlashCardFragment1 extends Fragment{
 	    Button buttonAuto = (Button)fragment1.findViewById(R.id.button3);
 	    Button buttonStop = (Button)fragment1.findViewById(R.id.button4);
 	    Button buttonJump = (Button)fragment1.findViewById(R.id.button5);
-	                      
+	    
+		
+	    
 	    final EditText jumpTo = (EditText)fragment1.findViewById(R.id.jumpTo);
 
 	    next = currCardNum + 1;
@@ -213,30 +219,13 @@ public class FlashCardFragment1 extends Fragment{
 					next = max;
 				}
 			}
-	   });    
-	     
-		   
-       button.setOnClickListener(new View.OnClickListener(){
-		   @Override
-		   public void onClick(View v) {
-			   WebView tv1 = (WebView)getView().findViewById(R.id.test1);
-			   Fragment tv2=  (Fragment)getFragmentManager().findFragmentById(R.id.fragment2);
-				
-			   tv1.loadData(bucket.getCardList().get(next).getFrontText(),"text/html","utf-8");
-			   View view = (View)tv2.getView();
-			   WebView tv =  (WebView)view.findViewById(R.id.test2);
-			   tv.loadData(bucket.getCardList().get(next).getBackText(),"text/html","utf-8");
-					
-			   prev = next -1 ;
-			   next = next +1;
-		   }
-        });    
+	    });     
         return fragment1;
 	}
 
     @Override
     public void onStop() {
-				// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 	    super.onStop();
 		
 	    Context context = this.getActivity().getBaseContext();
