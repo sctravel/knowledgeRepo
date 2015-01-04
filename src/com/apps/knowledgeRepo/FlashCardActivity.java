@@ -38,14 +38,30 @@ public class FlashCardActivity extends FragmentActivity {
         if(bucket == null) throw new RuntimeException("FlashCardBucket is null!");
      	     
 		setContentView(R.layout.flash_card_mode);
-
 		
 		final ViewAnimator viewAnimator1 = (ViewAnimator)this.findViewById(R.id.viewFlipper1);
 		
 		
        	WebView test1 = (WebView)this.findViewById(R.id.fragment1).findViewById(R.id.test1);
     	WebView test2 = (WebView)this.findViewById(R.id.fragment2).findViewById(R.id.test2);
-		  
+		 
+    	test1.setOnClickListener(new OnClickListener(){    		
+			@Override
+			public void onClick(View v){
+				Log.d("webview", "click webview1");
+				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
+			}
+
+		});
+	    
+	    test2.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Log.d("webview", "click webview2");
+				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
+			}
+
+		});
 	    //Button button = (Button)test1.findViewById(R.id.button1);
 	    //Button buttonPrev = (Button)test1.findViewById(R.id.button2);
 	  
@@ -65,21 +81,7 @@ public class FlashCardActivity extends FragmentActivity {
 		});
 	    
 	    
-	    test1.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v){
-				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
-			}
-
-		});
 	    
-	    test2.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v){
-				AnimationFactory.flipTransition(viewAnimator1, FlipDirection.LEFT_RIGHT);
-			}
-
-		});
 	}
     
     @Override

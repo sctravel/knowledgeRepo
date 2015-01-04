@@ -27,14 +27,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-           <activity
-        android:name="com.apps.knowledgeRepo.FlashCardActivity"
-        android:label="Flashcard"
-        android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.apps.knowledgeRepo.ModeSelectionActivity" />
-    </activity>
+        <activity
+        	android:name="com.apps.knowledgeRepo.FlashCardActivity"
+        	android:label="Flashcard"
+        	android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
+        	<meta-data
+            	android:name="android.support.PARENT_ACTIVITY"
+            	android:value="com.apps.knowledgeRepo.ModeSelectionActivity" 
+            />
+    	</activity>
         <activity
             android:name="com.apps.knowledgeRepo.PracticeModeActivity"
             android:label="Practice Mode"
