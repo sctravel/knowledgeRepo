@@ -370,7 +370,10 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 		}
 		
 		
-		try {			
+		try {
+			
+		   int totalFileNumber = localFileNames.size();
+		   int i=0;
 			
 			
 		   for(String localName: localFileNames){
@@ -396,29 +399,19 @@ public class CoursesDownloaderTask extends AsyncTask<Context, Integer, Boolean>{
 			  int row=0;
 	          
 			  Log.d("DownloadUsingRestfulAPI", "start writing to the file from buffer");
-			  while ((line = rd.readLine()) != null) {	  
-				  out.write(line);	  
-				  // total+=line.length(); 		  			  
-				  //Log.d("DownloadUsingRestfulAPI", "total: " + total);			  
-				  //int percentage = (int) ((total*100)/fileLength); 
-				  if(row<98000){
-					  if(row%1000==0)
-						  {
-						  publishProgress(row/1000);
-						  Log.d("DownloadUsingRestfulAPI", "publishProgress" + row/10); 
-						  }
-					  		 
-				  }
-				  else
-					  publishProgress(98);
-				 			 			  
-				  row++;			
+			  while ((line = rd.readLine()) != null) {		  				  
+				  out.write(line);			
 			  }
+			  
+			  
+			  Log.d("current downloading progress", "current : "+i*100/totalFileNumber);
 			  		  
-			  publishProgress(100);
+			  publishProgress(i*100/totalFileNumber);
 			  
 			  Log.d("DownloadUsingRestfulAPI", localName+" finish writing to the file from buffer, total rows: " + row);
 			  out.close();
+			  
+			  i++;
 			}
 		}
 		catch(Exception ex){
