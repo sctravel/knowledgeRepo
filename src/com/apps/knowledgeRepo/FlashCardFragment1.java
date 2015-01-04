@@ -5,35 +5,26 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.apps.knowledagerepo.R;
-import com.apps.knowledgeRepo.activityHelper.AnimationFactory;
-import com.apps.knowledgeRepo.activityHelper.AnimationFactory.FlipDirection;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
-import com.apps.knowledgeRepo.dataModel.FlashCardCourse;
-import com.apps.knowledgeRepo.db.DBHelper;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.Constants;
-import com.apps.knowledgeRepo.utils.CourseUtil;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.apps.knowledgeRepo.om.Constants;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.ViewAnimator;
+
 
 
 public class FlashCardFragment1 extends Fragment{

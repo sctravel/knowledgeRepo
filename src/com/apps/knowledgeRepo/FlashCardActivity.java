@@ -29,7 +29,7 @@ public class FlashCardActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	                  
-      extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         if (extras != null) {
         	 bucket = (FlashCardBucket) extras.get(Constants.FLASH_CARD_BUCKET_NAME);	
          	 courseId = extras.getString(Constants.COURSE_ID_NAME);

@@ -23,7 +23,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -50,7 +49,7 @@ public class ExamModeActivity extends Activity{
 
 	public final static char CHOICE_A= 'A';
 	@SuppressWarnings("unused")
-	private  ShareActionProvider mShareActionProvider;
+	//private  ShareActionProvider mShareActionProvider;
 
 	//This is the current question number user is working on.
 	private int questionNumber = 0;

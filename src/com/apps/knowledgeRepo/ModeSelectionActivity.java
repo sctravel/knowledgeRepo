@@ -158,6 +158,10 @@ public class ModeSelectionActivity extends Activity {
 		ArrayAdapter<Course> adapter = new CourseSelectionArrayAdapter(getApplicationContext(),
 	        R.layout.course_list_item, courseList);    
 	    // Assign adapter to ListView
+		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);	
+	    
 	    listView.setAdapter(adapter); 
 	            
 	    // ListView Item Click Listener
@@ -181,8 +185,13 @@ public class ModeSelectionActivity extends Activity {
 				    } else {
 				        //If there's only one module, skip the select Module page
 				    	Log.d("Select Course: ", "Skip Module selection");
-				        String currentModuleId=examList.get(0).getModuleId();
-				        selectExamsPage(courseMeta, currentModuleId, examList);
+				    	if(examList==null || examList.isEmpty()) {
+			   			    Toast.makeText(getApplicationContext(), "Exam list is empty. ", Toast.LENGTH_LONG).show();
+
+				    	} else {
+				    		String currentModuleId=examList.get(0).getModuleId();
+				    		selectExamsPage(courseMeta, currentModuleId, examList);
+				    	}
 				    }		    
 		        	 
 		         } else if(courseType==Constants.FLASH_CARD_COURSE_TYPE) {
@@ -196,9 +205,7 @@ public class ModeSelectionActivity extends Activity {
 	        }
 	    }); 
 	            
-	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-	    listHeader.setClickable(false);
-	    listView.addHeaderView(listHeader);		
+	    	
 	    
         setContentView(listView);
         
@@ -253,7 +260,9 @@ public class ModeSelectionActivity extends Activity {
 		final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
-		
+		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
 		        R.layout.course_list_item, R.id.courseListItemTextLine, new ArrayList<String>( map.keySet() ) );    
 		// Assign adapter to ListView
@@ -272,9 +281,7 @@ public class ModeSelectionActivity extends Activity {
 	        }
 	    }); 
 	            
-	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-	    listHeader.setClickable(false);
-	    listView.addHeaderView(listHeader);		
+	    
 	    
         setContentView(listView);
         addSignInButton();
@@ -291,7 +298,11 @@ public class ModeSelectionActivity extends Activity {
 			
 		final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
-		listView.setLayoutParams(lpbt);
+		listView.setLayoutParams(lpbt); 
+		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
 		ArrayAdapter<FlashCardBucket> adapter = new FlashCardBucketArrayAdapter(getApplicationContext(),
 	        R.layout.course_list_item, bucketList);    
 	    // Assign adapter to ListView
@@ -310,10 +321,7 @@ public class ModeSelectionActivity extends Activity {
 	        }
 	    }); 
 	            
-	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-	    listHeader.setClickable(false);
-	    listView.addHeaderView(listHeader);		
-	    
+	   
         setContentView(listView);
         
         addSignInButton();
@@ -331,6 +339,11 @@ public class ModeSelectionActivity extends Activity {
 		final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
+        
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);		
+	    
 		ArrayAdapter<VideoModule> adapter = new VideoModuleArrayAdapter(getApplicationContext(),
 	        R.layout.course_list_item, course.getVideoModules());    
 	    // Assign adapter to ListView
@@ -346,10 +359,6 @@ public class ModeSelectionActivity extends Activity {
 		        beginVideoModule( view, videoModule ); 
 	        }
 	    }); 
-	            
-	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-	    listHeader.setClickable(false);
-	    listView.addHeaderView(listHeader);		
 	    
         setContentView(listView);
         
@@ -376,6 +385,10 @@ public class ModeSelectionActivity extends Activity {
 		final ListView listView = new ListView(getApplicationContext());
 	    listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
+		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+		listHeader.setClickable(false);
+		listView.addHeaderView(listHeader);	
+		
 		ArrayAdapter<ExamModuleMetaData> adapter = new TextModuleArrayAdapter(getApplicationContext(),
 				R.layout.course_list_item, moduleList);
 		// Assign adapter to ListView
@@ -395,9 +408,6 @@ public class ModeSelectionActivity extends Activity {
 		    }
 		    
 		}); 
-		View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-		listHeader.setClickable(false);
-		listView.addHeaderView(listHeader);	
 		  
 	    setContentView(listView);
 	        
@@ -432,6 +442,11 @@ public class ModeSelectionActivity extends Activity {
         final ListView listView = new ListView(getApplicationContext());
 		listView.setBackgroundResource(R.drawable.background); //setBackgroundColor(Color.BLUE);
 		listView.setLayoutParams(lpbt);
+        
+	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
+	    listHeader.setClickable(false);
+	    listView.addHeaderView(listHeader);	
+	    
 		ArrayAdapter<ExamMetaData> adapter = new TextExamArrayAdapter(getApplicationContext(),
 	              R.layout.course_list_item, examList);    
 	            // Assign adapter to ListView
@@ -450,10 +465,7 @@ public class ModeSelectionActivity extends Activity {
 	                  }
 	    
 	             }); 
-	            
-	    View listHeader = getLayoutInflater().inflate(R.layout.course_list_header, null);
-	    listHeader.setClickable(false);
-	    listView.addHeaderView(listHeader);	
+	   
 	            
         setContentView(listView);
         addSignInButton();
@@ -496,7 +508,8 @@ public class ModeSelectionActivity extends Activity {
       	        PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
       	        notify.setLatestEventInfo(getApplicationContext(),"Finish Downloading","Downloading Finished",pending);
       	       
-      	        new CoursesDownloaderTask(mProgress, nm,notify,ModeSelectionActivity.this).execute(getApplicationContext());
+      	        CoursesDownloaderTask task = new CoursesDownloaderTask(mProgress, nm,notify, ModeSelectionActivity.this);
+      	        task.execute(getApplicationContext());
             	
    			    Toast.makeText(getApplicationContext(), "Downloading Courses... ", Toast.LENGTH_LONG).show();
    			    	
