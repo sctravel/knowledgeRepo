@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.FlashCardBucketArrayAdapter;
@@ -104,11 +104,13 @@ public class ModeSelectionActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
    		//setContentView(R.layout.mode_selection);
+        
         SharedPreferences pref = getSharedPreferences(Constants.PREF_ACCOUNT_FILE,MODE_PRIVATE);   
     	username = pref.getString(Constants.PREF_USERNAME, null);
     	password = pref.getString(Constants.PREF_PASSWORD, null);
-    	//getActionBar().show();
     	selectCoursesPage();	
+    	//getActionBar().show();
+
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
