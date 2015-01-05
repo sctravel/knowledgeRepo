@@ -1,6 +1,6 @@
 package com.apps.knowledgeRepo;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.dataModel.VideoModule;
 import com.apps.knowledgeRepo.om.Constants;
 

@@ -3,7 +3,7 @@ package com.apps.knowledgeRepo;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.activityHelper.OnSwipeTouchListener;
 import com.apps.knowledgeRepo.dataModel.Exam;
 import com.apps.knowledgeRepo.dataModel.ExamAnswer;

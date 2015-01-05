@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.dataModel.ExamModuleMetaData;
 import android.annotation.SuppressLint;
 import android.content.Context;

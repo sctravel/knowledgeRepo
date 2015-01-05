@@ -1,6 +1,6 @@
 package com.apps.knowledgeRepo;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.activityHelper.AnimationFactory;
 import com.apps.knowledgeRepo.activityHelper.AnimationFactory.FlipDirection;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;

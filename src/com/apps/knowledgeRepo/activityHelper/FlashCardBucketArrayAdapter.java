@@ -1,7 +1,7 @@
 package com.apps.knowledgeRepo.activityHelper;
 import java.util.Arrays;
 import java.util.List;
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import android.annotation.SuppressLint;
 import android.content.Context;

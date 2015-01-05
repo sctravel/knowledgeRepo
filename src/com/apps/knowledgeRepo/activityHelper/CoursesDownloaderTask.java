@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.ModeSelectionActivity;
 import com.apps.knowledgeRepo.dataModel.TextCourseModule;
 import com.apps.knowledgeRepo.dataModel.Exam;

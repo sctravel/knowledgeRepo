@@ -4,7 +4,7 @@ package com.apps.knowledgeRepo;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.dataModel.FlashCardBucket;
 import com.apps.knowledgeRepo.db.DBTool;
 import com.apps.knowledgeRepo.om.Constants;

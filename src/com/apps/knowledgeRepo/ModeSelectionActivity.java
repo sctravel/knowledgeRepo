@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 import com.apps.knowledgeRepo.activityHelper.CourseSelectionArrayAdapter;
 import com.apps.knowledgeRepo.activityHelper.CoursesDownloaderTask;
 import com.apps.knowledgeRepo.activityHelper.FlashCardBucketArrayAdapter;
@@ -107,7 +107,7 @@ public class ModeSelectionActivity extends Activity {
         SharedPreferences pref = getSharedPreferences(Constants.PREF_ACCOUNT_FILE,MODE_PRIVATE);   
     	username = pref.getString(Constants.PREF_USERNAME, null);
     	password = pref.getString(Constants.PREF_PASSWORD, null);
-
+    	//getActionBar().show();
     	selectCoursesPage();	
     	Button signIn = (Button) findViewById(R.id.courseListSignInNotice);
     	signIn.setOnClickListener(new View.OnClickListener() {

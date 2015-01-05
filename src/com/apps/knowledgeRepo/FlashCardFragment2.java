@@ -1,6 +1,6 @@
 package com.apps.knowledgeRepo;
 
-import com.apps.knowledagerepo.R;
+import com.apps.knowledgeRepo.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
