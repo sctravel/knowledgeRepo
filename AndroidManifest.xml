@@ -30,6 +30,7 @@
         <activity
         	android:name="com.apps.knowledgeRepo.FlashCardActivity"
         	android:label="Flashcard"
+        	android:theme="@style/AppTheme"
         	android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
         	<meta-data
             	android:name="android.support.PARENT_ACTIVITY"
@@ -39,7 +40,7 @@
         <activity
             android:name="com.apps.knowledgeRepo.PracticeModeActivity"
             android:label="Practice Mode"
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,7 +49,7 @@
         <activity
             android:name="com.apps.knowledgeRepo.ExamModeActivity"
             android:label="Exam Mode"
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -57,7 +58,7 @@
          <activity
             android:name="com.apps.knowledgeRepo.ViewAnswerModeActivity"
             android:label="View Answer Mode"
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -67,7 +68,7 @@
             android:name="com.apps.knowledgeRepo.VideoPlayerActivity"
             android:label="Video Play Mode"
             android:configChanges="orientation"
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:parentActivityName="com.apps.knowledgeRepo.ModeSelectionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
